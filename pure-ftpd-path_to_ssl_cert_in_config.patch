@@ -1,6 +1,6 @@
-diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-config.pl.in pure-ftpd-1.0.20.new/configuration-file/pure-config.pl.in
+diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-config.pl.in pure-ftpd-1.0.20.new1/configuration-file/pure-config.pl.in
 --- pure-ftpd-1.0.20.bef/configuration-file/pure-config.pl.in	2004-02-29 12:17:00.000000000 +0100
-+++ pure-ftpd-1.0.20.new/configuration-file/pure-config.pl.in	2004-08-17 02:00:46.000000000 +0200
++++ pure-ftpd-1.0.20.new1/configuration-file/pure-config.pl.in	2004-08-17 10:42:26.000000000 +0200
 @@ -57,6 +57,7 @@
  	TrustedIP		=> "-V",
  	AltLog			=> "-O",
@@ -9,9 +9,9 @@ diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-config.pl.in pure-ftpd-1.
  );
  
  my %numeric_switch_for = (
-diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-config.py.in pure-ftpd-1.0.20.new/configuration-file/pure-config.py.in
+diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-config.py.in pure-ftpd-1.0.20.new1/configuration-file/pure-config.py.in
 --- pure-ftpd-1.0.20.bef/configuration-file/pure-config.py.in	2004-02-29 12:17:14.000000000 +0100
-+++ pure-ftpd-1.0.20.new/configuration-file/pure-config.py.in	2004-08-17 02:00:46.000000000 +0200
++++ pure-ftpd-1.0.20.new1/configuration-file/pure-config.py.in	2004-08-17 10:42:26.000000000 +0200
 @@ -55,6 +55,7 @@
  option_tuple = (
      ["IPV4Only[\s]+yes",                   "-4"                  ],
@@ -20,9 +20,9 @@ diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-config.py.in pure-ftpd-1.
      ["ChrootEveryone[\s]+yes",             "-A"                  ],
      ["TrustedGID[\s]+([\d]+)",             "-a", None            ],
      ["BrokenClientsCompatibility[\s]+yes", "-b"                  ],
-diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-ftpd.conf.in pure-ftpd-1.0.20.new/configuration-file/pure-ftpd.conf.in
---- pure-ftpd-1.0.20.bef/configuration-file/pure-ftpd.conf.in	2004-08-17 02:01:13.000000000 +0200
-+++ pure-ftpd-1.0.20.new/configuration-file/pure-ftpd.conf.in	2004-08-17 02:00:46.000000000 +0200
+diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-ftpd.conf.in pure-ftpd-1.0.20.new1/configuration-file/pure-ftpd.conf.in
+--- pure-ftpd-1.0.20.bef/configuration-file/pure-ftpd.conf.in	2004-08-17 10:27:33.000000000 +0200
++++ pure-ftpd-1.0.20.new1/configuration-file/pure-ftpd.conf.in	2004-08-17 10:42:26.000000000 +0200
 @@ -420,7 +420,8 @@
  # 3) Only compatible clients will log in.
  
@@ -33,30 +33,9 @@ diff -Nur pure-ftpd-1.0.20.bef/configuration-file/pure-ftpd.conf.in pure-ftpd-1.
  
  
  # Listen only to IPv4 addresses in standalone mode (ie. disable IPv6)
-diff -Nur pure-ftpd-1.0.20.bef/configure.ac pure-ftpd-1.0.20.new/configure.ac
---- pure-ftpd-1.0.20.bef/configure.ac	2004-06-20 19:41:27.000000000 +0200
-+++ pure-ftpd-1.0.20.new/configure.ac	2004-08-17 02:00:46.000000000 +0200
-@@ -1226,17 +1226,6 @@
-   AC_DEFINE(WITH_TLS,,[Enable TLS])
- fi
- 
--AC_ARG_WITH(certfile,
--[AS_HELP_STRING(--with-certfile=,certificate file (default: /etc/ssl/private/pure-ftpd.pem))],
--[ if test "x$withval" != "x" ; then
--    certfile="$withval"
--    AC_SUBST(certfile)
--    CPPFLAGS="$CPPFLAGS -DTLS_CERTIFICATE_FILE='\"$certfile\"'"
--    if test -e "$certfile"; then
--      AC_MSG_WARN(No certificate is installed in $certfile yet)
--    fi
--  fi ])
--  
- AC_ARG_WITH(rendezvous,
- [AS_HELP_STRING(--with-rendezvous,Enable Rendezvous support on MacOS X (experimental))],
- [ if test "x$withval" = "xyes" ; then
-diff -Nur pure-ftpd-1.0.20.bef/man/pure-ftpd.8 pure-ftpd-1.0.20.new/man/pure-ftpd.8
+diff -Nur pure-ftpd-1.0.20.bef/man/pure-ftpd.8 pure-ftpd-1.0.20.new1/man/pure-ftpd.8
 --- pure-ftpd-1.0.20.bef/man/pure-ftpd.8	2004-02-29 21:10:06.000000000 +0100
-+++ pure-ftpd-1.0.20.new/man/pure-ftpd.8	2004-08-17 02:00:46.000000000 +0200
++++ pure-ftpd-1.0.20.new1/man/pure-ftpd.8	2004-08-17 10:42:26.000000000 +0200
 @@ -9,7 +9,7 @@
  pure\-ftpd \- simple File Transfer Protocol server
  
@@ -85,45 +64,33 @@ diff -Nur pure-ftpd-1.0.20.bef/man/pure-ftpd.8 pure-ftpd-1.0.20.new/man/pure-ftp
  .B \-a gid
  Regular users will be chrooted to their home directories, unless
  they belong to the specified gid. Note that root is always trusted,
-diff -Nur pure-ftpd-1.0.20.bef/src/ftpd.c pure-ftpd-1.0.20.new/src/ftpd.c
+diff -Nur pure-ftpd-1.0.20.bef/src/ftpd.c pure-ftpd-1.0.20.new1/src/ftpd.c
 --- pure-ftpd-1.0.20.bef/src/ftpd.c	2004-07-17 15:28:22.000000000 +0200
-+++ pure-ftpd-1.0.20.new/src/ftpd.c	2004-08-17 02:46:00.000000000 +0200
-@@ -5097,8 +5097,15 @@
++++ pure-ftpd-1.0.20.new1/src/ftpd.c	2004-08-17 12:59:11.000000000 +0200
+@@ -5097,8 +5097,19 @@
                  enforce_tls_auth > 2) {
                  die(421, LOG_ERR, MSG_CONF_ERR ": TLS");
              }
-+	    if ((tlscert_file = strdup("")) == NULL)
++	    if ((tlscert_file = strdup(TLS_CERTIFICATE_FILE)) == NULL)
 +                die_mem();
              break;
 -        }            
 +        }
-+	case '7': {
-+	    if ((tlscert_file = strdup(optarg)) == NULL)
++    	case '7': {
++            if (tlscert_file != NULL) {
++               if (strlen(tlscert_file) > (size_t)0)
++                   free(tlscert_file);
++            }
++            if ((tlscert_file = strdup(optarg)) == NULL)
 +                die_mem();
-+	    break;
++	        break;
 +        }
  #endif
          case 'e': {
              anon_only = 1;
-diff -Nur pure-ftpd-1.0.20.bef/src/ftpd.h pure-ftpd-1.0.20.new/src/ftpd.h
---- pure-ftpd-1.0.20.bef/src/ftpd.h	2004-03-02 20:08:59.000000000 +0100
-+++ pure-ftpd-1.0.20.new/src/ftpd.h	2004-08-17 02:00:46.000000000 +0200
-@@ -396,12 +396,6 @@
- # define VHOST_PATH CONFDIR "/pure-ftpd"
- #endif
- 
--#ifdef WITH_TLS
--# ifndef TLS_CERTIFICATE_FILE
--#  define TLS_CERTIFICATE_FILE "/etc/ssl/private/pure-ftpd.pem"
--# endif
--#endif
--
- #define FAKE_SHELL "ftp"
- 
- #ifndef PID_FILE
-diff -Nur pure-ftpd-1.0.20.bef/src/ftpd_p.h pure-ftpd-1.0.20.new/src/ftpd_p.h
+diff -Nur pure-ftpd-1.0.20.bef/src/ftpd_p.h pure-ftpd-1.0.20.new1/src/ftpd_p.h
 --- pure-ftpd-1.0.20.bef/src/ftpd_p.h	2004-02-29 22:49:28.000000000 +0100
-+++ pure-ftpd-1.0.20.new/src/ftpd_p.h	2004-08-17 02:00:46.000000000 +0200
++++ pure-ftpd-1.0.20.new1/src/ftpd_p.h	2004-08-17 10:42:26.000000000 +0200
 @@ -101,6 +101,7 @@
  #endif
  #ifdef WITH_TLS
@@ -140,9 +107,9 @@ diff -Nur pure-ftpd-1.0.20.bef/src/ftpd_p.h pure-ftpd-1.0.20.new/src/ftpd_p.h
  # endif
      { "allowdotfiles", 0, NULL, 'z' },
      { "customerproof", 0, NULL, 'Z' },
-diff -Nur pure-ftpd-1.0.20.bef/src/globals.h pure-ftpd-1.0.20.new/src/globals.h
+diff -Nur pure-ftpd-1.0.20.bef/src/globals.h pure-ftpd-1.0.20.new1/src/globals.h
 --- pure-ftpd-1.0.20.bef/src/globals.h	2004-02-29 22:49:28.000000000 +0100
-+++ pure-ftpd-1.0.20.new/src/globals.h	2004-08-17 02:00:46.000000000 +0200
++++ pure-ftpd-1.0.20.new1/src/globals.h	2004-08-17 10:42:26.000000000 +0200
 @@ -167,6 +167,7 @@
  
  #ifdef WITH_TLS
@@ -151,9 +118,9 @@ diff -Nur pure-ftpd-1.0.20.bef/src/globals.h pure-ftpd-1.0.20.new/src/globals.h
  #endif
  
  GLOBAL0(char *atomic_prefix);
-diff -Nur pure-ftpd-1.0.20.bef/src/tls.c pure-ftpd-1.0.20.new/src/tls.c
+diff -Nur pure-ftpd-1.0.20.bef/src/tls.c pure-ftpd-1.0.20.new1/src/tls.c
 --- pure-ftpd-1.0.20.bef/src/tls.c	2004-02-29 22:49:27.000000000 +0100
-+++ pure-ftpd-1.0.20.new/src/tls.c	2004-08-17 02:00:46.000000000 +0200
++++ pure-ftpd-1.0.20.new1/src/tls.c	2004-08-17 10:42:26.000000000 +0200
 @@ -9,11 +9,12 @@
  # include "tls.h"
  # include "ftpwho-update.h"
