@@ -3,7 +3,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	0.99.1b
-Release:	1
+Release:	2
 License:	GPL
 Group:		Daemons
 Group(de):	Server
@@ -17,16 +17,17 @@ BuildRequires:	libcap-devel
 BuildRequires:	pam-devel
 BuildRequires:	automake
 BuildRequires:	autoconf
-Requires:	inetdaemon
-Requires:	rc-inetd
+Prereq:		rc-scripts
+Prereq:		/sbin/chkconfig
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
-Obsoletes:	bftpd
 Obsoletes:	anonftp
+Obsoletes:	bftpd
 Obsoletes:	ftpd-BSD
 Obsoletes:	heimdal-ftpd
 Obsoletes:	linux-ftpd
+Obsoletes:	muddleftpd
 Obsoletes:	proftpd
 Obsoletes:	troll-ftpd
 Obsoletes:	wu-ftpd
@@ -97,10 +98,12 @@ else
 fi
 
 %preun
-if [ "$1" = "0" -a -f %{_var}/lock/subsys/%{name} ]; then
-        /etc/rc.d/init.d/%{name} stop 1>&2
+if [ "$1" = "0" ]; then
+	if [ -f %{_var}/lock/subsys/%{name} ]; then
+		/etc/rc.d/init.d/%{name} stop 1>&2
+	fi
+	/sbin/chkconfig --del %{name}
 fi
-/sbin/chkconfig --del %{name}
 
 %files
 %defattr(644,root,root,755)
