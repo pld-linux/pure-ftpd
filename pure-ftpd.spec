@@ -7,7 +7,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.14
-Release:	2
+Release:	3
 Epoch:		0
 License:	GPL
 Group:		Daemons
@@ -66,9 +66,9 @@ po³±czeñ...
 
 %build
 %configure \
-	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-altlog \
 	--with-puredb \
+	--with-extauth \
 	%{?!_with_mysql:--with-pam} \
 	--with-cookie \
 	--with-throttling \
@@ -78,9 +78,13 @@ po³±czeñ...
 	--with-largefile \
 	--with-uploadscript \
 	--with-virtualhosts \
-	--with-language=english \
 	--with-virtualchroot \
-	%{?_with_ldap:--with-ldap}
+	--with-diraliases \
+	--with-peruserlimits \
+	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
+	%{?_with_ldap:--with-ldap} \
+	--with-language=english \
+	--with-privsep
 
 %install
 rm -rf $RPM_BUILD_ROOT
