@@ -1,17 +1,7 @@
 diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-config.pl.in pure-ftpd-1.0.18.work/configuration-file/pure-config.pl.in
 --- pure-ftpd-1.0.18.bef/configuration-file/pure-config.pl.in	2004-04-27 20:32:42.000000000 +0200
-+++ pure-ftpd-1.0.18.work/configuration-file/pure-config.pl.in	2004-04-27 21:55:08.000000000 +0200
-@@ -10,9 +10,6 @@
- my $PUREFTPD;
- -x && ($PUREFTPD=$_, last) for qw(
- 	${exec_prefix}/sbin/pure-ftpd
--	/usr/local/pure-ftpd/sbin/pure-ftpd
--	/usr/local/pureftpd/sbin/pure-ftpd
--	/usr/local/sbin/pure-ftpd
- 	/usr/sbin/pure-ftpd
- );
- 
-@@ -57,6 +54,7 @@
++++ pure-ftpd-1.0.18.work/configuration-file/pure-config.pl.in	2004-04-28 09:42:30.000000000 +0200
+@@ -57,6 +57,7 @@
  	TrustedIP		=> "-V",
  	AltLog			=> "-O",
  	PIDFile			=> "-g",
@@ -21,17 +11,15 @@ diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-config.pl.in pure-ftpd-1
  my %numeric_switch_for = (
 diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-config.py.in pure-ftpd-1.0.18.work/configuration-file/pure-config.py.in
 --- pure-ftpd-1.0.18.bef/configuration-file/pure-config.py.in	2004-04-27 20:32:42.000000000 +0200
-+++ pure-ftpd-1.0.18.work/configuration-file/pure-config.py.in	2004-04-27 21:55:08.000000000 +0200
-@@ -111,7 +111,8 @@
-     ["NoTruncate\s+yes",                   "-0"                  ],    
-     ["PIDFile\s+(\S+)",                    "-g", None            ],
-     ["PerUserLimits\s+([:0-9]+)",          "-y", None            ],
--    ["TLSAuth\s+yes",                      "-Y", None            ])
-+    ["TLSAuth\s+yes",                      "-Y", None            ],
-+    ["SSLCertFile\s+(\S+)",                 "-7", None            ])
- 
- for option in option_tuple:
-     option[0] = re.compile(option[0], re.IGNORECASE)
++++ pure-ftpd-1.0.18.work/configuration-file/pure-config.py.in	2004-04-28 09:43:30.000000000 +0200
+@@ -55,6 +55,7 @@
+ option_tuple = (
+     ["IPV4Only[\s]+yes",                   "-4"                  ],
+     ["IPV6Only[\s]+yes",                   "-6"                  ],    
++    ["SSLCertFile\s+(\S+)",                "-7", None            ],
+     ["ChrootEveryone[\s]+yes",             "-A"                  ],
+     ["TrustedGID[\s]+([\d]+)",             "-a", None            ],
+     ["BrokenClientsCompatibility[\s]+yes", "-b"                  ],
 diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-ftpd.conf.in pure-ftpd-1.0.18.work/configuration-file/pure-ftpd.conf.in
 --- pure-ftpd-1.0.18.bef/configuration-file/pure-ftpd.conf.in	2004-04-27 20:32:42.000000000 +0200
 +++ pure-ftpd-1.0.18.work/configuration-file/pure-ftpd.conf.in	2004-04-27 21:55:08.000000000 +0200
@@ -66,6 +54,37 @@ diff -Nura pure-ftpd-1.0.18.bef/configure.ac pure-ftpd-1.0.18.work/configure.ac
  AC_ARG_WITH(rendezvous,
  [AS_HELP_STRING(--with-rendezvous,Enable Rendezvous support on MacOS X (experimental))],
  [ if test "x$withval" = "xyes" ; then
+diff -Nura pure-ftpd-1.0.18.bef/man/pure-ftpd.8 pure-ftpd-1.0.18.work/man/pure-ftpd.8
+--- pure-ftpd-1.0.18.bef/man/pure-ftpd.8	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/man/pure-ftpd.8	2004-04-28 10:04:54.000000000 +0200
+@@ -9,7 +9,7 @@
+ pure\-ftpd \- simple File Transfer Protocol server
+ 
+ .SH "SYNOPSIS"
+-.B pure\-ftpd [\-0] [\-1] [\-4] [\-6] [\-a gid] [\-A] [\-b] [\-B] [\-c clients] [\-C cnx/ip] [\-d [\-d]] [\-D] [\-e] [\-E] [\-f facility] [\-F fortunes file] [\-g pidfile] [\-G] [\-H] [\-i] [\-I] [\-j] [\-k percentage] [\-K] [\-l authentication[:config file]] [\-L max files:max depth] [\-m maxload] [\-M] [\-n maxfiles:maxsize] [\-N] [\-o] [\-O format:log file] [\-p first:last] [\-P ip address or host name] [\-q upload:download ratio] [\-Q upload:download ratio] [\-r] [\-R] [\-s] [\-S [address,][port]] [\-t upload bandwidth:download bandwidth] [\-T upload bandwidth:download bandwidth] [\-u uid] [\-U umask files:umask dirs] [\-v rendezvous name] [\-V ip address] [\-w] [\-W] [\-x] [\-X] [\-y max user sessions:max anon sessions] [\-Y tls behavior] [\-z] [\-Z]
++.B pure\-ftpd [\-0] [\-1] [\-4] [\-6] [\-7 certificate file] [\-a gid] [\-A] [\-b] [\-B] [\-c clients] [\-C cnx/ip] [\-d [\-d]] [\-D] [\-e] [\-E] [\-f facility] [\-F fortunes file] [\-g pidfile] [\-G] [\-H] [\-i] [\-I] [\-j] [\-k percentage] [\-K] [\-l authentication[:config file]] [\-L max files:max depth] [\-m maxload] [\-M] [\-n maxfiles:maxsize] [\-N] [\-o] [\-O format:log file] [\-p first:last] [\-P ip address or host name] [\-q upload:download ratio] [\-Q upload:download ratio] [\-r] [\-R] [\-s] [\-S [address,][port]] [\-t upload bandwidth:download bandwidth] [\-T upload bandwidth:download bandwidth] [\-u uid] [\-U umask files:umask dirs] [\-v rendezvous name] [\-V ip address] [\-w] [\-W] [\-x] [\-X] [\-y max user sessions:max anon sessions] [\-Y tls behavior] [\-z] [\-Z]
+ 
+ .br
+ Alternative style :
+@@ -22,6 +22,8 @@
+ .br
+ \-6 \-\-ipv6only
+ .br
++\-7 \-\-sslcertfile
++.br
+ \-a \-\-trustedgid
+ .br
+ \-A \-\-chrooteveryone
+@@ -157,6 +159,9 @@
+ .B \-6
+ Listen only to IPv6 connections.
+ .TP
++.B \-7 file
++Path to SSL certificate file.
++.TP
+ .B \-a gid
+ Regular users will be chrooted to their home directories, unless
+ they belong to the specified gid. Note that root is always trusted,
 diff -Nura pure-ftpd-1.0.18.bef/src/ftpd.c pure-ftpd-1.0.18.work/src/ftpd.c
 --- pure-ftpd-1.0.18.bef/src/ftpd.c	2004-04-27 20:32:42.000000000 +0200
 +++ pure-ftpd-1.0.18.work/src/ftpd.c	2004-04-27 22:46:14.000000000 +0200
@@ -82,6 +101,22 @@ diff -Nura pure-ftpd-1.0.18.bef/src/ftpd.c pure-ftpd-1.0.18.work/src/ftpd.c
  #endif
          case 'e': {
              anon_only = 1;
+diff -Nura pure-ftpd-1.0.18.bef/src/ftpd.h pure-ftpd-1.0.18.work/src/ftpd.h
+--- pure-ftpd-1.0.18.bef/src/ftpd.h	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/src/ftpd.h	2004-04-28 09:20:03.000000000 +0200
+@@ -396,12 +396,6 @@
+ # define VHOST_PATH CONFDIR "/pure-ftpd"
+ #endif
+ 
+-#ifdef WITH_TLS
+-# ifndef TLS_CERTIFICATE_FILE
+-#  define TLS_CERTIFICATE_FILE "/etc/ssl/private/pure-ftpd.pem"
+-# endif
+-#endif
+-
+ #define FAKE_SHELL "ftp"
+ 
+ #ifndef PID_FILE
 diff -Nura pure-ftpd-1.0.18.bef/src/ftpd_p.h pure-ftpd-1.0.18.work/src/ftpd_p.h
 --- pure-ftpd-1.0.18.bef/src/ftpd_p.h	2004-04-27 20:32:42.000000000 +0200
 +++ pure-ftpd-1.0.18.work/src/ftpd_p.h	2004-04-27 21:55:58.000000000 +0200
