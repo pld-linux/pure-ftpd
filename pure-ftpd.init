@@ -36,6 +36,7 @@ case "$1" in
 	# Check if the service is already running?
         if [ ! -f /var/lock/subsys/pure-ftpd ]; then
 		msg_starting pure-ftpd
+		rm -f /var/run/pure-ftpd/client*
 		daemon pure-ftpd $PUREFTPD_OPTS --daemonize
 	        RETVAL=$?
     		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pure-ftpd
