@@ -2,17 +2,18 @@
 # Conditional build:
 # _with_mysql - enables MySQL auth but disables PAM auth
 # _with_ldap  - enabled LDAP auth
+# _with_tls   - support SSL/TLS
 #
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.15
-Release:	2
+Version:	1.0.16
+Release:	1
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	66d1a899e117c99ddfa1e45583d4a64d
+# Source0-md5:	12f947ffba2f1393f8292a1675bf206a
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
@@ -21,6 +22,7 @@ URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
 %{?_with_mysql:BuildRequires:	mysql-devel}
 %{?_with_ldap:BuildRequires:	openldap-devel}
+%{?_with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
 Requires(post,preun):/sbin/chkconfig
@@ -85,6 +87,7 @@ po³±czeñ...
 	--with-peruserlimits \
 	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	%{?_with_ldap:--with-ldap} \
+	%{?_with_tls: --with-tls} \
 	--with-language=english \
 	--with-privsep
 
