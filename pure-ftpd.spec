@@ -2,7 +2,7 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.7
+Version:	1.1.0
 Release:	1
 License:	GPL
 Group:		Daemons
@@ -74,7 +74,8 @@ automake -a -c
 	--with-largefile \
 	--with-uploadscript \
 	--with-virtualhosts \
-	--with-language=english
+	--with-language=english \
+	--with-virtualchroot
 
 %install
 rm -rf $RPM_BUILD_ROOT
