@@ -60,7 +60,7 @@ po³±czeñ...
 %build
 aclocal
 autoconf
-automake -a -c
+automake -a -c -f
 %configure \
 	--sysconfdir=/etc/ftpd \
 	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
