@@ -1,0 +1,155 @@
+diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-config.pl.in pure-ftpd-1.0.18.work/configuration-file/pure-config.pl.in
+--- pure-ftpd-1.0.18.bef/configuration-file/pure-config.pl.in	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/configuration-file/pure-config.pl.in	2004-04-27 21:55:08.000000000 +0200
+@@ -10,9 +10,6 @@
+ my $PUREFTPD;
+ -x && ($PUREFTPD=$_, last) for qw(
+ 	${exec_prefix}/sbin/pure-ftpd
+-	/usr/local/pure-ftpd/sbin/pure-ftpd
+-	/usr/local/pureftpd/sbin/pure-ftpd
+-	/usr/local/sbin/pure-ftpd
+ 	/usr/sbin/pure-ftpd
+ );
+ 
+@@ -57,6 +54,7 @@
+ 	TrustedIP		=> "-V",
+ 	AltLog			=> "-O",
+ 	PIDFile			=> "-g",
++	SSLCertFile		=> "-7",
+ );
+ 
+ my %numeric_switch_for = (
+diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-config.py.in pure-ftpd-1.0.18.work/configuration-file/pure-config.py.in
+--- pure-ftpd-1.0.18.bef/configuration-file/pure-config.py.in	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/configuration-file/pure-config.py.in	2004-04-27 21:55:08.000000000 +0200
+@@ -111,7 +111,8 @@
+     ["NoTruncate\s+yes",                   "-0"                  ],    
+     ["PIDFile\s+(\S+)",                    "-g", None            ],
+     ["PerUserLimits\s+([:0-9]+)",          "-y", None            ],
+-    ["TLSAuth\s+yes",                      "-Y", None            ])
++    ["TLSAuth\s+yes",                      "-Y", None            ],
++    ["SSLCertFile\s+(\S+)",                 "-7", None            ])
+ 
+ for option in option_tuple:
+     option[0] = re.compile(option[0], re.IGNORECASE)
+diff -Nura pure-ftpd-1.0.18.bef/configuration-file/pure-ftpd.conf.in pure-ftpd-1.0.18.work/configuration-file/pure-ftpd.conf.in
+--- pure-ftpd-1.0.18.bef/configuration-file/pure-ftpd.conf.in	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/configuration-file/pure-ftpd.conf.in	2004-04-27 21:55:08.000000000 +0200
+@@ -420,7 +420,8 @@
+ # 3) Only compatible clients will log in.
+ 
+ # TLS                      1
+-
++# SSLCertFile	/etc/ssl/private/pure-ftpd.pem 
++#		or /var/lib/openssl/certs/ftpd.pem (current location in PLD)
+ 
+ 
+ # Listen only to IPv4 addresses in standalone mode (ie. disable IPv6)
+diff -Nura pure-ftpd-1.0.18.bef/configure.ac pure-ftpd-1.0.18.work/configure.ac
+--- pure-ftpd-1.0.18.bef/configure.ac	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/configure.ac	2004-04-27 20:49:46.000000000 +0200
+@@ -1226,17 +1226,6 @@
+   AC_DEFINE(WITH_TLS,,[Enable TLS])
+ fi
+ 
+-AC_ARG_WITH(certfile,
+-[AS_HELP_STRING(--with-certfile=,certificate file (default: /etc/ssl/private/pure-ftpd.pem))],
+-[ if test "x$withval" != "x" ; then
+-    certfile="$withval"
+-    AC_SUBST(certfile)
+-    CPPFLAGS="$CPPFLAGS -DTLS_CERTIFICATE_FILE='\"$certfile\"'"
+-    if test -e "$certfile"; then
+-      AC_MSG_WARN(No certificate is installed in $certfile yet)
+-    fi
+-  fi ])
+-  
+ AC_ARG_WITH(rendezvous,
+ [AS_HELP_STRING(--with-rendezvous,Enable Rendezvous support on MacOS X (experimental))],
+ [ if test "x$withval" = "xyes" ; then
+diff -Nura pure-ftpd-1.0.18.bef/src/ftpd.c pure-ftpd-1.0.18.work/src/ftpd.c
+--- pure-ftpd-1.0.18.bef/src/ftpd.c	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/src/ftpd.c	2004-04-27 22:46:14.000000000 +0200
+@@ -5092,7 +5092,11 @@
+                 die(421, LOG_ERR, MSG_CONF_ERR ": TLS");
+             }
+             break;
+-        }            
++        }
++	case '7': {
++	    tlscert_file = strdup(optarg);
++	    break;
++        }
+ #endif
+         case 'e': {
+             anon_only = 1;
+diff -Nura pure-ftpd-1.0.18.bef/src/ftpd_p.h pure-ftpd-1.0.18.work/src/ftpd_p.h
+--- pure-ftpd-1.0.18.bef/src/ftpd_p.h	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/src/ftpd_p.h	2004-04-27 21:55:58.000000000 +0200
+@@ -101,6 +101,7 @@
+ #endif
+ #ifdef WITH_TLS
+     "Y:"
++    "7:"
+ #endif    
+     "zZ";
+ 
+@@ -180,6 +181,7 @@
+ # endif
+ # ifdef WITH_TLS
+     { "tls", 1, NULL, 'Y' },
++    { "sslcertfile", 1, NULL, '7'},
+ # endif
+     { "allowdotfiles", 0, NULL, 'z' },
+     { "customerproof", 0, NULL, 'Z' },
+diff -Nura pure-ftpd-1.0.18.bef/src/globals.h pure-ftpd-1.0.18.work/src/globals.h
+--- pure-ftpd-1.0.18.bef/src/globals.h	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/src/globals.h	2004-04-27 22:48:38.000000000 +0200
+@@ -167,6 +167,7 @@
+ 
+ #ifdef WITH_TLS
+ GLOBAL0(signed char enforce_tls_auth);
++GLOBAL0(char *tlscert_file);
+ #endif
+ 
+ GLOBAL0(char *atomic_prefix);
+diff -Nura pure-ftpd-1.0.18.bef/src/tls.c pure-ftpd-1.0.18.work/src/tls.c
+--- pure-ftpd-1.0.18.bef/src/tls.c	2004-04-27 20:32:42.000000000 +0200
++++ pure-ftpd-1.0.18.work/src/tls.c	2004-04-27 22:56:00.000000000 +0200
+@@ -9,11 +9,12 @@
+ # include "tls.h"
+ # include "ftpwho-update.h"
+ # include "messages.h"
++# include "globals.h"
+ 
+ static void tls_error(void) 
+ {
+     logfile(LOG_ERR, "SSL/TLS [%s]: %s", 
+-            TLS_CERTIFICATE_FILE,
++            tlscert_file,
+             ERR_error_string(ERR_get_error(), NULL));
+     _EXIT(EXIT_FAILURE);
+ }
+@@ -23,7 +24,7 @@
+     DH *dh;
+     BIO *bio;
+ 
+-    if ((bio = BIO_new_file(TLS_CERTIFICATE_FILE, "r")) == NULL) {
++    if ((bio = BIO_new_file(tlscert_file, "r")) == NULL) {
+         return -1;
+     }
+     if ((dh = PEM_read_bio_DHparams(bio, NULL, NULL
+@@ -65,11 +66,11 @@
+     tls_init_cache();
+     SSL_CTX_set_options(tls_ctx, SSL_OP_ALL);    
+     if (SSL_CTX_use_certificate_chain_file
+-        (tls_ctx, TLS_CERTIFICATE_FILE) != 1) {
++        (tls_ctx, tlscert_file) != 1) {
+         die(421, LOG_ERR,
+-            MSG_FILE_DOESNT_EXIST ": [%s]", TLS_CERTIFICATE_FILE);
++            MSG_FILE_DOESNT_EXIST ": [%s]", tlscert_file);
+     }
+-    if (SSL_CTX_use_PrivateKey_file(tls_ctx, TLS_CERTIFICATE_FILE,
++    if (SSL_CTX_use_PrivateKey_file(tls_ctx, tlscert_file,
+                                     SSL_FILETYPE_PEM) != 1) {
+         tls_error();
+     }
