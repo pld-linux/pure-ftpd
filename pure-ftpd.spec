@@ -18,12 +18,13 @@ Requires:	rc-inetd
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
-Obsoletes:	wu-ftpd
+Obsoletes:	bftpd
 Obsoletes:	anonftp
 Obsoletes:	ftpd-BSD
 Obsoletes:	linux-ftpd
-Obsoletes:	bftpd
+Obsoletes:	proftpd
 Obsoletes:	troll-ftpd
+Obsoletes:	wu-ftpd
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP server,
