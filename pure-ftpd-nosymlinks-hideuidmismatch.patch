@@ -1,0 +1,24 @@
+diff -urN pure-ftpd-1.0.20.org/src/ls.c pure-ftpd-1.0.20/src/ls.c
+--- pure-ftpd-1.0.20.org/src/ls.c	2004-02-29 22:49:27.000000000 +0100
++++ pure-ftpd-1.0.20/src/ls.c	2005-02-18 00:42:08.000000000 +0100
+@@ -245,6 +245,20 @@
+         st.st_mode &= ~S_IFLNK;
+         st.st_mode |= S_IFDIR;
+     }  /* Hack to please some Windows client that dislike ../ -> ../ */
++    if (S_ISLNK(st.st_mode)) {
++	char ms[MAXPATHLEN + 1U];
++	struct stat sts;
++	int sx;
++	
++	if ((sx = readlink(name, ms, sizeof ms - 1U)) > 0)
++	    if (stat(name, &sts) == 0) {
++		if (!S_ISLNK(sts.st_mode))
++		    st.st_mode = sts.st_mode;
++		/* don't show if owner mismatch */
++		if (geteuid() != sts.st_uid)
++		    return 0;
++	    }
++    } /* Hack to show symlinks as files/directories */
+ #endif
+ #ifdef DISPLAY_FILES_IN_UTC_TIME
+     t = gmtime((time_t *) &st.st_mtime);
