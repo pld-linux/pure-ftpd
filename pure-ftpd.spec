@@ -10,7 +10,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.18
-Release:	5	
+Release:	6
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
@@ -81,6 +81,7 @@ po³±czeñ...
 
 %build
 %configure \
+	--with-boring \
 	--with-altlog \
 	--with-cookie \
 	--with-diraliases \
