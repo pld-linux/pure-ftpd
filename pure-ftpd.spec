@@ -7,7 +7,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.12
-Release:	2
+Release:	3
 Epoch:		0
 License:	GPL
 Group:		Daemons
@@ -41,7 +41,7 @@ Obsoletes:	vsftpd
 Obsoletes:	wu-ftpd
 Conflicts:	man-pages < 1.51
 
-%define		_	sysconfdir	/etc/ftpd
+%define		_sysconfdir	/etc/ftpd
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
