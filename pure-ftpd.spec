@@ -6,12 +6,12 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.13
+Version:	1.0.14
 Release:	1
 Epoch:		0
 License:	GPL
 Group:		Daemons
-Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}a.tar.bz2
+Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
@@ -62,7 +62,7 @@ LS, system anty-warezowy, ograniczanie portów dla pasywnych
 po³±czeñ...
 
 %prep
-%setup -q -n %{name}-%{version}a
+%setup -q -n %{name}-%{version}
 
 %build
 %configure \
