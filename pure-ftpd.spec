@@ -18,6 +18,7 @@ Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
+Patch0:		%{name}-config.patch
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
@@ -71,6 +72,7 @@ po³±czeñ...
 
 %prep
 %setup -q
+%patch0	-p0
 
 %build
 %configure \
