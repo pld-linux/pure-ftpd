@@ -54,13 +54,15 @@ ograniczanie portów dla pasywnych po³±czeñ...
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d,sysconfig/rc-inetd,ftpd/vhosts} \
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d,sysconfig/rc-inetd,ftpd/vhosts,security} \
 	$RPM_BUILD_ROOT/home/ftp/{upload,pub}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/ftp
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/pure-ftpd
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/rc-inetd/ftpd
+
+touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 gzip -9nf README
 
@@ -83,8 +85,9 @@ fi
 %defattr(644,root,root,755)
 %doc *.gz
 %attr(755,root,root) %{_sbindir}/*
-%attr(640,root,root) /etc/pam.d/ftp
 %attr(640,root,root) %config /etc/sysconfig/rc-inetd/ftpd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp
 %attr(755,ftp,ftp) %dir /home/ftp/upload
 %dir /home/ftp 
 %dir /home/ftp/pub 
