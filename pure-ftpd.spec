@@ -43,6 +43,7 @@ Obsoletes:	wu-ftpd
 Conflicts:	man-pages < 1.51
 
 %define		_sysconfdir	/etc/ftpd
+%define		_ftpdir		/home/ftp
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
@@ -87,7 +88,7 @@ po³±czeñ...
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,/home/services/ftp/Incoming}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir}/Incoming}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
@@ -131,8 +132,8 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pure-ftpd.conf
 %attr(740,root,root) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
-%dir /home/services/ftp
-%attr(775,root,ftp) %dir /home/services/ftp/Incoming
+%dir %{_ftpdir}/
+%attr(775,root,ftp) %dir %{_ftpdir}/Incoming
 %{_mandir}/man?/*
 %lang(ja) %{_mandir}/ja/man5/ftpusers*
 %lang(pl) %{_mandir}/pl/man5/ftpusers*
