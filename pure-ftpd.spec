@@ -92,10 +92,12 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
-%{?_with_mysql:cat pureftpd-mysql.conf >> configuration-file/pure-ftpd.conf}
-install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd.conf
+%{?_with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
+install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
 install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
+
+ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
 bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
@@ -126,9 +128,11 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pure-ftpd.conf
+%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
 %attr(740,root,root) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
+%dir %{_sysconfdir}/pure-ftpd
 %dir /home/services/ftp
 %attr(775,root,ftp) %dir /home/services/ftp/Incoming
 %{_mandir}/man?/*
