@@ -1,5 +1,6 @@
 #
 # Conditional build:
+%bcond_with     extra   # with additional, maybe useful, but unmaintained features
 %bcond_without  ldap	# disable LDAP auth
 %bcond_without  mysql	# disable MySQL auth but disables PAM auth
 %bcond_without  pgsql	# disable PostgreSQL support
@@ -10,7 +11,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.20
-Release:	1
+Release:	2
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
@@ -79,9 +80,8 @@ po³±czeñ...
 %prep
 %setup -q
 %patch0 -p0
-# broken
-#%patch1 -p1
-%patch2 -p1
+%{?with_extra:%patch1 -p1}
+%{?with_extra:%patch2 -p1}
 
 %build
 %configure \
