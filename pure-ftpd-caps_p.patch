@@ -1,21 +1,73 @@
---- pure-ftpd-1.0.16c/src/caps_p.h	2003-10-25 13:08:28.000000000 +0000
-+++ pure-ftpd-1.0.16b/src/caps_p.h	2003-01-24 19:07:40.000000000 +0000
-@@ -18,13 +18,13 @@
- };
- 
- cap_value_t cap_keep_login[] = {
--# ifndef WITH_PRIVSEP
--#  ifndef HAVE_SYS_FSUID_H
-+# ifndef HAVE_SYS_FSUID_H
-     CAP_SETUID,
--#  endif
--    CAP_NET_BIND_SERVICE,
- # endif
--    CAP_NET_ADMIN
-+# ifndef WITH_PRIVSEP
-+    CAP_NET_ADMIN,
-+# endif
-+    CAP_NET_BIND_SERVICE,        
- };
- 
+diff -urN pure-ftpd-1.0.16c/src/ftpd.c pure-ftpd-1.0.17/src/ftpd.c
+--- pure-ftpd-1.0.16c/src/ftpd.c	2003-10-19 20:05:08.000000000 +0200
++++ pure-ftpd-1.0.17/src/ftpd.c	2003-11-11 22:09:02.000000000 +0100
+@@ -1168,12 +1168,6 @@
+         }
  #endif
+ 
+-#ifdef WITH_PRIVSEP
+-# ifdef USE_CAPABILITIES
+-        drop_login_caps();
+-# endif
+-#endif        
+-
+ #ifndef NON_ROOT_FTP
+         if (authresult.uid > (uid_t) 0) {
+ # ifdef WITH_PRIVSEP
+@@ -1193,10 +1187,8 @@
+         }
+ #endif
+ 
+-#ifndef WITH_PRIVSEP
+-# ifdef USE_CAPABILITIES
++#ifdef USE_CAPABILITIES
+         drop_login_caps();
+-# endif
+ #endif
+ 
+ #ifndef MINIMAL
+@@ -1678,9 +1670,6 @@
+             die(421, LOG_ERR, MSG_CHROOT_FAILED);
+         }
+ #ifdef WITH_PRIVSEP
+-# ifdef USE_CAPABILITIES
+-        drop_login_caps();
+-# endif
+         if (setuid(authresult.uid) != 0 || seteuid(authresult.uid) != 0) {
+             _EXIT(EXIT_FAILURE);
+         }
+@@ -1695,6 +1684,9 @@
+ #  endif
+ # endif
+ #endif
++#ifdef USE_CAPABILITIES
++        drop_login_caps();
++#endif        
+         chrooted = 1;
+ #ifdef RATIOS
+         if (ratio_for_non_anon == 0) {
+@@ -1718,13 +1710,8 @@
+     } else {
+         addreply(230, MSG_CURRENT_DIR_IS, wd);
+     }
+-#ifndef WITH_PRIVSEP
+-# ifdef USE_CAPABILITIES
+-    drop_login_caps();
+-# endif
+-#endif
+     logfile(LOG_INFO, MSG_IS_NOW_LOGGED_IN, account);
+-# ifdef FTPWHO
++#ifdef FTPWHO
+     if (shm_data_cur != NULL) {
+         ftpwho_lock();
+         strncpy(shm_data_cur->account, account,
+@@ -1733,7 +1720,7 @@
+         ftpwho_unlock();
+         state_needs_update = 1;
+     }
+-# endif
++#endif
+     loggedin = 1;
+     if (getcwd(wd, sizeof wd - (size_t) 1U) == NULL) {
+         wd[0] = '/';
+
