@@ -111,7 +111,7 @@ po³±czeñ...
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir}/Incoming}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -165,7 +165,6 @@ fi
 %dir %{_sysconfdir}/vhosts
 %dir %{_sysconfdir}/pure-ftpd
 %dir %{_ftpdir}
-%attr(775,root,ftp) %dir %{_ftpdir}/Incoming
 %{_mandir}/man?/*
 %lang(ja) %{_mandir}/ja/man5/ftpusers*
 %lang(pl) %{_mandir}/pl/man5/ftpusers*
