@@ -1,7 +1,7 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	0.96.1
+Version:	0.96.2
 Release:	1
 License:	GPL
 Group:		Daemons
@@ -11,7 +11,6 @@ Source0:       	http://ftp1.sourceforge.net/pureftpd/pure-ftpd-%{version}.tar.gz
 Source1:	pure-ftpd.pamd
 Source2:	pure-ftpd.rc-inetd
 Patch0:		pure-ftpd-macro.patch
-Patch1:		pure-ftpd-cap.patch
 URL:		http://pureftpd.sourceforge.net/
 BuildRequires:	libcap-devel
 BuildRequires:	pam-devel
@@ -49,7 +48,6 @@ ograniczanie portów dla pasywnych po³±czeñ...
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %configure \
