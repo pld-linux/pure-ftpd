@@ -103,7 +103,7 @@ po³±czeñ...
 	--with-quotas \
 	--with-ratios \
 	--with-throttling \
-	%{?with_tls:--with-tls} \
+	%{?with_tls:--with-tls --with-certfile=%{_sharedstatedir}/openssl/certs/ftpd.pem} \
 	--with-uploadscript \
 	--with-virtualchroot \
 	--with-virtualhosts 
