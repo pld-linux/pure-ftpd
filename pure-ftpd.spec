@@ -7,13 +7,13 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.16
+Version:	1.0.16a
 Release:	1
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	12f947ffba2f1393f8292a1675bf206a
+# Source0-md5:	9bb8e85367bda9a63afdcbe6e2d26c71
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
