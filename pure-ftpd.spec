@@ -1,4 +1,5 @@
-#
+# TODO: update documentation for SSLCertFile / -7
+#	option
 # Conditional build:
 %bcond_without  ldap	# disable LDAP auth
 %bcond_without  mysql	# disable MySQL auth but disables PAM auth
@@ -10,7 +11,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.18
-Release:	4
+Release:	4.1
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
@@ -21,6 +22,7 @@ Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
 Patch0:		%{name}-config.patch
+Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
@@ -76,6 +78,7 @@ po³±czeñ...
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p1
 
 %build
 %configure \
@@ -96,7 +99,7 @@ po³±czeñ...
 	--with-quotas \
 	--with-ratios \
 	--with-throttling \
-	%{?with_tls:--with-tls --with-certfile=%{_sharedstatedir}/openssl/certs/ftpd.pem} \
+	%{?with_tls:--with-tls} \
 	--with-uploadscript \
 	--with-virtualchroot \
 	--with-virtualhosts 
