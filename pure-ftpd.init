@@ -29,7 +29,7 @@ case "$1" in
         if [ ! -f /var/lock/subsys/pure-ftpd ]; then
 		msg_starting pure-ftpd
 		rm -f /var/run/pure-ftpd/client*
-		daemon pure-config.pl /etc/ftpd/pure-ftpd.conf --daemonize
+		daemon pure-config.pl /etc/ftpd/pureftpd.conf --daemonize
 	        RETVAL=$?
     		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pure-ftpd
 	else
