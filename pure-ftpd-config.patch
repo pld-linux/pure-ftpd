@@ -28,3 +28,14 @@
  
  
  # Path to pure-authd socket (see README.Authentication-Modules)
+--- configuration-file/pure-ftpd.conf.in~	2004-07-29 22:58:53.000000000 +0200
++++ configuration-file/pure-ftpd.conf.in	2004-07-29 22:57:25.000000000 +0200
+@@ -276,7 +276,7 @@
+ 
+ # Disallow anonymous users to upload new files (no = upload is allowed)
+ 
+-AnonymousCantUpload         no
++AnonymousCantUpload         yes 
+ 
+ 
+ 
