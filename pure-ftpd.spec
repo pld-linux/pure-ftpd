@@ -21,6 +21,7 @@ Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
 Patch0:		%{name}-config.patch
+# This patch is broken and changes default pureftpd behaviour
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 URL:		http://www.pureftpd.org/
@@ -78,7 +79,8 @@ po³±czeñ...
 %prep
 %setup -q
 %patch0 -p0
-%patch1 -p1
+# broken
+#%patch1 -p1
 %patch2 -p1
 
 %build
