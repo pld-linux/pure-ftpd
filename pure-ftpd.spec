@@ -12,6 +12,7 @@ Epoch:		0
 License:	GPL
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
+# Source0-md5:	b650c4d6f59ec0781b33876932ea2038
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
