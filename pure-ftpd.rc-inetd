@@ -6,4 +6,4 @@ FLAGS=nowait
 USER=root
 SERVER=tcpd
 DAEMON=/usr/sbin/pure-ftpd
-DAEMONARGS="-f ftp -s -u 100"
+DAEMONARGS="-f ftp -s -u 1000"
