@@ -1,0 +1,11 @@
+diff -urN pure-ftpd-0.96.2.org/src/log_pam.c pure-ftpd-0.96.2/src/log_pam.c
+--- pure-ftpd-0.96.2.org/src/log_pam.c	Fri Mar  2 15:41:19 2001
++++ pure-ftpd-0.96.2/src/log_pam.c	Fri Mar 23 20:21:04 2001
+@@ -27,7 +27,6 @@
+ #include <security/pam_misc.h>
+ #include <security/pam_appl.h>
+ #include <security/pam_modules.h>
+-#include <security/pam_filter.h>
+ /* Static variables used to communicate between the conversation function
+  * and the server_login function
+  */

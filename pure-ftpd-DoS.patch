@@ -1,0 +1,48 @@
+Backport from 1.0.19:
+ - Real disk space is no more shown.
+ - A possible denial of service when too many users were connected should be
+  fixed. Reported by Agri <agri at desnol.ru>, thanks!  [CAN-2004-0656]
+ - Don't try to catch SIGKILL any more, it's uncatchable.
+
+--- pure-ftpd-1.0.12/src/ftpd.c.orig	Fri Jun  7 17:07:01 2002
++++ pure-ftpd-1.0.12/src/ftpd.c	Wed Nov  3 14:34:21 2004
+@@ -3528,6 +3528,7 @@
+             goto databroken;
+         }
+     } while (r > (ssize_t) 0);
++#ifdef SHOW_REAL_DISK_SPACE
+     if (FSTATFS(f, &statfsbuf) == 0) {
+         double space;
+ 
+@@ -3539,6 +3540,7 @@
+             addreply(0, MSG_SPACE_FREE_K, space / 1024.0);
+         }    
+     }
++#endif
+ #ifdef QUOTAS    
+     quota_exceeded:
+ #endif
+@@ -3916,7 +3918,6 @@
+     (void) sigaction(SIGHUP, &sa, NULL);
+     (void) sigaction(SIGQUIT, &sa, NULL);
+     (void) sigaction(SIGINT, &sa, NULL);
+-    (void) sigaction(SIGKILL, &sa, NULL);
+ # ifdef SIGXCPU
+     (void) sigaction(SIGXCPU, &sa, NULL);
+ # endif
+@@ -4360,6 +4361,7 @@
+         if (maxusers > 0U && nb_children >= maxusers) {
+             char line[1024];
+ 
++	    (void) fcntl(clientfd, F_SETFL, fcntl(clientfd, F_GETFL) | O_NONBLOCK);
+             if (!SNCHECK(snprintf(line, sizeof line,
+                                   "421 " MSG_MAX_USERS "\r\n",
+                                   (unsigned long) maxusers), sizeof line)) {
+@@ -4376,6 +4378,7 @@
+                 char hbuf[NI_MAXHOST];
+                 static struct sockaddr_storage old_sa;
+ 
++		(void) fcntl(clientfd, F_SETFL, fcntl(clientfd, F_GETFL) | O_NONBLOCK);
+                 if (!SNCHECK(snprintf(line, sizeof line,
+                                       "421 " MSG_MAX_USERS_IP "\r\n",
+                                       (unsigned long) maxip), sizeof line)) {

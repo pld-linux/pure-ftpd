@@ -1,27 +1,32 @@
-# _with_mysql - enables MySQL auth but disables PAM auth
+# 
+# Conditional build:
+%bcond_with	mysql	# enables MySQL auth but disables PAM auth
+%bcond_with	ldap	# enables LDAP auth
+#
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.1
-Release:	1
+Version:	1.0.12
+Release:	6
+Epoch:		0
 License:	GPL
 Group:		Daemons
-Group(de):	Server
-Group(pl):	Serwery
-Source0:	http://pureftpd.sourceforge.net/files/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
+# Source0-md5:	36d2a7e96569046aa9ab5314b0846f25
 Source1:	%{name}.pamd
 Source2:	%{name}.init
+Source3:	ftpusers.tar.bz2
+# Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
 Patch0:		%{name}-config.patch
+Patch1:		%{name}-DoS.patch
 URL:		http://www.pureftpd.org/
-%{?_with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	libcap-devel
+%{?with_mysql:BuildRequires:	mysql-devel}
+%{?with_ldap:BuildRequires:	openldap-devel}
 BuildRequires:	pam-devel
-BuildRequires:	automake
-BuildRequires:	autoconf
 Prereq:		rc-scripts
-Prereq:		/sbin/chkconfig
+Requires(post,preun):/sbin/chkconfig
 Provides:	ftpserver
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
 Obsoletes:	anonftp
 Obsoletes:	bftpd
@@ -30,8 +35,16 @@ Obsoletes:	heimdal-ftpd
 Obsoletes:	linux-ftpd
 Obsoletes:	muddleftpd
 Obsoletes:	proftpd
+Obsoletes:	proftpd-common
+Obsoletes:	proftpd-inetd
+Obsoletes:	proftpd-standalone
 Obsoletes:	troll-ftpd
+Obsoletes:	vsftpd
 Obsoletes:	wu-ftpd
+Conflicts:	man-pages < 1.51
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_sysconfdir	/etc/ftpd
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
@@ -46,7 +59,7 @@ ports for passive downloads...
 Pure-FTPD to szybki, wysokiej jako¶ci, odpowiadaj±cy standardom serwer
 FTP bazuj±cy na Troll-FTPd. W przeciwieñstwie do innych serwerów FTP
 nie ma znanych luk w bezpieczeñstwie. Ponadto jest trywialny w
-konfiguracji i specjalnie zaprojektowany dla nowych kerneli Linuxa
+konfiguracji i specjalnie zaprojektowany dla nowych kerneli Linuksa
 (setfsuid, sendfile, capabilibies). Mo¿liwo¶ci to wsparcie dla PAMa,
 IPv6, chroot()owanych katalogów domowych, virtualne domeny, wbudowany
 LS, system anty-warezowy, ograniczanie portów dla pasywnych
@@ -54,40 +67,42 @@ po³±czeñ...
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
-aclocal
-autoconf
-automake -a -c
 %configure \
-	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
+	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-altlog \
 	--with-puredb \
-	%{?!_with_mysql:--with-pam} \
+	%{!?with_mysql:--with-pam} \
 	--with-cookie \
 	--with-throttling \
 	--with-ratios \
+	--with-quotas \
 	--with-ftpwho \
 	--with-largefile \
 	--with-uploadscript \
 	--with-virtualhosts \
-	--with-language=english
+	--with-language=english \
+	--with-virtualchroot \
+	%{?with_ldap:--with-ldap}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,ftpd/vhosts,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT/home/ftp/Incoming
+install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,/home/ftp/Incoming}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd.conf
-install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd-mysql.conf
+install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
+install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
-gzip -9nf README* AUTHORS ChangeLog HISTORY NEWS THANKS
+bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -110,16 +125,20 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz pure*.conf
+%doc README* AUTHORS ChangeLog HISTORY NEWS THANKS pure*.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%attr(640,root,root) %dir /etc/ftpd
-%dir %{_sysconfdir}/ftpd/vhosts
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd.conf
-%{?_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd-mysql.conf}
-%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
-%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
+%{!?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
+%{!?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
+%{?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
+%attr(740,root,root) %dir %{_sysconfdir}
+%dir %{_sysconfdir}/vhosts
 %dir /home/ftp
 %attr(775,root,ftp) %dir /home/ftp/Incoming
 %{_mandir}/man?/*
+%lang(ja) %{_mandir}/ja/man5/ftpusers*
+%lang(pl) %{_mandir}/pl/man5/ftpusers*
+%lang(pt_BR) %{_mandir}/pt_BR/man5/ftpusers*
+%lang(ru) %{_mandir}/ru/man5/ftpusers*
