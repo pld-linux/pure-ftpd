@@ -29,6 +29,8 @@ Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-userlength.patch
 URL:		http://www.pureftpd.org/
+%{?with_extra:BuildRequires:	autoconf}
+%{?with_extra:BuildRequires:	automake}
 BuildRequires:	libcap-devel
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
 %{?with_ldap:BuildRequires:	openldap-devel}
