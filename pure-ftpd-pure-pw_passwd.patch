@@ -1,0 +1,119 @@
+diff -Nura b.pure-ftpd-1.0.19/man/pure-pw.8 n.pure-ftpd-1.0.19/man/pure-pw.8
+--- b.pure-ftpd-1.0.19/man/pure-pw.8	2004-07-21 00:23:25.000000000 +0200
++++ n.pure-ftpd-1.0.19/man/pure-pw.8	2004-07-21 00:31:10.000000000 +0200
+@@ -5,7 +5,7 @@
+ .SH "SYNTAX"
+ .LP 
+ pure\-pw useradd login [\-f passwd_file] \-u uid [\-g gid]
+-                \-D/\-d home_directory [\-c gecos]
++                \-D/\-d home_directory [\-c gecos] [\-p <password>]
+                 [\-t download_bandwidth] [\-T upload_bandwidth]
+                 [\-n max number_of_files] [\-N max_Mbytes]
+                 [\-q upload_ratio] [\-Q download_ratio]
+@@ -15,7 +15,7 @@
+                 [\-z <hhmm>\-<hhmm>] [\-m]
+ .br 
+ pure\-pw usermod login \-f passwd_file \-u uid [\-g gid]
+-                \-D/\-d home_directory \-[c gecos]
++                \-D/\-d home_directory \-[c gecos] [\-p <password>]
+                 [\-t download_bandwidth] [\-T upload_bandwidth]
+                 [\-n max_number_of_files] [\-N max_Mbytes]
+                 [\-q upload_ratio] [\-Q download_ratio]
+diff -Nura b.pure-ftpd-1.0.19/src/pure-pw.c n.pure-ftpd-1.0.19/src/pure-pw.c
+--- b.pure-ftpd-1.0.19/src/pure-pw.c	2004-07-21 00:23:25.000000000 +0200
++++ n.pure-ftpd-1.0.19/src/pure-pw.c	2004-07-21 00:32:08.000000000 +0200
+@@ -25,6 +25,8 @@
+ static const char *random_device;
+ #endif
+ 
++static char *cmdl_pass;
++
+ static void disable_echo(void)
+ {
+     if (!isatty(0)) {
+@@ -163,7 +165,7 @@
+ {
+     puts("\nUsage :\n\n"
+          "pure-pw useradd <login> [-f <passwd file>] -u <uid> [-g <gid>]\n"
+-         "                -D/-d <home directory> [-c <gecos>]\n"
++         "                -D/-d <home directory> [-c <gecos>] [-p <password>]\n"
+          "                [-t <download bandwidth>] [-T <upload bandwidth>]\n"
+          "                [-n <max number of files>] [-N <max Mbytes>]\n"
+          "                [-q <upload ratio>] [-Q <download ratio>]\n"
+@@ -173,10 +175,10 @@
+          "                [-z <hhmm>-<hhmm>] [-m]\n"
+          "\n"
+          "pure-pw usermod <login> -f <passwd file> -u <uid> [-g <gid>]\n"
+-         "                -D/-d <home directory> -[c <gecos>]\n"
++         "                -D/-d <home directory> -[c <gecos>] [-p <password>]\n"
+          "                [-t <download bandwidth>] [-T <upload bandwidth>]\n"
+          "                [-n <max number of files>] [-N <max Mbytes>]\n"
+-         "                [-q <upload ratio>] [-Q <download ratio>]\n"
++         "                [-q <upload ratio>] [-Q <download ratio>] \n"
+          "                [-r <allow client ip>/<mask>] [-R <deny client ip>/<mask>]\n"
+          "                [-i <allow local ip>/<mask>] [-I <deny local ip>/<mask>]\n"
+      "                [-y <max number of concurrent sessions>]\n"     
+@@ -701,12 +703,21 @@
+     return 0;
+ }
+ 
+-static char *do_get_passwd(void)
++static char *do_get_passwd(char *password)
+ {
+     static char pwd[LINE_MAX];
+     char pwd2[LINE_MAX];    
+     int tries = MAX_PASSWD_CHANGE_TRIES;
+-       
++    if (password) {
++        size_t password_len = strlen(password);
++        if (password_len > LINE_MAX) {
++            puts("Supplied password is too long.");
++            return NULL;
++        } else {
++            memcpy((void *)pwd, (void *)password, password_len);
++            return password;
++        }
++    }
+     *pwd = 0;
+     *pwd2 = 0;
+     
+@@ -813,7 +824,7 @@
+             no_mem();
+         }
+     }           
+-    if ((pwinfo.pwd = do_get_passwd()) == NULL) {
++    if ((pwinfo.pwd = do_get_passwd(cmdl_pass)) == NULL) {
+         fprintf(stderr, "Error with entering password - aborting\n");        
+         return PW_ERROR_ENTER_PASSWD_PW_ERROR;
+     }
+@@ -1157,7 +1168,7 @@
+         fprintf(stderr, "Missing passwd file\n");
+         return PW_ERROR_MISSING_PASSWD_FILE;
+     }
+-    if ((pwinfo->pwd = do_get_passwd()) == NULL) {
++    if ((pwinfo->pwd = do_get_passwd(cmdl_pass)) == NULL) {
+         fprintf(stderr, "Error with entering password - aborting\n");        
+         return PW_ERROR_ENTER_PASSWD_PW_ERROR;
+     }    
+@@ -1324,7 +1335,7 @@
+     }
+     filter_pw_line_sep(pwinfo.login);
+     while ((fodder = getopt(argc, argv, 
+-                            "c:d:D:f:g:hi:I:mn:N:q:Q:r:R:t:T:u:y:z:")) != -1) {
++                            "c:d:D:f:g:hi:I:mn:N:p:q:Q:r:R:t:T:u:y:z:")) != -1) {
+         switch(fodder) {
+         case 'c' : {
+             if ((pwinfo.gecos = strdup(optarg)) == NULL) {
+@@ -1422,6 +1433,12 @@
+             }
+             break;
+         }
++        case 'p' : {                      
++            if ((cmdl_pass = strdup(optarg)) == NULL) {
++                no_mem();
++            }
++            break;				   
++        }
+         case 'q' : {
+             if (*optarg == 0) {
+                 pwinfo.has_ul_ratio = -1;

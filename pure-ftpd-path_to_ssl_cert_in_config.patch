@@ -1,0 +1,170 @@
+diff -Nur b/configuration-file/pure-config.pl.in n/configuration-file/pure-config.pl.in
+--- b/configuration-file/pure-config.pl.in	2004-02-29 12:17:00.000000000 +0100
++++ n/configuration-file/pure-config.pl.in	2004-09-15 17:02:28.545013000 +0200
+@@ -57,6 +57,7 @@
+ 	TrustedIP		=> "-V",
+ 	AltLog			=> "-O",
+ 	PIDFile			=> "-g",
++	SSLCertFile		=> "-7",
+ );
+ 
+ my %numeric_switch_for = (
+diff -Nur b/configuration-file/pure-config.py.in n/configuration-file/pure-config.py.in
+--- b/configuration-file/pure-config.py.in	2004-02-29 12:17:14.000000000 +0100
++++ n/configuration-file/pure-config.py.in	2004-09-15 17:02:28.546012000 +0200
+@@ -55,6 +55,7 @@
+ option_tuple = (
+     ["IPV4Only[\s]+yes",                   "-4"                  ],
+     ["IPV6Only[\s]+yes",                   "-6"                  ],    
++    ["SSLCertFile\s+(\S+)",                "-7", None            ],
+     ["ChrootEveryone[\s]+yes",             "-A"                  ],
+     ["TrustedGID[\s]+([\d]+)",             "-a", None            ],
+     ["BrokenClientsCompatibility[\s]+yes", "-b"                  ],
+diff -Nur b/configuration-file/pure-ftpd.conf.in n/configuration-file/pure-ftpd.conf.in
+--- b/configuration-file/pure-ftpd.conf.in	2004-09-15 17:03:04.281580000 +0200
++++ n/configuration-file/pure-ftpd.conf.in	2004-09-15 17:02:28.547012000 +0200
+@@ -420,7 +420,13 @@
+ # 3) Only compatible clients will log in.
+ 
+ # TLS                      1
+-
++
++# Path to SSL certificate file. This is non-standard addition
++# and it might disappear in the future. If not present
++# default is /var/lib/openssl/certs/ftpd.pem for PLD.
++#
++# SSLCertFile	/etc/ssl/private/pure-ftpd.pem
++#	
+ 
+ 
+ # Listen only to IPv4 addresses in standalone mode (ie. disable IPv6)
+diff -Nur b/man/pure-ftpd.8 n/man/pure-ftpd.8
+--- b/man/pure-ftpd.8	2004-02-29 21:10:06.000000000 +0100
++++ n/man/pure-ftpd.8	2004-09-15 17:02:28.548012000 +0200
+@@ -9,7 +9,7 @@
+ pure\-ftpd \- simple File Transfer Protocol server
+ 
+ .SH "SYNOPSIS"
+-.B pure\-ftpd [\-0] [\-1] [\-4] [\-6] [\-a gid] [\-A] [\-b] [\-B] [\-c clients] [\-C cnx/ip] [\-d [\-d]] [\-D] [\-e] [\-E] [\-f facility] [\-F fortunes file] [\-g pidfile] [\-G] [\-H] [\-i] [\-I] [\-j] [\-k percentage] [\-K] [\-l authentication[:config file]] [\-L max files:max depth] [\-m maxload] [\-M] [\-n maxfiles:maxsize] [\-N] [\-o] [\-O format:log file] [\-p first:last] [\-P ip address or host name] [\-q upload:download ratio] [\-Q upload:download ratio] [\-r] [\-R] [\-s] [\-S [address,][port]] [\-t upload bandwidth:download bandwidth] [\-T upload bandwidth:download bandwidth] [\-u uid] [\-U umask files:umask dirs] [\-v rendezvous name] [\-V ip address] [\-w] [\-W] [\-x] [\-X] [\-y max user sessions:max anon sessions] [\-Y tls behavior] [\-z] [\-Z]
++.B pure\-ftpd [\-0] [\-1] [\-4] [\-6] [\-7 certificate file] [\-a gid] [\-A] [\-b] [\-B] [\-c clients] [\-C cnx/ip] [\-d [\-d]] [\-D] [\-e] [\-E] [\-f facility] [\-F fortunes file] [\-g pidfile] [\-G] [\-H] [\-i] [\-I] [\-j] [\-k percentage] [\-K] [\-l authentication[:config file]] [\-L max files:max depth] [\-m maxload] [\-M] [\-n maxfiles:maxsize] [\-N] [\-o] [\-O format:log file] [\-p first:last] [\-P ip address or host name] [\-q upload:download ratio] [\-Q upload:download ratio] [\-r] [\-R] [\-s] [\-S [address,][port]] [\-t upload bandwidth:download bandwidth] [\-T upload bandwidth:download bandwidth] [\-u uid] [\-U umask files:umask dirs] [\-v rendezvous name] [\-V ip address] [\-w] [\-W] [\-x] [\-X] [\-y max user sessions:max anon sessions] [\-Y tls behavior] [\-z] [\-Z]
+ 
+ .br
+ Alternative style :
+@@ -22,6 +22,8 @@
+ .br
+ \-6 \-\-ipv6only
+ .br
++\-7 \-\-sslcertfile
++.br
+ \-a \-\-trustedgid
+ .br
+ \-A \-\-chrooteveryone
+@@ -157,6 +159,9 @@
+ .B \-6
+ Listen only to IPv6 connections.
+ .TP
++.B \-7 SSL certificate file
++Path to SSL certificate file. If option \-7 is not present default value is /var/lib/openssl/certs/ftpd.pem for PLD. This is non\-standard addition. It might disappear in the future and meaning of \-7 option is not guaranted.
++.TP
+ .B \-a gid
+ Regular users will be chrooted to their home directories, unless
+ they belong to the specified gid. Note that root is always trusted,
+diff -Nur b/src/ftpd.c n/src/ftpd.c
+--- b/src/ftpd.c	2004-09-15 18:05:29.951069216 +0200
++++ n/src/ftpd.c	2004-09-15 18:03:14.172710664 +0200
+@@ -4830,7 +4830,7 @@
+     int fodder;
+     int bypass_ipv6 = 0;
+     struct passwd *pw;
+-
++    
+ #ifdef PROBE_RANDOM_AT_RUNTIME
+     pw_zrand_probe();
+ #endif    
+@@ -5097,6 +5097,15 @@
+                 enforce_tls_auth > 2) {
+                 die(421, LOG_ERR, MSG_CONF_ERR ": TLS");
+             }
++    	    if (!tlscert_file) 
++                if ((tlscert_file = strdup(TLS_CERTIFICATE_FILE)) == NULL)
++                    die_mem();
++            break;
++        }
++    	case '7': {
++            free(tlscert_file);
++            if ((tlscert_file = strdup(optarg)) == NULL)
++                die_mem();
+             break;
+         }
+ #endif
+diff -Nur b/src/ftpd_p.h n/src/ftpd_p.h
+--- b/src/ftpd_p.h	2004-02-29 22:49:28.000000000 +0100
++++ n/src/ftpd_p.h	2004-09-15 17:02:28.561010000 +0200
+@@ -101,6 +101,7 @@
+ #endif
+ #ifdef WITH_TLS
+     "Y:"
++    "7:"
+ #endif    
+     "zZ";
+ 
+@@ -180,6 +181,7 @@
+ # endif
+ # ifdef WITH_TLS
+     { "tls", 1, NULL, 'Y' },
++    { "sslcertfile", 1, NULL, '7'},
+ # endif
+     { "allowdotfiles", 0, NULL, 'z' },
+     { "customerproof", 0, NULL, 'Z' },
+diff -Nur b/src/globals.h n/src/globals.h
+--- b/src/globals.h	2004-02-29 22:49:28.000000000 +0100
++++ n/src/globals.h	2004-09-15 17:02:28.561010000 +0200
+@@ -167,6 +167,7 @@
+ 
+ #ifdef WITH_TLS
+ GLOBAL0(signed char enforce_tls_auth);
++GLOBAL0(char *tlscert_file);
+ #endif
+ 
+ GLOBAL0(char *atomic_prefix);
+diff -Nur b/src/tls.c n/src/tls.c
+--- b/src/tls.c	2004-02-29 22:49:27.000000000 +0100
++++ n/src/tls.c	2004-09-15 17:02:28.562010000 +0200
+@@ -9,11 +9,12 @@
+ # include "tls.h"
+ # include "ftpwho-update.h"
+ # include "messages.h"
++# include "globals.h"
+ 
+ static void tls_error(void) 
+ {
+     logfile(LOG_ERR, "SSL/TLS [%s]: %s", 
+-            TLS_CERTIFICATE_FILE,
++            tlscert_file,
+             ERR_error_string(ERR_get_error(), NULL));
+     _EXIT(EXIT_FAILURE);
+ }
+@@ -23,7 +24,7 @@
+     DH *dh;
+     BIO *bio;
+ 
+-    if ((bio = BIO_new_file(TLS_CERTIFICATE_FILE, "r")) == NULL) {
++    if ((bio = BIO_new_file(tlscert_file, "r")) == NULL) {
+         return -1;
+     }
+     if ((dh = PEM_read_bio_DHparams(bio, NULL, NULL
+@@ -65,11 +66,11 @@
+     tls_init_cache();
+     SSL_CTX_set_options(tls_ctx, SSL_OP_ALL);    
+     if (SSL_CTX_use_certificate_chain_file
+-        (tls_ctx, TLS_CERTIFICATE_FILE) != 1) {
++        (tls_ctx, tlscert_file) != 1) {
+         die(421, LOG_ERR,
+-            MSG_FILE_DOESNT_EXIST ": [%s]", TLS_CERTIFICATE_FILE);
++            MSG_FILE_DOESNT_EXIST ": [%s]", tlscert_file);
+     }
+-    if (SSL_CTX_use_PrivateKey_file(tls_ctx, TLS_CERTIFICATE_FILE,
++    if (SSL_CTX_use_PrivateKey_file(tls_ctx, tlscert_file,
+                                     SSL_FILETYPE_PEM) != 1) {
+         tls_error();
+     }

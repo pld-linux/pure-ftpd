@@ -1,0 +1,51 @@
+--- configuration-file/pure-ftpd.conf.in~	2004-02-29 12:18:57.000000000 +0100
++++ configuration-file/pure-ftpd.conf.in	2004-04-15 13:35:52.321993376 +0200
+@@ -107,23 +107,23 @@
+ 
+ # LDAP configuration file (see README.LDAP)
+ 
+-# LDAPConfigFile                /etc/pureftpd-ldap.conf
++# LDAPConfigFile                /etc/ftpd/pureftpd-ldap.conf
+ 
+ 
+ 
+ # MySQL configuration file (see README.MySQL)
+ 
+-# MySQLConfigFile               /etc/pureftpd-mysql.conf
++# MySQLConfigFile               /etc/ftpd/pureftpd-mysql.conf
+ 
+ 
+ # Postgres configuration file (see README.PGSQL)
+ 
+-# PGSQLConfigFile               /etc/pureftpd-pgsql.conf
++# PGSQLConfigFile               /etc/ftpd/pureftpd-pgsql.conf
+ 
+ 
+ # PureDB user database (see README.Virtual-Users)
+ 
+-# PureDB                        /etc/pureftpd.pdb
++# PureDB                        /etc/ftpd/pureftpd.pdb
+ 
+ 
+ # Path to pure-authd socket (see README.Authentication-Modules)
+--- configuration-file/pure-ftpd.conf.in~	2004-07-29 22:58:53.000000000 +0200
++++ configuration-file/pure-ftpd.conf.in	2004-07-29 22:57:25.000000000 +0200
+@@ -276,7 +276,7 @@
+ 
+ # Disallow anonymous users to upload new files (no = upload is allowed)
+ 
+-AnonymousCantUpload         no
++AnonymousCantUpload         yes
+ 
+ 
+ 
+--- configuration-file/pure-ftpd.conf.in	2004-09-15 17:03:04.000000000 +0200
++++ configuration-file/pure-ftpd.conf.in	2004-11-06 16:55:31.382772400 +0100
+@@ -157,6 +157,7 @@
+ 
+ # 'ls' recursion limits. The first argument is the maximum number of
+ # files to be displayed. The second one is the max subdirectories depth
++# If LimitRecursion is not present default is 2000 5 
+ 
+ LimitRecursion              2000 8
+ 

@@ -1,0 +1,12 @@
+diff -urN org/src/ftpd.h mod/src/ftpd.h
+--- org/src/ftpd.h	2004-03-02 20:08:59.000000000 +0100
++++ mod/src/ftpd.h	2004-09-10 00:15:37.251472136 +0200
+@@ -494,7 +494,7 @@
+ # define MAX_SESSION_XFER_IDLE (24 * 60 * 60)   /* Max duration of a transfer */
+ #endif
+ #ifndef MAX_USER_LENGTH
+-# define MAX_USER_LENGTH 32U
++# define MAX_USER_LENGTH 128U
+ #endif
+ 
+ #ifdef LOG_FTP

@@ -1,0 +1,23 @@
+--- pure-ftpd-1.0.20.orig/pureftpd-mysql.conf	2003-01-21 21:09:44.000000000 +0100
++++ pure-ftpd-1.0.20/pureftpd-mysql.conf	2004-12-12 07:29:13.527000248 +0100
+@@ -19,17 +19,17 @@
+ 
+ # Optional : define the location of mysql.sock if the server runs on this host.
+ 
+-MYSQLSocket     /tmp/mysql.sock
++MYSQLSocket     /var/lib/mysql/mysql.sock
+ 
+ 
+ # Mandatory : user to bind the server as.
+ 
+-MYSQLUser       root
++MYSQLUser       mysql
+ 
+ 
+ # Mandatory : user password. You must have a password.
+ 
+-MYSQLPassword   rootpw
++MYSQLPassword   mysqlpw
+ 
+ 
+ # Mandatory : database to open.
