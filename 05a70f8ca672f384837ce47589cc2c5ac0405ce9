@@ -1,0 +1,7 @@
+- now bconds and options are in alphabetical order.
+- new bcond for pure-db .
+- added missing R: perl-base - pure-ftpd.init
+  uses pure-config.pl which is perl script.
+- certificate has been moved from /etc/ftpd/ssl/pure-ftpd.pem
+  to /var/lib/openssl/certs/ftpd.pem .
+- added _ftpdir macro.
