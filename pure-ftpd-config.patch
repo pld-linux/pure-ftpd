@@ -1,0 +1,30 @@
+--- configuration-file/pure-ftpd.conf.in~	2004-02-29 12:18:57.000000000 +0100
++++ configuration-file/pure-ftpd.conf.in	2004-04-15 13:35:52.321993376 +0200
+@@ -107,23 +107,23 @@
+ 
+ # LDAP configuration file (see README.LDAP)
+ 
+-# LDAPConfigFile                /etc/pureftpd-ldap.conf
++# LDAPConfigFile                /etc/ftpd/pureftpd-ldap.conf
+ 
+ 
+ 
+ # MySQL configuration file (see README.MySQL)
+ 
+-# MySQLConfigFile               /etc/pureftpd-mysql.conf
++# MySQLConfigFile               /etc/ftpd/pureftpd-mysql.conf
+ 
+ 
+ # Postgres configuration file (see README.PGSQL)
+ 
+-# PGSQLConfigFile               /etc/pureftpd-pgsql.conf
++# PGSQLConfigFile               /etc/ftpd/pureftpd-pgsql.conf
+ 
+ 
+ # PureDB user database (see README.Virtual-Users)
+ 
+-# PureDB                        /etc/pureftpd.pdb
++# PureDB                        /etc/ftpd/pureftpd.pdb
+ 
+ 
+ # Path to pure-authd socket (see README.Authentication-Modules)
