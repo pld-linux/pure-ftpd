@@ -74,7 +74,7 @@ Pure-FTPD to szybki, wysokiej jako¶ci, odpowiadaj±cy standardom serwer
 FTP bazuj±cy na Troll-FTPd. W przeciwieñstwie do innych serwerów FTP
 nie ma znanych luk w bezpieczeñstwie. Ponadto jest trywialny w
 konfiguracji i specjalnie zaprojektowany dla nowych kerneli Linuksa
-(setfsuid, sendfile, capabilibies). Mo¿liwo¶ci to wsparcie dla PAMa,
+(setfsuid, sendfile, capabilibies). Mo¿liwo¶ci to wsparcie dla PAM-a,
 IPv6, chroot()owanych katalogów domowych, virtualne domeny, wbudowany
 LS, system anty-warezowy, ograniczanie portów dla pasywnych
 po³±czeñ...
