@@ -8,7 +8,7 @@ Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.12
 Release:	2
-Epoch:          0
+Epoch:		0
 License:	GPL
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
@@ -22,7 +22,7 @@ BuildRequires:	libcap-devel
 %{?_with_ldap:BuildRequires:	openldap-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
-Requires(post,preun):	/sbin/chkconfig
+Requires(post,preun):/sbin/chkconfig
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
@@ -40,6 +40,8 @@ Obsoletes:	troll-ftpd
 Obsoletes:	vsftpd
 Obsoletes:	wu-ftpd
 Conflicts:	man-pages < 1.51
+
+%define		_	sysconfdir	/etc/ftpd
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
@@ -66,7 +68,6 @@ po³±czeñ...
 
 %build
 %configure \
-	--sysconfdir=/etc/ftpd \
 	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-altlog \
 	--with-puredb \
@@ -92,8 +93,8 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,ftpd/vhosts,security,rc.d/init.d
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd.conf
-install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd-mysql.conf
+install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
+install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
@@ -122,13 +123,13 @@ fi
 %doc README* AUTHORS ChangeLog HISTORY NEWS THANKS pure*.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%attr(740,root,root) %dir /etc/ftpd
 %dir %{_sysconfdir}/ftpd/vhosts
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd.conf
-%{?_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd-mysql.conf}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
+%attr(740,root,root) %dir %{_sysconfdir}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
+%{?_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
 %dir /home/ftp
 %attr(775,root,ftp) %dir /home/ftp/Incoming
 %{_mandir}/man?/*
