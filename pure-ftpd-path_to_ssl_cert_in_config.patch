@@ -78,7 +78,7 @@ diff -Nur pure-ftpd-1.0.20.bef/src/ftpd.c pure-ftpd-1.0.20.new1/src/ftpd.c
 +        }
 +    	case '7': {
 +            if (tlscert_file != NULL) {
-+               if (strlen(tlscert_file) > (size_t)0)
++               if (strlen(tlscert_file) > 0)
 +                   free(tlscert_file);
 +            }
 +            if ((tlscert_file = strdup(optarg)) == NULL)
