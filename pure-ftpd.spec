@@ -3,7 +3,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	0.99.9
-Release:	2
+Release:	3
 License:	GPL
 Group:		Daemons
 Group(de):	Server
@@ -63,6 +63,7 @@ automake -a -c
 %configure \
 	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-altlog \
+	--with-puredb \
 	%{?!_with_mysql:--with-pam} \
 	--with-cookie \
 	--with-throttling \
@@ -110,6 +111,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc *.gz pure*.conf
+%attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(640,root,root) %dir /etc/ftpd
 %dir %{_sysconfdir}/ftpd/vhosts
