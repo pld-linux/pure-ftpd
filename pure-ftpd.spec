@@ -64,7 +64,7 @@ LS, system anty-warezowy, ograniczanie portów dla pasywnych
 po³±czeñ...
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
 
 %build
 %configure \
