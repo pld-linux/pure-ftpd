@@ -1,0 +1,23 @@
+diff -ur pure-ftpd-0.96.1-/src/ftpd.c pure-ftpd-0.96.1/src/ftpd.c
+--- pure-ftpd-0.96.1-/src/ftpd.c	Sat Mar 17 11:54:00 2001
++++ pure-ftpd-0.96.1/src/ftpd.c	Sat Mar 17 14:21:41 2001
+@@ -52,7 +52,7 @@
+ 		syslog(LOG_ERR, "Cannot cap_set_proc: %s", strerror(errno));
+ 		exit(1);
+ 	}
+-	if (-1 == cap_free(&caps)) {
++	if (-1 == cap_free(caps)) {
+ 		printf("421 Cannot cap_free\r\n");
+ 		syslog(LOG_ERR, "Cannot cap_set_free");
+ 		exit(1);
+@@ -2273,7 +2273,7 @@
+ 		syslog(LOG_ERR, "Cannot cap_set_proc: %s", strerror(errno));
+ 		exit(1);
+ 	}
+-	if (-1 == cap_free(&caps)) {
++	if (-1 == cap_free(caps)) {
+ 		printf("421 Cannot cap_free\r\n");
+ 		syslog(LOG_ERR, "Cannot cap_set_free");
+ 		exit(1);
+Binary files pure-ftpd-0.96.1-/src/ftpd.o and pure-ftpd-0.96.1/src/ftpd.o differ
+Binary files pure-ftpd-0.96.1-/src/pure-ftpd and pure-ftpd-0.96.1/src/pure-ftpd differ
