@@ -22,14 +22,6 @@ if is_no "${NETWORKING}"; then
         exit 1
 fi
 
-if [ -f /etc/ftpd/pureftpd.conf ]; then
-    PUREFTPD_OPTS=$(grep -E -v "^\W*#" /etc/ftpd/pureftpd.conf | xargs)
-fi
-
-if [ -f /etc/ftpd/pureftpd-mysql.conf ]; then
-    PUREFTPD_OPTS="${PUREFTPD_OPTS} -l mysql:/etc/ftpd/pureftpd-mysql.conf"
-fi
-
 # See how we were called.
 case "$1" in
   start)
@@ -37,7 +29,7 @@ case "$1" in
         if [ ! -f /var/lock/subsys/pure-ftpd ]; then
 		msg_starting pure-ftpd
 		rm -f /var/run/pure-ftpd/client*
-		daemon pure-ftpd $PUREFTPD_OPTS --daemonize
+		daemon pure-config.pl /etc/ftpd/pure-ftpd.conf --daemonize
 	        RETVAL=$?
     		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pure-ftpd
 	else
