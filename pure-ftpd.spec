@@ -1,8 +1,8 @@
 #
 # Conditional build:
-%bcond_with	longusername	# with username length = 128 (default 32)
 %bcond_with	extra		# with additional, maybe useful, but unmaintained features
 %bcond_without	ldap		# disable LDAP auth
+%bcond_without	longusername	# with username length = 128 (default 32)
 %bcond_without	mysql		# disable MySQL auth but disables PAM auth
 %bcond_without	pgsql		# disable PostgreSQL support
 %bcond_without	puredb		# disable pure-db support
