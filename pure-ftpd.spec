@@ -1,3 +1,6 @@
+# 
+# TODO:
+# - SECURITY: http://securitytracker.com/alerts/2004/Jul/1010701.html
 #
 # Conditional build:
 # _with_mysql - enables MySQL auth but disables PAM auth
