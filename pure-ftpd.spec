@@ -71,8 +71,6 @@ install -d $RPM_BUILD_ROOT/home/ftp/Incoming
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/pure-ftpd
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/rc-inetd/ftpd
 
-install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/ftpd
-
 touch $RPM_BUILD_ROOT%{_sysconfdir}/security/blacklist.ftp
 
 gzip -9nf README
@@ -98,10 +96,9 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %attr(640,root,root) %dir %{_sysconfdir}/ftpd
 %dir %{_sysconfdir}/ftpd/vhosts
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/*.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pam.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/security/blacklist.ftp
+%dir /home/ftp
 %attr(755,ftp,ftp) %dir /home/ftp/Incoming
-%dir /home/ftp 
 
 %{_mandir}/man?/*
