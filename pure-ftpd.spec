@@ -28,6 +28,7 @@ Patch0:		%{name}-config.patch
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-userlength.patch
+Patch4:		%{name}-mysql_config.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -87,9 +88,11 @@ po³±czeñ...
 %setup -q
 %setup -q -a 4
 %patch0 -p0
+%patch4 -p0
 %{?with_longusername:%patch3 -p1}
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
+
 
 %build
 %configure \
