@@ -23,7 +23,7 @@ URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
-%{?with_tls:BuildRequires:		openssl-devel}
+%{?with_tls:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
