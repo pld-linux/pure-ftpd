@@ -6,16 +6,15 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.12
-Release:	5
+Version:	1.0.13
+Release:	1
 Epoch:		0
 License:	GPL
 Group:		Daemons
-Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
+Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}a.tar.bz2
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
-Patch0:		%{name}-config.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
 %{?_with_mysql:BuildRequires:	mysql-devel}
@@ -63,8 +62,7 @@ LS, system anty-warezowy, ograniczanie portów dla pasywnych
 po³±czeñ...
 
 %prep
-%setup -q
-%patch0 -p1
+%setup -q -n %{name}-%{version}a
 
 %build
 %configure \
@@ -93,8 +91,10 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
-install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf
+
+%{?_with_mysql:cat pureftpd-mysql.conf >> configuration-file/pure-ftpd.conf}
+install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd.conf
+install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
@@ -126,8 +126,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
-%{?_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pure-ftpd.conf
 %attr(740,root,root) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
 %dir /home/ftp
