@@ -3,7 +3,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	0.99.9
-Release:	1
+Release:	2
 License:	GPL
 Group:		Daemons
 Group(de):	Server
@@ -11,6 +11,7 @@ Group(pl):	Serwery
 Source0:	http://prdownloads.sourceforge.net/pureftpd/%{name}-%{version}.tar.gz
 Source1:	%{name}.pamd
 Source2:	%{name}.init
+Patch0:		%{name}-config.patch
 URL:		http://www.pureftpd.org/
 %{?_with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	libcap-devel
@@ -53,6 +54,7 @@ po³±czeñ...
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 aclocal
@@ -117,5 +119,5 @@ fi
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
 %dir /home/ftp
-%attr(755,ftp,ftp) %dir /home/ftp/Incoming
+%attr(775,root,ftp) %dir /home/ftp/Incoming
 %{_mandir}/man?/*
