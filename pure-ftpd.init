@@ -27,7 +27,7 @@ if [ -f /etc/ftpd/pureftpd.conf ]; then
 fi
 
 if [ -f /etc/ftpd/pureftpd-mysql.conf ]; then
-    PUREFTPD_OPTS="${PUREFTPD_OPTS} -l /etc/ftpd/pureftpd-mysql.conf"
+    PUREFTPD_OPTS="${PUREFTPD_OPTS} -l mysql:/etc/ftpd/pureftpd-mysql.conf"
 fi
 
 # See how we were called.
