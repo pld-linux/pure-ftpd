@@ -72,16 +72,16 @@ automake -a -c
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d,sysconfig,ftpd/vhosts,security,rc.d/init.d}
-install -d $RPM_BUILD_ROOT/home/ftp/Incoming
+install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,ftpd/vhosts,security,rc.d/init.d} \
+	$RPM_BUILD_ROOT/home/ftp/Incoming
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/%{name}
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd.conf
 install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd-mysql.conf
-touch $RPM_BUILD_ROOT%{_sysconfdir}/security/blacklist.ftp
+touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 gzip -9nf README* AUTHORS ChangeLog HISTORY NEWS THANKS
 
@@ -91,14 +91,14 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add %{name}
 if [ -f %{_var}/lock/subsys/%{name} ]; then
-        %{_sysconfdir}/rc.d/init.d/%{name} restart 1>&2
+        /etc/rc.d/init.d/%{name} restart 1>&2
 else
-        echo "Run \"%{_sysconfdir}/rc.d/init.d/%{name} start\" to start PureFTPD daemon."
+        echo "Run \"/etc/rc.d/init.d/%{name} start\" to start PureFTPD daemon."
 fi
 
 %preun
 if [ "$1" = "0" -a -f %{_var}/lock/subsys/%{name} ]; then
-        %{_sysconfdir}/rc.d/init.d/%{name} stop 1>&2
+        /etc/rc.d/init.d/%{name} stop 1>&2
 fi
 /sbin/chkconfig --del %{name}
 
@@ -106,13 +106,13 @@ fi
 %defattr(644,root,root,755)
 %doc *.gz pure*.conf
 %attr(755,root,root) %{_sbindir}/*
-%attr(640,root,root) %dir %{_sysconfdir}/ftpd
+%attr(640,root,root) %dir /etc/ftpd
 %dir %{_sysconfdir}/ftpd/vhosts
-%attr(754,root,root) %{_sysconfdir}/rc.d/init.d/%{name}
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd.conf
 %{?_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd-mysql.conf}
-%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pam.d/*}
-%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/security/blacklist.ftp}
+%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
+%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
 %dir /home/ftp
 %attr(755,ftp,ftp) %dir /home/ftp/Incoming
 %{_mandir}/man?/*
