@@ -96,8 +96,6 @@ install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd.con
 install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd-mysql.conf
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
-gzip -9nf README* AUTHORS ChangeLog HISTORY NEWS THANKS
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -119,7 +117,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz pure*.conf
+%doc README* AUTHORS ChangeLog HISTORY NEWS THANKS pure*.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(740,root,root) %dir /etc/ftpd
