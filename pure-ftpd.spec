@@ -7,8 +7,6 @@ Version:	1.1.0
 Release:	1
 License:	GPL
 Group:		Daemons
-Group(de):	Server
-Group(pl):	Serwery
 Source0:	http://prdownloads.sourceforge.net/pureftpd/%{name}-%{version}.tar.gz
 Source1:	%{name}.pamd
 Source2:	%{name}.init
