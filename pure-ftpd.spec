@@ -123,13 +123,13 @@ fi
 %doc README* AUTHORS ChangeLog HISTORY NEWS THANKS pure*.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%dir %{_sysconfdir}/vhosts
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
-%attr(740,root,root) %dir %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
 %{?_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
+%attr(740,root,root) %dir %{_sysconfdir}
+%dir %{_sysconfdir}/vhosts
 %dir /home/ftp
 %attr(775,root,ftp) %dir /home/ftp/Incoming
 %{_mandir}/man?/*
