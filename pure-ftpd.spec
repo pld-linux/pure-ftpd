@@ -54,7 +54,7 @@ ograniczanie portów dla pasywnych po³±czeñ...
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d/ftp,sysconfig/rc-inetd,ftpd/vhosts} \
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d,sysconfig/rc-inetd,ftpd/vhosts} \
 	$RPM_BUILD_ROOT/home/ftp/{upload,pub}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
