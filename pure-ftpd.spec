@@ -1,16 +1,13 @@
 # 
-# TODO:
-# - SECURITY: http://securitytracker.com/alerts/2004/Jul/1010701.html
-#
 # Conditional build:
-# _with_mysql - enables MySQL auth but disables PAM auth
-# _with_ldap  - enabled LDAP auth
+%bcond_with	mysql	# enables MySQL auth but disables PAM auth
+%bcond_with	ldap	# enables LDAP auth
 #
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.14
-Release:	1
+Release:	2
 Epoch:		0
 License:	GPL
 Group:		Daemons
@@ -20,15 +17,15 @@ Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
+Patch0:		%{name}-DoS.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
-%{?_with_mysql:BuildRequires:	mysql-devel}
-%{?_with_ldap:BuildRequires:	openldap-devel}
+%{?with_mysql:BuildRequires:	mysql-devel}
+%{?with_ldap:BuildRequires:	openldap-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
 Requires(post,preun):/sbin/chkconfig
 Provides:	ftpserver
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
 Obsoletes:	anonftp
 Obsoletes:	bftpd
@@ -44,6 +41,7 @@ Obsoletes:	troll-ftpd
 Obsoletes:	vsftpd
 Obsoletes:	wu-ftpd
 Conflicts:	man-pages < 1.51
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ftpd
 %define		_ftpdir		/home/ftp
@@ -68,14 +66,15 @@ LS, system anty-warezowy, ograniczanie portów dla pasywnych
 po³±czeñ...
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
+%patch0 -p1
 
 %build
 %configure \
-	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
+	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-altlog \
 	--with-puredb \
-	%{?!_with_mysql:--with-pam} \
+	%{!?with_mysql:--with-pam} \
 	--with-cookie \
 	--with-throttling \
 	--with-ratios \
@@ -86,19 +85,20 @@ po³±czeñ...
 	--with-virtualhosts \
 	--with-language=english \
 	--with-virtualchroot \
-	%{?_with_ldap:--with-ldap}
+	%{?with_ldap:--with-ldap}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir}/Incoming}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
-%{?_with_mysql:cat pureftpd-mysql.conf >> configuration-file/pure-ftpd.conf}
+%{?with_mysql:cat pureftpd-mysql.conf >> configuration-file/pure-ftpd.conf}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd.conf
 install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
@@ -130,8 +130,8 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
-%{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
+%{!?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
+%{!?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pure-ftpd.conf
 %attr(740,root,root) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
