@@ -1,9 +1,9 @@
 #
 # Conditional build:
-# _without_mysql - disable MySQL auth but disables PAM auth
-# _without_ldap  - disable LDAP auth
-# _without_pgsql - disable PostgreSQL support
-# _without_tls   - support SSL/TLS
+%bcond_without  mysql	# disable MySQL auth but disables PAM auth
+%bcond_without  ldap	# disable LDAP auth
+%bcond_without  pgsql	# disable PostgreSQL support
+%bcond_without  tls	# support SSL/TLS
 #
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
@@ -21,16 +21,15 @@ Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
-%{!?_without_mysql:BuildRequires:	mysql-devel}
-%{!?_without_ldap:BuildRequires:	openldap-devel}
-%{!?_without_tls:BuildRequires:		openssl-devel}
-%{!?_without_pgsql:BuildRequires:	postgresql-devel}
+%{?with_mysql:BuildRequires:	mysql-devel}
+%{?with_ldap:BuildRequires:	openldap-devel}
+%{?with_tls:BuildRequires:		openssl-devel}
+%{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
 Requires(post,preun):/sbin/chkconfig
 Requires:	pam >= 0.77.3
 Provides:	ftpserver
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
 Obsoletes:	anonftp
 Obsoletes:	bftpd
@@ -46,6 +45,7 @@ Obsoletes:	troll-ftpd
 Obsoletes:	vsftpd
 Obsoletes:	wu-ftpd
 Conflicts:	man-pages < 1.51
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ftpd
 
@@ -88,10 +88,10 @@ po³±czeñ...
 	--with-virtualchroot \
 	--with-diraliases \
 	--with-peruserlimits \
-	%{!?_without_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
-	%{!?_without_pgsql:--with-pgsql} \
-	%{!?_without_ldap:--with-ldap} \
-	%{!?_without_tls: --with-tls} \
+	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
+	%{?with_pgsql:--with-pgsql} \
+	%{?with_ldap:--with-ldap} \
+	%{?with_tls: --with-tls} \
 	--with-language=english \
 	--with-privsep
 
@@ -108,9 +108,9 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
-%{!?_without_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
-%{!?_without_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
-%{!?_without_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
+%{?with_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
+%{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
+%{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
 install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
@@ -146,14 +146,14 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp
-%{!?_without_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
-%{!?_without_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
-%{!?_without_pgsql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-pgsql.conf}
+%{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
+%{?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
+%{?with_pgsql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-pgsql.conf}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
 %attr(710,root,ftp) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
 %dir %{_sysconfdir}/pure-ftpd
-%{!?_without_tls:%attr(750,root,root) %dir %{_sysconfdir}/ssl}
+%{?with_tls:%attr(750,root,root) %dir %{_sysconfdir}/ssl}
 %dir /home/services/ftp
 %attr(775,root,ftp) %dir /home/services/ftp/Incoming
 %{_mandir}/man?/*
