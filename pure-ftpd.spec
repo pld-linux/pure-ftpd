@@ -12,9 +12,9 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.20
-Release:	3
+Release:	3%{?with_extra:extra}
 Epoch:		0
-License:	BSD-like
+License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
 # Source0-md5:	e928e9e15adf6b52bfe6183fdad20144
@@ -22,13 +22,15 @@ Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
+Source4:	ftp://distfiles.pld-linux.org/src/pure-config-20041106.tar.gz
+# Source4-md5:	a9e40fa1eabde41f8599133da2d92b18	
 Patch0:		%{name}-config.patch
-# This patch is broken and changes default pureftpd behaviour
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-userlength.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
+%{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
 %{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
@@ -37,7 +39,7 @@ BuildRequires:	pam-devel
 PreReq:		rc-scripts
 Requires(post,preun):/sbin/chkconfig
 Requires:	pam >= 0.77.3
-Requires:	perl-base
+%{!?with_extra:Requires:	perl-base}
 Provides:	ftpserver
 Obsoletes:	ftpserver
 Obsoletes:	anonftp
@@ -81,6 +83,7 @@ po³±czeñ...
 
 %prep
 %setup -q
+%setup -q -a 4
 %patch0 -p0
 %{?with_longusername:%patch3 -p1}
 %{?with_extra:%patch1 -p1}
@@ -110,6 +113,16 @@ po³±czeñ...
 	--with-uploadscript \
 	--with-virtualchroot \
 	--with-virtualhosts 
+
+%if %{with extra}
+cd pure-config
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+%configure
+%{__make}
+%endif
 	 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -126,12 +139,17 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 %{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
-install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}
+%{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
 bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+
+%if %{with extra}
+cd pure-config
+%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
