@@ -88,7 +88,7 @@ po³±czeñ...
 %setup -q
 %setup -q -a 4
 %patch0 -p0
-%patch4 -p0
+%patch4 -p1
 %{?with_longusername:%patch3 -p1}
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
