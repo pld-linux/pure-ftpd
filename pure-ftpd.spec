@@ -130,7 +130,7 @@ fi
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
-%attr(740,root,root) %dir %{_sysconfdir}
+%attr(710,root,ftp) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
 %dir %{_sysconfdir}/pure-ftpd
 %dir /home/services/ftp
