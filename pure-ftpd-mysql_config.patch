@@ -5,7 +5,7 @@
  # Optional : define the location of mysql.sock if the server runs on this host.
  
 -MYSQLSocket     /tmp/mysql.sock
-+MYSQLSocket     /var/lib/mysql/mysqldb/mysql.sock
++MYSQLSocket     /var/lib/mysql/mysql.sock
  
  
  # Mandatory : user to bind the server as.
