@@ -59,7 +59,8 @@ automake -a -c
 	--with-ratios \
 	--with-ftpwho \
 	--with-largefile \
-	--with-language=english
+	--with-language=english \
+	--without-capabilities
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -71,7 +72,9 @@ install -d $RPM_BUILD_ROOT/home/ftp/Incoming
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/pure-ftpd
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/rc-inetd/ftpd
 
-touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
+install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/ftpd
+
+touch $RPM_BUILD_ROOT%{_sysconfdir}/security/blacklist.ftp
 
 gzip -9nf README
 
@@ -80,25 +83,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd restart 1>&2
+	%{_sysconfdir}/rc.d/init.d/rc-inetd restart 1>&2
 else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet sever" 1>&2
+	echo "Type \"%{_sysconfdir}/rc.d/init.d/rc-inetd start\" to start inet sever" 1>&2
 fi
 
 %postun
 if [ "$1" = "0" -a -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd restart
+	%{_sysconfdir}/rc.d/init.d/rc-inetd restart
 fi
 
 %files
 %defattr(644,root,root,755)
 %doc *.gz
 %attr(755,root,root) %{_sbindir}/*
-%attr(640,root,root) %config /etc/sysconfig/rc-inetd/ftpd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp
+%attr(640,root,root) %dir %{_sysconfdir}/ftpd
+%dir %{_sysconfdir}/ftpd/vhosts
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/*.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pam.d/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/security/blacklist.ftp
 %attr(755,ftp,ftp) %dir /home/ftp/Incoming
 %dir /home/ftp 
-%dir %{_sysconfdir}/ftpd/vhosts
 
 %{_mandir}/man?/*
