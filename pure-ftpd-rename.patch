@@ -1,0 +1,12 @@
+diff -urN pure-ftpd-1.0.1.orig/src/ftpd.c pure-ftpd-1.0.1/src/ftpd.c
+--- pure-ftpd-1.0.1.orig/src/ftpd.c	Wed Oct 31 12:45:51 2001
++++ pure-ftpd-1.0.1/src/ftpd.c	Sun Nov 11 21:01:51 2001
+@@ -3244,7 +3244,7 @@
+     if (hasquota() == 0) {
+         struct stat st;
+ 
+-        if (lstat(name, &st) != 0) {
++        if (lstat(name, &st) == 0) {
+             goto norename;
+         }
+     }
