@@ -59,8 +59,7 @@ automake -a -c
 	--with-ratios \
 	--with-ftpwho \
 	--with-largefile \
-	--with-language=english \
-	--without-capabilities
+	--with-language=english
 
 %install
 rm -rf $RPM_BUILD_ROOT
