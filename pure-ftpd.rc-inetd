@@ -1,9 +1,0 @@
-SERVICE_NAME=ftp
-SOCK_TYPE=stream
-PROTOCOL=tcp
-PORT=21
-FLAGS=nowait
-USER=root
-SERVER=tcpd
-DAEMON=/usr/sbin/pure-ftpd
-DAEMONARGS="-f ftp -s -u 500 -L 10000:5"
