@@ -7,7 +7,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.12
-Release:	3
+Release:	4
 Epoch:		0
 License:	GPL
 Group:		Daemons
@@ -87,7 +87,7 @@ po³±czeñ...
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts},/home/ftp/Incoming}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,/home/ftp/Incoming}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
