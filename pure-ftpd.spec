@@ -1,10 +1,13 @@
+#
+# Conditional build:
 # _with_mysql - enables MySQL auth but disables PAM auth
 # _with_ldap  - enabled LDAP auth
+#
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.12
-Release:	1
+Release:	2
 Epoch:          0
 License:	GPL
 Group:		Daemons
@@ -14,14 +17,12 @@ Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 Patch0:		%{name}-config.patch
 URL:		http://www.pureftpd.org/
-BuildRequires:	autoconf
-BuildRequires:	automake
 BuildRequires:	libcap-devel
 %{?_with_mysql:BuildRequires:	mysql-devel}
 %{?_with_ldap:BuildRequires:	openldap-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
-Prereq:		/sbin/chkconfig
+Requires(post,preun):	/sbin/chkconfig
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ftpserver
@@ -64,9 +65,6 @@ po³±czeñ...
 %patch0 -p1
 
 %build
-#aclocal
-#autoconf
-#automake -a -c -f
 %configure \
 	--sysconfdir=/etc/ftpd \
 	%{?_with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
@@ -83,7 +81,7 @@ po³±czeñ...
 	--with-virtualhosts \
 	--with-language=english \
 	--with-virtualchroot \
-	%{?_with_ldap:--with_ldap}
+	%{?_with_ldap:--with-ldap}
 
 %install
 rm -rf $RPM_BUILD_ROOT
