@@ -86,8 +86,8 @@ po³±czeñ...
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,ftpd/vhosts,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT/home/ftp/Incoming
+install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts},/home/ftp/Incoming}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
@@ -123,7 +123,7 @@ fi
 %doc README* AUTHORS ChangeLog HISTORY NEWS THANKS pure*.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%dir %{_sysconfdir}/ftpd/vhosts
+%dir %{_sysconfdir}/vhosts
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*}
 %{?!_with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp}
