@@ -2,11 +2,11 @@
 # Conditional build:
 %bcond_with	longusername	# with username length = 128 (default 32)
 %bcond_with	extra		# with additional, maybe useful, but unmaintained features
-%bcond_without  ldap		# disable LDAP auth
-%bcond_without  mysql		# disable MySQL auth but disables PAM auth
-%bcond_without  pgsql		# disable PostgreSQL support
+%bcond_without	ldap		# disable LDAP auth
+%bcond_without	mysql		# disable MySQL auth but disables PAM auth
+%bcond_without	pgsql		# disable PostgreSQL support
 %bcond_without	puredb		# disable pure-db support
-%bcond_without  tls		# support SSL/TLS
+%bcond_without	tls		# disable SSL/TLS support
 #
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
@@ -26,7 +26,7 @@ Patch0:		%{name}-config.patch
 # This patch is broken and changes default pureftpd behaviour
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
-%{?with_longusername:Patch3:	%{name}-userlength.patch}
+Patch3:		%{name}-userlength.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
 %{?with_ldap:BuildRequires:	openldap-devel}
@@ -34,7 +34,7 @@ BuildRequires:	libcap-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
-Prereq:		rc-scripts
+PreReq:		rc-scripts
 Requires(post,preun):/sbin/chkconfig
 Requires:	pam >= 0.77.3
 Requires:	perl-base
