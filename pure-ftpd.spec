@@ -139,9 +139,9 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add %{name}
 if [ -f %{_var}/lock/subsys/%{name} ]; then
-        /etc/rc.d/init.d/%{name} restart 1>&2
+	/etc/rc.d/init.d/%{name} restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/%{name} start\" to start PureFTPD daemon."
+	echo "Run \"/etc/rc.d/init.d/%{name} start\" to start PureFTPD daemon."
 fi
 
 %preun
