@@ -1,6 +1,6 @@
-diff -Nura o.pure-ftpd-1.0.19/man/pure-pw.8 n.pure-ftpd-1.0.19/man/pure-pw.8
---- o.pure-ftpd-1.0.19/man/pure-pw.8	Thu Jul  8 11:08:08 2004
-+++ n.pure-ftpd-1.0.19/man/pure-pw.8	Thu Jul  8 21:35:34 2004
+diff -Nura b.pure-ftpd-1.0.19/man/pure-pw.8 n.pure-ftpd-1.0.19/man/pure-pw.8
+--- b.pure-ftpd-1.0.19/man/pure-pw.8	2004-07-21 00:23:25.000000000 +0200
++++ n.pure-ftpd-1.0.19/man/pure-pw.8	2004-07-21 00:31:10.000000000 +0200
 @@ -5,7 +5,7 @@
  .SH "SYNTAX"
  .LP 
@@ -19,14 +19,14 @@ diff -Nura o.pure-ftpd-1.0.19/man/pure-pw.8 n.pure-ftpd-1.0.19/man/pure-pw.8
                  [\-t download_bandwidth] [\-T upload_bandwidth]
                  [\-n max_number_of_files] [\-N max_Mbytes]
                  [\-q upload_ratio] [\-Q download_ratio]
-diff -Nura o.pure-ftpd-1.0.19/src/pure-pw.c n.pure-ftpd-1.0.19/src/pure-pw.c
---- o.pure-ftpd-1.0.19/src/pure-pw.c	Thu Jul  8 11:08:08 2004
-+++ n.pure-ftpd-1.0.19/src/pure-pw.c	Thu Jul  8 22:10:40 2004
+diff -Nura b.pure-ftpd-1.0.19/src/pure-pw.c n.pure-ftpd-1.0.19/src/pure-pw.c
+--- b.pure-ftpd-1.0.19/src/pure-pw.c	2004-07-21 00:23:25.000000000 +0200
++++ n.pure-ftpd-1.0.19/src/pure-pw.c	2004-07-21 00:32:08.000000000 +0200
 @@ -25,6 +25,8 @@
  static const char *random_device;
  #endif
  
-+char *cmdl_pass;
++static char *cmdl_pass;
 +
  static void disable_echo(void)
  {
@@ -104,17 +104,16 @@ diff -Nura o.pure-ftpd-1.0.19/src/pure-pw.c n.pure-ftpd-1.0.19/src/pure-pw.c
          switch(fodder) {
          case 'c' : {
              if ((pwinfo.gecos = strdup(optarg)) == NULL) {
-@@ -1421,6 +1432,13 @@
-                 pwinfo.has_quota_size = 1;
+@@ -1422,6 +1433,12 @@
              }
              break;
-+        }
+         }
 +        case 'p' : {                      
-+            cmdl_pass = NULL; 
 +            if ((cmdl_pass = strdup(optarg)) == NULL) {
 +                no_mem();
 +            }
 +            break;				   
-         }
++        }
          case 'q' : {
              if (*optarg == 0) {
+                 pwinfo.has_ul_ratio = -1;
