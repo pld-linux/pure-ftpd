@@ -151,7 +151,7 @@ fi
 %attr(710,root,ftp) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
 %dir %{_sysconfdir}/pure-ftpd
-%{!?_without_tls:%dir %{_sysconfdir}/ssl}
+%{!?_without_tls:%attr(750,root,root) %dir %{_sysconfdir}/ssl}
 %dir /home/services/ftp
 %attr(775,root,ftp) %dir /home/services/ftp/Incoming
 %{_mandir}/man?/*
