@@ -1,0 +1,57 @@
+Backport from 1.0.19:
+ - Real disk space is no more shown.
+ - A possible denial of service when too many users were connected should be
+fixed. Reported by Agri <agri at desnol.ru>, thanks!  [CAN-2004-0656]
+ - Don't try to catch SIGKILL any more, it's uncatchable.
+ - little memory leak plugged
+
+--- pure-ftpd-1.0.14/src/ftpd.c.orig	2003-01-30 11:05:54.000000000 +0100
++++ pure-ftpd-1.0.14/src/ftpd.c	2004-11-03 15:50:30.000000000 +0100
+@@ -3654,6 +3654,7 @@
+             goto databroken;
+         }
+     } while (r > (ssize_t) 0);
++#ifdef SHOW_REAL_DISK_SPACE
+     if (FSTATFS(f, &statfsbuf) == 0) {
+         double space;
+ 
+@@ -3665,6 +3666,7 @@
+             addreply(0, MSG_SPACE_FREE_K, space / 1024.0);
+         }    
+     }
++#endif
+ #ifdef QUOTAS    
+     quota_exceeded:
+ #endif
+@@ -4047,7 +4049,6 @@
+     (void) sigaction(SIGHUP, &sa, NULL);
+     (void) sigaction(SIGQUIT, &sa, NULL);
+     (void) sigaction(SIGINT, &sa, NULL);
+-    (void) sigaction(SIGKILL, &sa, NULL);
+ # ifdef SIGXCPU
+     (void) sigaction(SIGXCPU, &sa, NULL);
+ # endif
+@@ -4299,6 +4300,7 @@
+             die(421, LOG_ERR, MSG_ILLEGAL_FORCE_PASSIVE);            
+         }
+         memcpy(&force_passive_ip, res->ai_addr, res->ai_addrlen);
++	freeaddrinfo(res);
+     }
+     
+ #ifdef WITH_PRIVSEP
+@@ -4457,6 +4459,7 @@
+         if (maxusers > 0U && nb_children >= maxusers) {
+             char line[1024];
+ 
++	    (void) fcntl(clientfd, F_SETFL, fcntl(clientfd, F_GETFL) | O_NONBLOCK);
+             if (!SNCHECK(snprintf(line, sizeof line,
+                                   "421 " MSG_MAX_USERS "\r\n",
+                                   (unsigned long) maxusers), sizeof line)) {
+@@ -4473,6 +4476,7 @@
+                 char hbuf[NI_MAXHOST];
+                 static struct sockaddr_storage old_sa;
+ 
++		(void) fcntl(clientfd, F_SETFL, fcntl(clientfd, F_GETFL) | O_NONBLOCK);
+                 if (!SNCHECK(snprintf(line, sizeof line,
+                                       "421 " MSG_MAX_USERS_IP "\r\n",
+                                       (unsigned long) maxip), sizeof line)) {
