@@ -1,5 +1,4 @@
-# TODO: update documentation for SSLCertFile / -7
-#	option
+#
 # Conditional build:
 %bcond_without  ldap	# disable LDAP auth
 %bcond_without  mysql	# disable MySQL auth but disables PAM auth
@@ -11,7 +10,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.18
-Release:	4.1
+Release:	5	
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
