@@ -1,8 +1,9 @@
 #
 # Conditional build:
-%bcond_without  mysql	# disable MySQL auth but disables PAM auth
 %bcond_without  ldap	# disable LDAP auth
+%bcond_without  mysql	# disable MySQL auth but disables PAM auth
 %bcond_without  pgsql	# disable PostgreSQL support
+%bcond_without	puredb	# disable pure-db support
 %bcond_without  tls	# support SSL/TLS
 #
 Summary:	Small, fast and secure FTP server
@@ -18,18 +19,19 @@ Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
-Patch0:		%{name}-config.patch
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
+Patch0:		%{name}-config.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
-%{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
-%{?with_tls:BuildRequires:	openssl-devel >= 0.9.7d}
+%{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
+%{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
 Prereq:		rc-scripts
 Requires(post,preun):/sbin/chkconfig
 Requires:	pam >= 0.77.3
+Requires:	perl-base
 Provides:	ftpserver
 Obsoletes:	ftpserver
 Obsoletes:	anonftp
@@ -50,6 +52,7 @@ Conflicts:	man-pages < 1.51
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ftpd
+%define		_ftpdir		/home/services/ftp
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
@@ -72,38 +75,36 @@ po³±czeñ...
 
 %prep
 %setup -q
-%patch0	-p0
+%patch0 -p0
 
 %build
 %configure \
 	--with-altlog \
-	--with-puredb \
-	--with-extauth \
-	--with-pam \
 	--with-cookie \
-	--with-throttling \
-	--with-ratios \
-	--with-quotas \
-	--with-ftpwho \
-	--with-largefile \
-	--with-uploadscript \
-	--with-virtualhosts \
-	--with-virtualchroot \
 	--with-diraliases \
-	--with-peruserlimits \
-	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
-	%{?with_pgsql:--with-pgsql} \
-	%{?with_ldap:--with-ldap} \
-	%{?with_tls: --with-tls} \
+	--with-extauth \
+	--with-ftpwho \
 	--with-language=english \
-	--with-privsep
-
-echo '#define	TLS_CERTIFICATE_PATH	"%{_sysconfdir}/ssl/pure-ftpd.pem"' >> config.h
-
+	--with-largefile \
+	%{?with_ldap:--with-ldap} \
+	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
+	--with-pam \
+	--with-peruserlimits \
+	%{?with_pgsql:--with-pgsql} \
+	--with-privsep \
+	%{?with_puredb:--with-puredb} \
+	--with-quotas \
+	--with-ratios \
+	--with-throttling \
+	%{?with_tls:--with-tls --with-certfile=%{_sharedstatedir}/openssl/certs/ftpd.pem} \
+	--with-uploadscript \
+	--with-virtualchroot \
+	--with-virtualhosts 
+	 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/{vhosts,ssl},/home/services/ftp/Incoming}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir}/Incoming}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -156,9 +157,8 @@ fi
 %attr(710,root,ftp) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
 %dir %{_sysconfdir}/pure-ftpd
-%{?with_tls:%attr(750,root,root) %dir %{_sysconfdir}/ssl}
-%dir /home/services/ftp
-%attr(775,root,ftp) %dir /home/services/ftp/Incoming
+%dir %{_ftpdir}
+%attr(775,root,ftp) %dir %{_ftpdir}/Incoming
 %{_mandir}/man?/*
 %lang(ja) %{_mandir}/ja/man5/ftpusers*
 %lang(pl) %{_mandir}/pl/man5/ftpusers*
