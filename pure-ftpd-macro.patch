@@ -1,17 +1,6 @@
-diff -urN pure-ftpd-0.92.org/src/ftpd_p.h pure-ftpd-0.92/src/ftpd_p.h
---- pure-ftpd-0.92.org/src/ftpd_p.h	Mon Jan 22 13:20:24 2001
-+++ pure-ftpd-0.92/src/ftpd_p.h	Mon Jan 22 13:21:02 2001
-@@ -44,6 +44,7 @@
- #include <netdb.h>
- #include <sys/resource.h>
- #ifdef USE_CAPABILITIES
-+#define _LINUX_FS_H
- #include <sys/capability.h>
- #endif
- #ifdef HAVE_SYS_VFS_H
-diff -urN pure-ftpd-0.92.org/src/log_pam.c pure-ftpd-0.92/src/log_pam.c
---- pure-ftpd-0.92.org/src/log_pam.c	Mon Jan 22 13:20:24 2001
-+++ pure-ftpd-0.92/src/log_pam.c	Mon Jan 22 13:21:12 2001
+diff -urN pure-ftpd-0.96.2.org/src/log_pam.c pure-ftpd-0.96.2/src/log_pam.c
+--- pure-ftpd-0.96.2.org/src/log_pam.c	Fri Mar  2 15:41:19 2001
++++ pure-ftpd-0.96.2/src/log_pam.c	Fri Mar 23 20:21:04 2001
 @@ -27,7 +27,6 @@
  #include <security/pam_misc.h>
  #include <security/pam_appl.h>
