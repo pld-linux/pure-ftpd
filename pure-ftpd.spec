@@ -80,10 +80,16 @@ gzip -9nf README
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%rc_inetd_post
+if [ -f /var/lock/subsys/rc-inetd ]; then
+	%{_sysconfdir}/rc.d/init.d/rc-inetd restart 1>&2
+else
+	echo "Type \"%{_sysconfdir}/rc.d/init.d/rc-inetd start\" to start inet sever" 1>&2
+fi
 
 %postun
-%rc_inetd_postun
+if [ "$1" = "0" -a -f /var/lock/subsys/rc-inetd ]; then
+	%{_sysconfdir}/rc.d/init.d/rc-inetd restart
+fi
 
 %files
 %defattr(644,root,root,755)
