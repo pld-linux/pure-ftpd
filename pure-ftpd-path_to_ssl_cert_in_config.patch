@@ -76,7 +76,7 @@ diff -Nur b/src/ftpd.c n/src/ftpd.c
  #ifdef PROBE_RANDOM_AT_RUNTIME
      pw_zrand_probe();
  #endif    
-@@ -5097,6 +5097,16 @@
+@@ -5097,6 +5097,15 @@
                  enforce_tls_auth > 2) {
                  die(421, LOG_ERR, MSG_CONF_ERR ": TLS");
              }
@@ -86,8 +86,7 @@ diff -Nur b/src/ftpd.c n/src/ftpd.c
 +            break;
 +        }
 +    	case '7': {
-+            if (tlscert_file)
-+                free(tlscert_file);
++            free(tlscert_file);
 +            if ((tlscert_file = strdup(optarg)) == NULL)
 +                die_mem();
              break;
