@@ -1,7 +1,7 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	0.93
+Version:	0.95.pre2
 Release:	1
 License:	GPL
 Group:		Daemons
