@@ -11,6 +11,7 @@ Source1:	pure-ftpd.pamd
 Source2:	pure-ftpd.rc-inetd
 Patch0:		pure-ftpd-macro.patch
 URL:		http://pureftpd.sourceforge.net/
+BuildRequires:	libcap-devel
 BuildRequires:	pam-devel
 Requires:	inetdaemon
 Requires:	rc-inetd
@@ -51,16 +52,15 @@ ograniczanie portów dla pasywnych po³±czeñ...
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d/ftp,sysconfig/rc-inetd,ftpd/vhosts}
-install -d $RPM_BUILD_ROOT/home/ftp/{upload,pub}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d/ftp,sysconfig/rc-inetd,ftpd/vhosts} \
+	$RPM_BUILD_ROOT/home/ftp/{upload,pub}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pam.d/ftp
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/rc-inetd/ftpd
 
-gzip -9nf README COPYING
+gzip -9nf README
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -79,7 +79,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README.gz COPYING.gz
+%doc *.gz
 %attr(755,root,root) %{_sbindir}/*
 %attr(640,root,root) /etc/pam.d/ftp
 %attr(640,root,root) %config /etc/sysconfig/rc-inetd/ftpd
