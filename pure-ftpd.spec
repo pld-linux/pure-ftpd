@@ -4,7 +4,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.11
-Release:	1
+Release:	2
 Epoch:          0
 License:	GPL
 Group:		Daemons
@@ -121,7 +121,7 @@ fi
 %doc *.gz pure*.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%attr(640,root,root) %dir /etc/ftpd
+%attr(740,root,root) %dir /etc/ftpd
 %dir %{_sysconfdir}/ftpd/vhosts
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpd/pureftpd.conf
