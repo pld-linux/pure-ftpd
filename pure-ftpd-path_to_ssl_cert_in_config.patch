@@ -23,13 +23,18 @@ diff -Nur b/configuration-file/pure-config.py.in n/configuration-file/pure-confi
 diff -Nur b/configuration-file/pure-ftpd.conf.in n/configuration-file/pure-ftpd.conf.in
 --- b/configuration-file/pure-ftpd.conf.in	2004-09-15 17:03:04.281580000 +0200
 +++ n/configuration-file/pure-ftpd.conf.in	2004-09-15 17:02:28.547012000 +0200
-@@ -420,7 +420,8 @@
+@@ -420,7 +420,13 @@
  # 3) Only compatible clients will log in.
  
  # TLS                      1
 -
-+# SSLCertFile	/etc/ssl/private/pure-ftpd.pem 
-+#		or /var/lib/openssl/certs/ftpd.pem (current location in PLD)
++
++# Path to SSL certificate file. This is non-standard addition
++# and it might disappear in the future. If not present
++# default is /var/lib/openssl/certs/ftpd.pem for PLD.
++#
++# SSLCertFile	/etc/ssl/private/pure-ftpd.pem
++#	
  
  
  # Listen only to IPv4 addresses in standalone mode (ie. disable IPv6)
@@ -58,8 +63,8 @@ diff -Nur b/man/pure-ftpd.8 n/man/pure-ftpd.8
  .B \-6
  Listen only to IPv6 connections.
  .TP
-+.B \-7 file
-+Path to SSL certificate file.
++.B \-7 SSL certificate file
++Path to SSL certificate file. If option \-7 is not present default value is /var/lib/openssl/certs/ftpd.pem for PLD. This is non\-standard addition. It might disappear in the future and meaning of \-7 option is not guaranted.
 +.TP
  .B \-a gid
  Regular users will be chrooted to their home directories, unless
