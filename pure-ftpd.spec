@@ -4,13 +4,14 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.11
-Release:	3
+Release:	4
 Epoch:          0
 License:	GPL
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
 Source1:	%{name}.pamd
 Source2:	%{name}.init
+Source3:	ftpusers.tar.bz2
 Patch0:		%{name}-config.patch
 URL:		http://www.pureftpd.org/
 BuildRequires:	autoconf
@@ -37,6 +38,7 @@ Obsoletes:	proftpd-standalone
 Obsoletes:	troll-ftpd
 Obsoletes:	vsftpd
 Obsoletes:	wu-ftpd
+Conflicts:	man-pages < 1.51
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
@@ -96,6 +98,8 @@ install contrib/redhat.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd.con
 install pureftpd-mysql.conf	 $RPM_BUILD_ROOT%{_sysconfdir}/ftpd/pureftpd-mysql.conf
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
+bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -130,3 +134,7 @@ fi
 %dir /home/ftp
 %attr(775,root,ftp) %dir /home/ftp/Incoming
 %{_mandir}/man?/*
+%lang(ja) %{_mandir}/ja/man5/ftpusers*
+%lang(pl) %{_mandir}/pl/man5/ftpusers*
+%lang(pt_BR) %{_mandir}/pt_BR/man5/ftpusers*
+%lang(ru) %{_mandir}/ru/man5/ftpusers*
