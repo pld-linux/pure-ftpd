@@ -1,12 +1,13 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	0.95.1
+Version:	0.95.2
 Release:	1
 License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
-Source0:	http://download.sourceforge.net/pureftpd/%{name}-%{version}.tar.gz
+#Source0:	http://download.sourceforge.net/pureftpd/%{name}-%{version}.tar.gz
+Source0:       	http://ftp1.sourceforge.net/pureftpd/pure-ftpd-0.95.2.tar.gz
 Source1:	pure-ftpd.pamd
 Source2:	pure-ftpd.rc-inetd
 Patch0:		pure-ftpd-macro.patch
