@@ -1,4 +1,5 @@
 # _with_mysql - enables MySQL auth but disables PAM auth
+# _with_ldap  - enabled LDAP auth
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -13,11 +14,12 @@ Source1:	%{name}.pamd
 Source2:	%{name}.init
 Patch0:		%{name}-config.patch
 URL:		http://www.pureftpd.org/
-%{?_with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	libcap-devel
-BuildRequires:	pam-devel
-BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libcap-devel
+%{?_with_mysql:BuildRequires:	mysql-devel}
+%{?_with_ldap:BuildRequires:	openldap-devel}
+BuildRequires:	pam-devel
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 Provides:	ftpserver
@@ -75,7 +77,8 @@ automake -a -c
 	--with-uploadscript \
 	--with-virtualhosts \
 	--with-language=english \
-	--with-virtualchroot
+	--with-virtualchroot \
+	%{?_with_ldap:--with_ldap}
 
 %install
 rm -rf $RPM_BUILD_ROOT
