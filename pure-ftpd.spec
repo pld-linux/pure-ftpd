@@ -1,19 +1,19 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	0.97.6
+Version:	0.97.7
 Release:	1
 License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
-#Source0:	http://download.sourceforge.net/pureftpd/%{name}-%{version}.tar.gz
-Source0:       	http://ftp1.sourceforge.net/pureftpd/pure-ftpd-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/pureftpd/%{name}-%{version}.tar.gz
 Source1:	pure-ftpd.pamd
 Source2:	pure-ftpd.rc-inetd
-Patch0:		pure-ftpd-macro.patch
-URL:		http://pureftpd.sourceforge.net/
+URL:		http://www.pureftpd.org/
 BuildRequires:	libcap-devel
 BuildRequires:	pam-devel
+BuildRequires:	automake
+BuildRequires:	autoconf
 Requires:	inetdaemon
 Requires:	rc-inetd
 Provides:	ftpserver
@@ -47,17 +47,24 @@ ograniczanie portów dla pasywnych po³±czeñ...
 
 %prep
 %setup -q
-#%patch0 -p1
 
 %build
+aclocal
+autoconf
+automake -a -c
 %configure \
 	--with-cookie \
-	--with-pam
+	--with-pam \
+	--with-throttling \
+	--with-ratios \
+	--with-ftpwho \
+	--with-largefile \
+	--with-language=english
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d,sysconfig/rc-inetd,ftpd/vhosts,security} \
-	$RPM_BUILD_ROOT/home/ftp/{upload,pub}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{pam.d,sysconfig/rc-inetd,ftpd/vhosts,security}
+install -d $RPM_BUILD_ROOT/home/ftp/Incoming
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
@@ -90,9 +97,8 @@ fi
 %attr(640,root,root) %config /etc/sysconfig/rc-inetd/ftpd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp
-%attr(755,ftp,ftp) %dir /home/ftp/upload
+%attr(755,ftp,ftp) %dir /home/ftp/Incoming
 %dir /home/ftp 
-%dir /home/ftp/pub 
 %dir %{_sysconfdir}/ftpd/vhosts
 
-%{_mandir}/man*/*
+%{_mandir}/man?/*
