@@ -50,7 +50,8 @@ ograniczanie portów dla pasywnych po³±czeñ...
 
 %build
 %configure \
-	--with-cookie
+	--with-cookie \
+	--with-pam
 
 %install
 rm -rf $RPM_BUILD_ROOT
