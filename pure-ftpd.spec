@@ -9,7 +9,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.17a
-Release:	1
+Release:	2
 Epoch:		0
 License:	BSD-like
 Group:		Daemons
@@ -100,7 +100,7 @@ echo '#define	TLS_CERTIFICATE_PATH	"%{_sysconfdir}/ssl/pure-ftpd.pem"' >> config
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/{vhosts,ssl},/home/services/ftp/Incoming}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/{vhosts,ssl},/srv/ftp/Incoming}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -154,8 +154,8 @@ fi
 %dir %{_sysconfdir}/vhosts
 %dir %{_sysconfdir}/pure-ftpd
 %{?with_tls:%attr(750,root,root) %dir %{_sysconfdir}/ssl}
-%dir /home/services/ftp
-%attr(775,root,ftp) %dir /home/services/ftp/Incoming
+%dir /srv/ftp
+%attr(775,root,ftp) %dir /srv/ftp/Incoming
 %{_mandir}/man?/*
 %lang(ja) %{_mandir}/ja/man5/ftpusers*
 %lang(pl) %{_mandir}/pl/man5/ftpusers*
