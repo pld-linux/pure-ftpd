@@ -23,7 +23,7 @@ Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
 Source4:	ftp://distfiles.pld-linux.org/src/pure-config-20041106.tar.gz
-# Source4-md5:	a9e40fa1eabde41f8599133da2d92b18	
+# Source4-md5:	a9e40fa1eabde41f8599133da2d92b18
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
@@ -117,7 +117,7 @@ po³±czeñ...
 	%{?with_tls:--with-tls --with-certfile=%{_sharedstatedir}/openssl/certs/ftpd.pem} \
 	--with-uploadscript \
 	--with-virtualchroot \
-	--with-virtualhosts 
+	--with-virtualhosts
 
 %if %{with extra}
 cd pure-config
@@ -128,7 +128,7 @@ cd pure-config
 %configure
 %{__make}
 %endif
-	 
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
