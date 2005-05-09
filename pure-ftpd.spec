@@ -41,7 +41,7 @@ BuildRequires:	libcap-devel
 %{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
 PreReq:		rc-scripts
-Requires(post,preun):/sbin/chkconfig
+Requires(post,preun):	/sbin/chkconfig
 Requires:	pam >= 0.77.3
 %{!?with_extra:Requires:	perl-base}
 Provides:	ftpserver
@@ -86,7 +86,6 @@ LS, system anty-warezowy, ograniczanie portów dla pasywnych
 po³±czeñ...
 
 %prep
-%setup -q
 %setup -q -a 4
 %patch0 -p0
 %patch4 -p1
@@ -94,7 +93,6 @@ po³±czeñ...
 %{?with_longusername:%patch3 -p1}
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
-
 
 %build
 %configure \
