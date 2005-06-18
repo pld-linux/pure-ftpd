@@ -22,8 +22,8 @@ Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
-Source4:	ftp://distfiles.pld-linux.org/src/pure-config-20041106.tar.gz
-# Source4-md5:	a9e40fa1eabde41f8599133da2d92b18
+Source4:	http://twittner.host.sk/files/pure-config-20041201.tar.gz
+# Source4-md5:	3f2ff6b00b5c38ee11ce588ee5af6cf6
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
