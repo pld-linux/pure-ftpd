@@ -1,0 +1,147 @@
+diff -ur pure-ftpd.orig/src/ftpd.c pure-ftpd/src/ftpd.c
+--- pure-ftpd.orig/src/ftpd.c	Sat Jul 17 15:28:22 2004
++++ pure-ftpd/src/ftpd.c	Tue Aug  9 10:28:43 2005
+@@ -4717,6 +4717,7 @@
+ 
+ static void standalone_server(void)
+ {
++
+     int on;
+     struct addrinfo hints, *res, *res6;
+     fd_set rs;
+@@ -4727,13 +4728,22 @@
+ # endif
+     memset(&hints, 0, sizeof hints);
+     hints.ai_flags = AI_PASSIVE;
+-    hints.ai_family = AF_INET;
+     hints.ai_socktype = SOCK_STREAM;
+     hints.ai_addr = NULL;
++    hints.ai_family = 0;
++    if(v6ready)
++	{
++	if(no_ipv4) hints.ai_family = AF_INET6;
++	if(no_ipv6) hints.ai_family = AF_INET;
++	}
++    else
++	{
++	hints.ai_family = AF_INET;
++	}
++    
+     on = 1;
+-    if (no_ipv4 == 0 &&
+-        getaddrinfo(standalone_ip, standalone_port, &hints, &res) == 0) {
+-        if ((listenfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1 ||
++    if (getaddrinfo(standalone_ip, standalone_port, &hints, &res) == 0) {
++        if ((listenfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) == -1 ||
+             setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR,
+                        (char *) &on, sizeof on) != 0) {
+             cant_bind:
+@@ -4741,6 +4751,10 @@
+             logfile(LOG_ERR, MSG_STANDALONE_FAILED ": [%s]", strerror(errno));
+             return;
+         }
++# if defined(IPPROTO_IPV6) && defined(IPV6_V6ONLY)
++            (void) setsockopt(listenfd, IPPROTO_IPV6, IPV6_V6ONLY,
++                              (char *) &on, sizeof on);
++# endif
+         if (bind(listenfd, res->ai_addr, (socklen_t) res->ai_addrlen) != 0 ||
+             listen(listenfd, maxusers > 0U ? 
+                    3U + maxusers / 8U : DEFAULT_BACKLOG) != 0) {
+@@ -4749,30 +4763,7 @@
+         freeaddrinfo(res);
+         set_cloexec_flag(listenfd);     
+     }
+-    if (v6ready != 0) {
+-        hints.ai_family = AF_INET6;
+-        if (getaddrinfo(standalone_ip, standalone_port, &hints, &res6) == 0) {
+-            if ((listenfd6 = socket(AF_INET6,
+-                                    SOCK_STREAM, IPPROTO_TCP)) == -1 ||
+-                setsockopt(listenfd6, SOL_SOCKET, SO_REUSEADDR,
+-                           (char *) &on, sizeof on) != 0) {
+-                goto cant_bind;
+-            }           
+-# if defined(IPPROTO_IPV6) && defined(IPV6_V6ONLY)
+-            (void) setsockopt(listenfd6, IPPROTO_IPV6, IPV6_V6ONLY,
+-                              (char *) &on, sizeof on);
+-# endif
+-            if (bind(listenfd6, res6->ai_addr,
+-                     (socklen_t) res6->ai_addrlen) != 0 ||
+-                listen(listenfd6, maxusers > 0U ? 
+-                       3U + maxusers / 8U : DEFAULT_BACKLOG) != 0) {
+-                goto cant_bind;
+-            }
+-            freeaddrinfo(res6);
+-            set_cloexec_flag(listenfd6);
+-        }
+-    }
+-    if (listenfd == -1 && listenfd6 == -1) {
++    if (listenfd == -1) {
+ # ifdef EADDRNOTAVAIL
+         errno = EADDRNOTAVAIL;
+ # endif
+@@ -4781,15 +4772,10 @@
+     updatepidfile();
+     setprogname("pure-ftpd (SERVER)");
+     FD_ZERO(&rs);
+-    if (listenfd > listenfd6) {
+-        max_fd = listenfd;
+-    } else {
+-        max_fd = listenfd6;
+-    }
++    max_fd = listenfd;
+     max_fd++;
+     while (stop_server == 0) {      
+         safe_fd_set(listenfd, &rs);
+-        safe_fd_set(listenfd6, &rs);
+         if (select(max_fd, &rs, NULL, NULL, NULL) <= 0) {
+             if (errno != EINTR) {
+                 (void) sleep(1);
+@@ -4799,9 +4785,6 @@
+         if (safe_fd_isset(listenfd, &rs)) {
+             accept_client(listenfd);
+         } 
+-        if (safe_fd_isset(listenfd6, &rs)) {
+-            accept_client(listenfd6);
+-        }
+     }
+ }
+ #endif
+@@ -4828,7 +4811,6 @@
+     int option_index = 0;
+ #endif
+     int fodder;
+-    int bypass_ipv6 = 0;
+     struct passwd *pw;
+ 
+ #ifdef PROBE_RANDOM_AT_RUNTIME
+@@ -4907,7 +4889,7 @@
+             break;
+         }
+         case '4': {
+-            bypass_ipv6 = 1;
++            no_ipv6 = 1;
+             break;
+         }            
+         case '6': {
+@@ -5496,9 +5478,7 @@
+             maxusers = portmax;    /* ... so we don't run out of ports */
+         }
+     }
+-    if (bypass_ipv6 == 0) {
+-        check_ipv6_support();
+-    }
++    check_ipv6_support();
+ #if defined(WITH_UPLOAD_SCRIPT)
+     if (do_upload_script != 0) {
+         upload_pipe_open();
+diff -ur pure-ftpd.orig/src/globals.h pure-ftpd/src/globals.h
+--- pure-ftpd.orig/src/globals.h	Sun Feb 29 22:49:28 2004
++++ pure-ftpd/src/globals.h	Tue Aug  9 10:10:29 2005
+@@ -29,6 +29,7 @@
+ GLOBAL0(struct sockaddr_storage ctrlconn);    /* stdin/stdout, for using the same ip number */
+ GLOBAL0(signed char v6ready);                    /* IPv6 supported or not */
+ GLOBAL0(signed char no_ipv4);                    /* IPv4 disabled or not */
++GLOBAL0(signed char no_ipv6);                    /* IPv6 disabled or not */
+ GLOBAL(const size_t cmdsize, MAXPATHLEN + 16U);
+ GLOBAL0(char cmd[MAXPATHLEN + 32U]);        /* command line - about 30 chars for command */
+ GLOBAL0(char wd[MAXPATHLEN + 1U]);            /* current working directory */
