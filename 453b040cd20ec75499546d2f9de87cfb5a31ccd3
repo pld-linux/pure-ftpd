@@ -1,0 +1,2 @@
+- back to old good names to be backward compatible, don't merge configs
+  (this sucks), fix vhosts (missing dir/symlink)
