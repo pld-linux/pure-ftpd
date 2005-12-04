@@ -32,19 +32,19 @@ Patch4:		%{name}-mysql_config.patch
 Patch5:		%{name}-nosymlinks-hideuidmismatch.patch
 Patch6:		%{name}-auth-can-delete-pure.patch
 URL:		http://www.pureftpd.org/
+%{!?with_extra:Requires:	perl-base}
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
 BuildRequires:	libcap-devel
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
-%{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_mysql:BuildRequires:	mysql-devel}
-%{?with_pgsql:BuildRequires:	postgresql-devel}
+%{?with_ldap:BuildRequires:	openldap-devel}
 %{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
-PreReq:		rc-scripts
+%{?with_pgsql:BuildRequires:	postgresql-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires:	pam >= 0.79.0
-%{!?with_extra:Requires:	perl-base}
+Requires:	rc-scripts
 Provides:	ftpserver
 Obsoletes:	ftpserver
 Obsoletes:	anonftp
@@ -155,7 +155,8 @@ bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 
 %if %{with extra}
 cd pure-config
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 %clean
@@ -184,7 +185,7 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/security/blacklist.ftp
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.ftp
 %{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-pgsql.conf}
