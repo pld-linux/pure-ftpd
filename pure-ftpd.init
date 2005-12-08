@@ -18,14 +18,14 @@
 # Check for available parsers
 if [ -x /usr/sbin/pure-config ] ; then
 	CFG=/usr/sbin/pure-config
-elif [ -x /usr/sbin/pure-config.pl -a -x /usr/bin/perl ] ; then 
+elif [ -x /usr/sbin/pure-config.pl -a -x /usr/bin/perl ] ; then
 	CFG=/usr/sbin/pure-config.pl
 elif [ -x /usr/sbin/pure-config.py -a -x /usr/bin/python ] ; then
 	CFG=/usr/sbin/pure-config.py
 else
 	echo 'Error: pure-config{,.pl,.py} not found. Giving up.'
 	exit 1
-fi	
+fi
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
