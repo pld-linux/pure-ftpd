@@ -32,7 +32,6 @@ Patch4:		%{name}-mysql_config.patch
 Patch5:		%{name}-nosymlinks-hideuidmismatch.patch
 Patch6:		%{name}-auth-can-delete-pure.patch
 URL:		http://www.pureftpd.org/
-%{!?with_extra:Requires:	perl-base}
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
 BuildRequires:	libcap-devel
@@ -44,6 +43,7 @@ BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 Requires(post,preun):	/sbin/chkconfig
 Requires:	pam >= 0.79.0
+%{!?with_extra:Requires:	perl-base}
 Requires:	rc-scripts
 Provides:	ftpserver
 Obsoletes:	ftpserver
