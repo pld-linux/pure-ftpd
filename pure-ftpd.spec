@@ -7,6 +7,7 @@
 %bcond_without	pgsql		# disable PostgreSQL support
 %bcond_without	puredb		# disable pure-db support
 %bcond_without	tls		# disable SSL/TLS support
+%bcond_without	cap		# disable capabilities
 #
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
@@ -34,7 +35,7 @@ Patch6:		%{name}-auth-can-delete-pure.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
-BuildRequires:	libcap-devel
+%{?with_cap:BuildRequires:	libcap-devel}
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
@@ -106,6 +107,7 @@ po³±czeñ...
 	--with-ftpwho \
 	--with-language=english \
 	--with-largefile \
+	%{!?with_cap:--without-capabilities} \
 	%{?with_ldap:--with-ldap} \
 	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-pam \
