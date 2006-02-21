@@ -1,7 +1,7 @@
-diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
---- pure-ftpd-1.0.20.org/src/ftpd.c	2004-07-17 15:28:22.000000000 +0200
-+++ pure-ftpd-1.0.20/src/ftpd.c	2005-10-12 14:06:11.200877672 +0200
-@@ -637,7 +637,7 @@
+diff -urN pure-ftpd-1.0.21.org/src/ftpd.c pure-ftpd-1.0.21/src/ftpd.c
+--- pure-ftpd-1.0.21.org/src/ftpd.c	2006-02-16 10:28:16.000000000 +0100
++++ pure-ftpd-1.0.21/src/ftpd.c	2006-02-21 12:58:34.192710136 +0100
+@@ -705,7 +705,7 @@
   * with a dot are only allowed to root and to users
   * chroot()ed in their home directories -Jedi. */
  
@@ -10,7 +10,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
  {
      register const char *namepnt;
  
-@@ -667,7 +667,7 @@
+@@ -735,7 +735,7 @@
          return -1;                     /* .ftpquota => *NO* */
      }
  #endif
@@ -19,7 +19,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          return -1;
      }
      while (*namepnt != 0) {
-@@ -1839,7 +1839,7 @@
+@@ -1916,7 +1916,7 @@
              }
          }
      }
@@ -28,7 +28,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply(550, MSG_SANITY_FILE_FAILURE, where);
          return;
      }
-@@ -2397,7 +2397,7 @@
+@@ -2473,7 +2473,7 @@
          addreply_noformat(501, MSG_NO_FILE_NAME);
          return;
      }
@@ -37,7 +37,16 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply(550, MSG_SANITY_FILE_FAILURE, name);
          return;
      }
-@@ -2453,7 +2453,7 @@
+@@ -2531,7 +2531,7 @@
+         addreply_noformat(501, MSG_NO_FILE_NAME);
+         return;
+     }
+-    if (checknamesanity(name, dot_write_ok) != 0) {
++    if (checknamesanity(name, dot_write_ok, 0) != 0) {
+         addreply(550, MSG_SANITY_FILE_FAILURE, name);
+         return;
+     }
+@@ -2566,7 +2566,7 @@
          addreply_noformat(501, MSG_NO_FILE_NAME);
          return;
      }
@@ -46,7 +55,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply(550, MSG_SANITY_FILE_FAILURE, name);
          return;
      }
-@@ -2740,7 +2740,7 @@
+@@ -2854,7 +2854,7 @@
          goto end;
      }
  # endif
@@ -55,7 +64,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply(550, MSG_SANITY_FILE_FAILURE, name);
          goto end;
      }
-@@ -3227,7 +3227,7 @@
+@@ -3346,7 +3346,7 @@
          addreply_noformat(550, MSG_ANON_CANT_MKD);
          return;
      }
@@ -64,7 +73,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply_noformat(550, MSG_SANITY_DIRECTORY_FAILURE);
          return;
      }
-@@ -3265,7 +3265,7 @@
+@@ -3384,7 +3384,7 @@
          return;
      }
  #endif
@@ -73,7 +82,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply_noformat(550, MSG_SANITY_DIRECTORY_FAILURE);
          return;
      }
-@@ -3561,7 +3561,7 @@
+@@ -3686,7 +3686,7 @@
          }
      }
      cantcheckspace:
@@ -82,7 +91,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          (atomic_file = get_atomic_file(name)) == NULL) {
          addreply(553, MSG_SANITY_FILE_FAILURE, name);
          /* implicit : atomic_file = NULL */
-@@ -3968,7 +3968,7 @@
+@@ -4093,7 +4093,7 @@
          addreply_noformat(550, MSG_RENAME_FAILURE);
          return;
      }
@@ -91,7 +100,7 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply(550, MSG_SANITY_FILE_FAILURE, name);
          return;
      }
-@@ -3998,7 +3998,7 @@
+@@ -4123,7 +4123,7 @@
          addreply_noformat(503, MSG_RENAME_NORNFR);
          goto bye;
      }    
@@ -100,3 +109,4 @@ diff -urN pure-ftpd-1.0.20.org/src/ftpd.c pure-ftpd-1.0.20/src/ftpd.c
          addreply(550, MSG_SANITY_FILE_FAILURE, name);
          return;                        /* don't clear rnfrom buffer */
      }
+
