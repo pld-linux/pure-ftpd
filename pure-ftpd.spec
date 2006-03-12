@@ -18,7 +18,7 @@ Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	0ec8ab71e6e9ead67d431fc75402847e
+# Source0-md5:	ca8a8dbec0cd9c8ea92fc4c37ea9c410
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
