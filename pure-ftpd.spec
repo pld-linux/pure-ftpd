@@ -158,11 +158,9 @@ bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 rm -f $RPM_BUILD_ROOT%{_mandir}/ftpusers-path.diff
 
 %if %{with extra}
-cd pure-config
-%{__make} install \
+%{__make} -C pure-config install \
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
