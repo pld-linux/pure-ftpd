@@ -155,12 +155,14 @@ touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
 bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+rm -f $RPM_BUILD_ROOT%{_mandir}/ftpusers-path.diff
 
 %if %{with extra}
 cd pure-config
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
