@@ -12,13 +12,13 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl):	Ma³y, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.20
-Release:	11%{?with_extra:extra}
+Version:	1.0.21
+Release:	2%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	e928e9e15adf6b52bfe6183fdad20144
+# Source0-md5:	ca8a8dbec0cd9c8ea92fc4c37ea9c410
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	ftpusers.tar.bz2
@@ -28,10 +28,9 @@ Source4:	http://twittner.host.sk/files/pure-config/pure-config-20041201.tar.gz
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
-Patch3:		%{name}-userlength.patch
-Patch4:		%{name}-mysql_config.patch
-Patch5:		%{name}-nosymlinks-hideuidmismatch.patch
-Patch6:		%{name}-auth-can-delete-pure.patch
+Patch3:		%{name}-mysql_config.patch
+Patch4:		%{name}-nosymlinks-hideuidmismatch.patch
+Patch5:		%{name}-auth-can-delete-pure.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -42,15 +41,16 @@ URL:		http://www.pureftpd.org/
 %{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	pam >= 0.79.0
 %{!?with_extra:Requires:	perl-base}
 Requires:	rc-scripts
 Provides:	ftpserver
-Obsoletes:	ftpserver
 Obsoletes:	anonftp
 Obsoletes:	bftpd
 Obsoletes:	ftpd-BSD
+Obsoletes:	ftpserver
 Obsoletes:	glftpd
 Obsoletes:	heimdal-ftpd
 Obsoletes:	linux-ftpd
@@ -90,15 +90,16 @@ po³±czeñ...
 %prep
 %setup -q -a 4
 %patch0 -p0
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%{?with_longusername:%patch3 -p1}
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
 
 %build
+# drop --without-cork for Th
 %configure \
+	--without-cork \
 	--with-boring \
 	--with-altlog \
 	--with-cookie \
@@ -154,6 +155,7 @@ touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
 bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+rm -f $RPM_BUILD_ROOT%{_mandir}/ftpusers-path.diff
 
 %if %{with extra}
 cd pure-config
@@ -161,22 +163,17 @@ cd pure-config
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add %{name}
-if [ -f %{_var}/lock/subsys/%{name} ]; then
-	/etc/rc.d/init.d/%{name} restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/%{name} start\" to start PureFTPD daemon."
-fi
+%service %{name} restart "PureFTPD daemon"
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f %{_var}/lock/subsys/%{name} ]; then
-		/etc/rc.d/init.d/%{name} stop 1>&2
-	fi
+	%service %{name} stop
 	/sbin/chkconfig --del %{name}
 fi
 
