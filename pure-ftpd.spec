@@ -10,7 +10,7 @@
 %bcond_without	cap		# disable capabilities
 #
 Summary:	Small, fast and secure FTP server
-Summary(pl):	Ma≥y, szybki i bezpieczny serwer FTP
+Summary(pl.UTF-8):   Ma≈Çy, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.21
 Release:	4%{?with_extra:extra}
@@ -77,15 +77,15 @@ capabilities) . Features include PAM support, IPv6, chroot()ed home
 directories, virtual domains, built-in LS, anti-warez system, bounded
 ports for passive downloads...
 
-%description -l pl
-Pure-FTPD to szybki, wysokiej jako∂ci, odpowiadaj±cy standardom serwer
-FTP bazuj±cy na Troll-FTPd. W przeciwieÒstwie do innych serwerÛw FTP
-nie ma znanych luk w bezpieczeÒstwie. Ponadto jest trywialny w
+%description -l pl.UTF-8
+Pure-FTPD to szybki, wysokiej jako≈õci, odpowiadajƒÖcy standardom serwer
+FTP bazujƒÖcy na Troll-FTPd. W przeciwie≈Ñstwie do innych serwer√≥w FTP
+nie ma znanych luk w bezpiecze≈Ñstwie. Ponadto jest trywialny w
 konfiguracji i specjalnie zaprojektowany dla nowych kerneli Linuksa
-(setfsuid, sendfile, capabilibies). Moøliwo∂ci to wsparcie dla PAM-a,
-IPv6, chroot()owanych katalogÛw domowych, virtualne domeny, wbudowany
-LS, system anty-warezowy, ograniczanie portÛw dla pasywnych
-po≥±czeÒ...
+(setfsuid, sendfile, capabilibies). Mo≈ºliwo≈õci to wsparcie dla PAM-a,
+IPv6, chroot()owanych katalog√≥w domowych, virtualne domeny, wbudowany
+LS, system anty-warezowy, ograniczanie port√≥w dla pasywnych
+po≈ÇƒÖcze≈Ñ...
 
 %prep
 %setup -q -a 4
