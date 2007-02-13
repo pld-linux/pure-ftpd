@@ -10,7 +10,7 @@
 %bcond_without	cap		# disable capabilities
 #
 Summary:	Small, fast and secure FTP server
-Summary(pl.UTF-8):   Mały, szybki i bezpieczny serwer FTP
+Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.21
 Release:	4%{?with_extra:extra}
