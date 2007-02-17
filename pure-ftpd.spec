@@ -158,11 +158,11 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 %{?with_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
-%{?with_ldap:install pureftpd.schema $RPM_BUILD_ROOT%{_datadir}/openldap/schema/pureftpd.schema}
 %{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
 %{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
+install pureftpd.schema $RPM_BUILD_ROOT%{_datadir}/openldap/schema/pureftpd.schema
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
@@ -211,4 +211,4 @@ fi
 %lang(ru) %{_mandir}/ru/man5/ftpusers*
 
 %files -n openldap-schema-pure-ftpd
-%{_datadir}/openldap/schema/pureftpd.schema
+%defattr(644,root,root,755) %{_datadir}/openldap/schema/pureftpd.schema
