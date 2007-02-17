@@ -88,10 +88,12 @@ LS, system anty-warezowy, ograniczanie portów dla pasywnych
 połączeń...
 
 %package -n openldap-schema-pureftpd
-Summary:        Pure-FTPd LDAP schema
-Summary(pl.UTF-8):    Schemat LDAP Pure-FTPd'a
-Group:          Netwroking/Daemons
+Summary:	Pure-FTPd LDAP schema
+Summary(pl.UTF-8):	Schemat LDAP Pure-FTPd'a
+Group:		Netwroking/Daemons
+Requires(post,postun):	sed >= 4.0
 Requires:	openldap-servers
+Requires:	sed >= 4.0 
 
 %description -n openldap-schema-pureftpd
 This package contains an Pure-FTPd openldap schema.
