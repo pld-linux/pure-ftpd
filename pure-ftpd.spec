@@ -87,6 +87,18 @@ IPv6, chroot()owanych katalogów domowych, virtualne domeny, wbudowany
 LS, system anty-warezowy, ograniczanie portów dla pasywnych
 połączeń...
 
+%package -n openldap-schema-pure-ftpd
+Summary:        Pure-FTPd LDAP schema
+Summary(pl.UTF-8):    Schemat LDAP Pure-FTPd'a
+Group:          Netwrokinf/Daemons
+Requires:	openldap-servers
+
+%description -n openldap-schema-pure-ftpd
+This package contains an Pure-FTPd openldap schema.
+
+%description -n openldap-schema-pure-ftpd -l pl.UTF-8
+Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
+
 %prep
 %setup -q -a 4
 %patch0 -p0
@@ -137,7 +149,7 @@ cd pure-config
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir}}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir},%{_datadir}/openldap/schema}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -146,6 +158,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 %{?with_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
+%{?with_ldap:install pureftpd.schema $RPM_BUILD_ROOT%{_datadir}/openldap/schema/pureftpd.schema}
 %{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
@@ -196,3 +209,6 @@ fi
 %lang(pl) %{_mandir}/pl/man5/ftpusers*
 %lang(pt_BR) %{_mandir}/pt_BR/man5/ftpusers*
 %lang(ru) %{_mandir}/ru/man5/ftpusers*
+
+%files -n openldap-schema-pure-ftpd
+%{_datadir}/openldap/schema/pureftpd.schema
