@@ -90,7 +90,7 @@ połączeń...
 %package -n openldap-schema-pureftpd
 Summary:        Pure-FTPd LDAP schema
 Summary(pl.UTF-8):    Schemat LDAP Pure-FTPd'a
-Group:          Netwrokinf/Daemons
+Group:          Netwroking/Daemons
 Requires:	openldap-servers
 
 %description -n openldap-schema-pureftpd
