@@ -87,16 +87,16 @@ IPv6, chroot()owanych katalogów domowych, virtualne domeny, wbudowany
 LS, system anty-warezowy, ograniczanie portów dla pasywnych
 połączeń...
 
-%package -n openldap-schema-pure-ftpd
+%package -n openldap-schema-pureftpd
 Summary:        Pure-FTPd LDAP schema
 Summary(pl.UTF-8):    Schemat LDAP Pure-FTPd'a
 Group:          Netwrokinf/Daemons
 Requires:	openldap-servers
 
-%description -n openldap-schema-pure-ftpd
+%description -n openldap-schema-pureftpd
 This package contains an Pure-FTPd openldap schema.
 
-%description -n openldap-schema-pure-ftpd -l pl.UTF-8
+%description -n openldap-schema-pureftpd -l pl.UTF-8
 Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 
 %prep
@@ -210,5 +210,5 @@ fi
 %lang(pt_BR) %{_mandir}/pt_BR/man5/ftpusers*
 %lang(ru) %{_mandir}/ru/man5/ftpusers*
 
-%files -n openldap-schema-pure-ftpd
+%files -n openldap-schema-pureftpd
 %defattr(644,root,root,755) %{_datadir}/openldap/schema/pureftpd.schema
