@@ -41,7 +41,7 @@ URL:		http://www.pureftpd.org/
 %{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.304
 Requires(post,preun):	/sbin/chkconfig
 Requires:	pam >= 0.79.0
 %{!?with_extra:Requires:	perl-base}
