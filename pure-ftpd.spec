@@ -90,7 +90,7 @@ połączeń...
 
 %package -n openldap-schema-pureftpd
 Summary:	Pure-FTPd LDAP schema
-Summary(pl.UTF-8):	Schemat LDAP Pure-FTPd'a
+Summary(pl.UTF-8):	Schemat LDAP dla Pure-FTPd
 Group:		Networking/Daemons
 Requires(post,postun):	sed >= 4.0
 Requires:	openldap-servers
@@ -225,4 +225,5 @@ fi
 %lang(ru) %{_mandir}/ru/man5/ftpusers*
 
 %files -n openldap-schema-pureftpd
-%defattr(644,root,root,755) %{schemadir}/pureftpd.schema
+%defattr(644,root,root,755)
+%{schemadir}/pureftpd.schema
