@@ -67,6 +67,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/ftpd
 %define		_ftpdir		/home/services/ftp
+%define		schemadir	/usr/share/openldap/schema
 
 %description
 Pure-FTPd is a fast, production-quality, standard-comformant FTP
@@ -151,7 +152,7 @@ cd pure-config
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir},%{_datadir}/openldap/schema}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir},%{schemadir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -164,7 +165,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 %{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
 %{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
-install pureftpd.schema $RPM_BUILD_ROOT%{_datadir}/openldap/schema/pureftpd.schema
+install pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
 touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
@@ -190,6 +191,17 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del %{name}
 fi
 
+%post -n openldap-schema-pureftpd
+%openldap_schema_register %{schemadir}/pureftpd.schema -d core
+%service -q ldap restart
+
+%postun -n openldap-schema-pureftpd
+if [ "$1" = "0" ]; then
+	%openldap_schema_unregister %{schemadir}/pureftpd.schema
+	%service -q ldap restart
+fi
+
+
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog CONTACT FAQ HISTORY NEWS README* THANKS pure*.conf pureftpd.schema
@@ -213,4 +225,4 @@ fi
 %lang(ru) %{_mandir}/ru/man5/ftpusers*
 
 %files -n openldap-schema-pureftpd
-%defattr(644,root,root,755) %{_datadir}/openldap/schema/pureftpd.schema
+%defattr(644,root,root,755) %{schemadir}/pureftpd.schema
