@@ -13,7 +13,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.21
-Release:	4%{?with_extra:extra}
+Release:	5%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
@@ -166,7 +166,8 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
 %{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
 install pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
-touch $RPM_BUILD_ROOT/etc/security/blacklist.ftp
+
+touch $RPM_BUILD_ROOT%{_sysconfdir}/ftpusers
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
@@ -209,7 +210,7 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.ftp
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpusers
 %{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-pgsql.conf}
