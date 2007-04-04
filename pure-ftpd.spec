@@ -206,7 +206,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog CONTACT FAQ HISTORY NEWS README* THANKS pure*.conf pureftpd.schema
+%doc AUTHORS ChangeLog CONTACT COPYING FAQ HISTORY NEWS README* THANKS pure*.conf pureftpd.schema
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
