@@ -37,10 +37,7 @@ else
 	exit 0
 fi
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
+start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/pure-ftpd ]; then
 		msg_starting pure-ftpd
@@ -68,8 +65,9 @@ case "$1" in
 	else
 		msg_already_running pure-ftpd
 	fi
-	;;
-  stop)
+}
+
+stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/pure-ftpd ]; then
 		if [ -n "$UPLOADSCRIPT" ]; then
@@ -84,6 +82,16 @@ case "$1" in
 	else
 		msg_not_running pure-ftpd
 	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
 	;;
   status)
 	status pure-ftpd
@@ -94,9 +102,8 @@ case "$1" in
 	fi
 	;;
   restart|force-reload)
-	$0 stop
-	$0 start
-	exit $?
+	stop
+	start
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status}"
