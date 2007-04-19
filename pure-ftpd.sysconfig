@@ -4,6 +4,6 @@
 # this script is called after successfull file upload.
 # UPLOADSCRIPT=/path/to/script.sh
 
-# Selects UID/GID for pure-uploadscript daemon.
-# UPLOADSCRIPT_UID=ftp
-# UPLOADSCRIPT_GID=ftp
+# Select UID/GID for pure-uploadscript daemon (must be numeric).
+# UPLOADSCRIPT_UID=14
+# UPLOADSCRIPT_GID=50
