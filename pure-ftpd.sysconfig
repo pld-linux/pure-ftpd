@@ -1,0 +1,9 @@
+# Customized settings for pure-ftpd
+
+# If it is set and 'CallUploadScript' option is used in configuration file
+# this script is called after successfull file upload.
+# UPLOADSCRIPT=/path/to/script.sh
+
+# Selects UID/GID for pure-uploadscript daemon.
+# UPLOADSCRIPT_UID=ftp
+# UPLOADSCRIPT_GID=ftp

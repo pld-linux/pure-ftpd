@@ -54,6 +54,16 @@ case "$1" in
 			daemon $CFG /etc/ftpd/pureftpd.conf --daemonize
 			RETVAL=$?
 		fi
+		
+		if [ -n "$UPLOADSCRIPT" ]; then
+			msg_starting pure-uploadscript
+			UPLOADSCRIPTOPTS="-B -r $UPLOADSCRIPT"
+			[ -n "$UPLOADSCRIPT_UID" ] && UPLOADSCRIPTOPTS="$UPLOADSCRIPTOPTS -u $UPLOADSCRIPT_UID"
+			[ -n "$UPLOADSCRIPT_GID" ] && UPLOADSCRIPTOPTS="$UPLOADSCRIPTOPTS -g $UPLOADSCRIPT_GID"
+			daemon /usr/sbin/pure-uploadscript $UPLOADSCRIPTOPTS
+			RETVAL=$(($RETVAL+$?))
+		fi
+
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pure-ftpd
 	else
 		msg_already_running pure-ftpd
@@ -62,8 +72,14 @@ case "$1" in
   stop)
 	# Stop daemons.
 	if [ -f /var/lock/subsys/pure-ftpd ]; then
+		if [ -n "$UPLOADSCRIPT" ]; then
+		    msg_stopping pure-uploadscript
+		    killproc pure-uploadscript
+		fi
+
 		msg_stopping pure-ftpd
 		killproc pure-ftpd
+		
 		rm -f /var/lock/subsys/pure-ftpd > /dev/null 2>&1
 	else
 		msg_not_running pure-ftpd
@@ -71,6 +87,7 @@ case "$1" in
 	;;
   status)
 	status pure-ftpd
+	status pure-uploadscript
 	RETVAL=$?
 	if [ $RETVAL -eq 0 ]; then
 		pure-ftpwho
