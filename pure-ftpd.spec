@@ -21,9 +21,10 @@ Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz
 # Source0-md5:	ca8a8dbec0cd9c8ea92fc4c37ea9c410
 Source1:	%{name}.pamd
 Source2:	%{name}.init
-Source3:	ftpusers.tar.bz2
+Source3:	%{name}.sysconfig
+Source4:	ftpusers.tar.bz2
 # Source3-md5:	76c80b6ec9f4d079a1e27316edddbe16
-Source4:	http://twittner.host.sk/files/pure-config/pure-config-20041201.tar.gz
+Source5:	http://twittner.host.sk/files/pure-config/pure-config-20041201.tar.gz
 # Source4-md5:	3f2ff6b00b5c38ee11ce588ee5af6cf6
 Patch0:		%{name}-config.patch
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
@@ -104,7 +105,7 @@ This package contains an Pure-FTPd openldap schema.
 Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 
 %prep
-%setup -q -a 4
+%setup -q -a 5
 %patch0 -p0
 %patch3 -p1
 %patch4 -p1
@@ -160,6 +161,7 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 %{?with_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
@@ -172,7 +174,7 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/ftpusers
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
-bzip2 -dc %{SOURCE3} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
+bzip2 -dc %{SOURCE4} | tar xf - -C $RPM_BUILD_ROOT%{_mandir}
 rm -f $RPM_BUILD_ROOT%{_mandir}/ftpusers-path.diff
 
 %if %{with extra}
@@ -211,6 +213,7 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpusers
 %{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
