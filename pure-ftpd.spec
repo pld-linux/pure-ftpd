@@ -174,7 +174,7 @@ install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd
 %{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
 install pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
 
-touch $RPM_BUILD_ROOT%{_sysconfdir}/ftpusers
+touch $RPM_BUILD_ROOT%{_sysconfdir}/{ftpusers,pureftpd-dir-aliases}
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
@@ -219,6 +219,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpusers
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-dir-aliases
 %{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-pgsql.conf}
