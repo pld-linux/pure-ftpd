@@ -1,6 +1,6 @@
---- pure-ftpd/src/ftpd.c.org	2007-12-20 09:23:58.180941494 +0100
-+++ pure-ftpd/src/ftpd.c	2007-12-20 09:34:06.613793269 +0100
-@@ -1532,6 +1532,11 @@
+--- pure-ftpd/src/ftpd.c.orig	2007-12-20 09:59:10.629736723 +0100
++++ pure-ftpd/src/ftpd.c	2007-12-20 10:02:06.655676098 +0100
+@@ -1531,6 +1531,11 @@
      return chdir(home);
  }
  
@@ -12,7 +12,7 @@
  void dopass(char *password)
  {
      static unsigned int tapping;    
-@@ -1572,27 +1577,26 @@
+@@ -1571,27 +1576,28 @@
          }
      }
      if (authresult.auth_ok != 1) {
@@ -40,18 +40,18 @@
      }
      if (authresult.uid < useruid) {
          logfile(LOG_WARNING, MSG_ACCOUNT_DISABLED, account);
--        if (tapping >= MAX_PASSWD_TRIES) {
++	randomsleep(tapping);
+         if (tapping >= MAX_PASSWD_TRIES) {
 -            goto toomanytries;
--        }
++	    addreply_noformat(530, MSG_AUTH_FAILED);
++	    doreply();
++	    _EXIT(EXIT_FAILURE);
+         }
 -        addreply_noformat(530, MSG_NOTRUST);
 -        goto randomsleep;
-+	randomsleep(tapping);
-+        if (tapping >= MAX_PASSWD_TRIES)
-+	    addreply_noformat(530, MSG_AUTH_FAILED);
-+	else
-+	    addreply_noformat(530, MSG_NOTRUST);
++	addreply_noformat(530, MSG_NOTRUST);
 +	doreply();
-+	_EXIT(EXIT_FAILURE);
++	return;
      }
  
  #ifdef PER_USER_LIMITS
