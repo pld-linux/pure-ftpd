@@ -1,0 +1,13 @@
+; If -E is specified (no anonymous logins) then treat "ftp" and "anonymous" logins like normal user logins
+diff -urN pure-ftpd-1.0.21.org/src/ftpd.c pure-ftpd-1.0.21/src/ftpd.c
+--- pure-ftpd-1.0.21.org/src/ftpd.c	2006-02-21 14:14:49.000000000 +0100
++++ pure-ftpd-1.0.21/src/ftpd.c	2007-06-28 13:29:57.644688176 +0200
+@@ -1153,7 +1153,7 @@
+         return;
+     }
+     if (anon_only <= 0 && username != NULL && *username != 0 &&
+-        strcasecmp(username, "ftp") && strcasecmp(username, "anonymous")) {
++        (anon_only < 0 || (strcasecmp(username, "ftp") && strcasecmp(username, "anonymous")))) {
+         strncpy(account, username, sizeof(account) - 1);
+         account[sizeof(account) - (size_t) 1U] = 0;
+         addreply(331, MSG_USER_OK, account);
