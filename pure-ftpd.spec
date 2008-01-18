@@ -36,6 +36,7 @@ Patch6:		%{name}-nonssl-die.patch
 Patch7:		%{name}-del-log-path.patch
 Patch8:		%{name}-anonymous.patch
 Patch9:		%{name}-sleep.patch
+Patch10:	%{name}-passwd_location.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -118,6 +119,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
 
