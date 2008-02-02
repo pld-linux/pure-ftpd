@@ -13,7 +13,7 @@ Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.21
-Release:	13%{?with_extra:extra}
+Release:	14%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
@@ -53,22 +53,6 @@ Requires:	pam >= 0.79.0
 %{!?with_extra:Requires:	perl-base}
 Requires:	rc-scripts
 Provides:	ftpserver
-Obsoletes:	anonftp
-Obsoletes:	bftpd
-Obsoletes:	ftpd-BSD
-Obsoletes:	ftpserver
-Obsoletes:	glftpd
-Obsoletes:	heimdal-ftpd
-Obsoletes:	krb5-ftpd
-Obsoletes:	linux-ftpd
-Obsoletes:	muddleftpd
-Obsoletes:	proftpd
-Obsoletes:	proftpd-common
-Obsoletes:	proftpd-inetd
-Obsoletes:	proftpd-standalone
-Obsoletes:	troll-ftpd
-Obsoletes:	vsftpd
-Obsoletes:	wu-ftpd
 Conflicts:	man-pages < 1.51
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
