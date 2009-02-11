@@ -44,7 +44,7 @@ URL:		http://www.pureftpd.org/
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
 %{?with_mysql:BuildRequires:	mysql-devel}
-%{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
+%{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_tls:BuildRequires:	openssl-devel}
 BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
@@ -86,7 +86,7 @@ Summary(pl.UTF-8):	Schemat LDAP dla Pure-FTPd
 Group:		Networking/Daemons
 Requires(post,postun):	sed >= 4.0
 Requires:	openldap-servers
-Requires:	sed >= 4.0 
+Requires:	sed >= 4.0
 
 %description -n openldap-schema-pureftpd
 This package contains an Pure-FTPd openldap schema.
