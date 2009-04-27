@@ -12,13 +12,13 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.21
-Release:	17%{?with_extra:extra}
+Version:	1.0.22
+Release:	1%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	ca8a8dbec0cd9c8ea92fc4c37ea9c410
+# Source0-md5:	7f9ceefafaf9eb8fca757d7358f474fa
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -31,13 +31,8 @@ Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 Patch4:		%{name}-nosymlinks-hideuidmismatch.patch
-Patch5:		%{name}-auth-can-delete-pure.patch
-Patch6:		%{name}-nonssl-die.patch
-Patch7:		%{name}-del-log-path.patch
-Patch8:		%{name}-anonymous.patch
-Patch9:		%{name}-sleep.patch
-Patch10:	%{name}-passwd_location.patch
-Patch11:	%{name}-additionalgid.patch
+Patch5:		%{name}-passwd_location.patch
+Patch6:		%{name}-additionalgid.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -100,20 +95,14 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
+%patch6 -p1
 
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
 
 %build
-# drop --without-cork for Th
 %configure \
-	--without-cork \
+	CFLAGS="%{rpmcflags} %{rpmcppflags} -DALLOW_DELETION_OF_TEMPORARY_FILES=1" \
 	--with-boring \
 	--with-altlog \
 	--with-cookie \
@@ -121,7 +110,6 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 	--with-extauth \
 	--with-ftpwho \
 	--with-language=english \
-	--with-largefile \
 	%{!?with_cap:--without-capabilities} \
 	%{?with_ldap:--with-ldap} \
 	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
