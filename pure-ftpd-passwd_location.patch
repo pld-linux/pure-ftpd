@@ -1,28 +1,3 @@
---- ./man/pure-pw.8.org	2005-04-18 21:51:04.000000000 +0200
-+++ ./man/pure-pw.8	2008-01-18 10:06:00.000000000 +0100
-@@ -49,18 +49,18 @@
- all are chrooted, and they have their own home directory.
- .SH "FILES"
- .LP 
--\fI/etc/pureftpd.passwd\fP
-+\fI/etc/ftp/pureftpd.passwd\fP
- .br
--\fI/etc/pureftpd.pdb\fP 
-+\fI/etc/ftp/pureftpd.pdb\fP 
- .SH "ENVIRONMENT VARIABLES"
- .LP 
- \fIPURE_PASSWDFILE\fP
- If this variable is defined, this is the default value for the text password
--file. Without this variable, /etc/pureftpd.passwd is assumed.
-+file. Without this variable, /etc/ftp/pureftpd.passwd is assumed.
- .br
- \fIPURE_DBFILE\fP 
- If this variable is defined, this is the default value for the PureDB password
--file. Without this variable, /etc/pureftpd.pdb is assumed.
-+file. Without this variable, /etc/ftp/pureftpd.pdb is assumed.
- .SH "EXAMPLES"
- .LP 
- Please read http://www.pureftpd.org/README.Virtual\-Users
 --- ./FAQ.org	2004-07-22 09:37:00.000000000 +0200
 +++ ./FAQ	2008-01-18 10:03:04.000000000 +0100
 @@ -316,25 +316,25 @@
