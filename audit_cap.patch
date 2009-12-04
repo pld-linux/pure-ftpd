@@ -1,12 +1,13 @@
 --- pure-ftpd-1.0.24/src/caps_p.h~	2009-10-24 11:45:57.000000000 +0200
 +++ pure-ftpd-1.0.24/src/caps_p.h	2009-11-13 00:05:52.489631491 +0100
-@@ -14,7 +14,8 @@
+@@ -13,7 +13,8 @@
+     CAP_NET_BIND_SERVICE,
      CAP_SYS_CHROOT,
      CAP_SYS_NICE,
-     CAP_NET_ADMIN,
 -    CAP_DAC_READ_SEARCH
 +    CAP_DAC_READ_SEARCH,
-+    CAP_AUDIT_WRITE
++	CAP_AUDIT_WRITE
  };
  
  cap_value_t cap_keep_login[] = {
+
