@@ -102,7 +102,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 
 %build
 %configure \
-	CFLAGS="%{rpmcflags} %{rpmcppflags} -DALLOW_DELETION_OF_TEMPORARY_FILES=1" \
+	CFLAGS="%{rpmcflags} %{rpmcppflags} -DALLOW_DELETION_OF_TEMPORARY_FILES=1 -DALWAYS_SHOW_RESOLVED_SYMLINKS=1" \
 	--with-boring \
 	--with-altlog \
 	--with-cookie \
