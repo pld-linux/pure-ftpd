@@ -9,11 +9,12 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 #
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.29
-Release:	1%{?with_extra:extra}
+Release:	%{rel}%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
