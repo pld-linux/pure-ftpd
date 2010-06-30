@@ -1,0 +1,47 @@
+--- pure-ftpd-1.0.29/src/log_mysql.h~	2010-03-15 16:20:25.000000000 +0100
++++ pure-ftpd-1.0.29/src/log_mysql.h	2010-06-30 11:57:43.084176772 +0200
+@@ -6,6 +6,7 @@
+ #define PASSWD_SQL_MYSQL "password"
+ #define PASSWD_SQL_MD5 "md5"
+ #define PASSWD_SQL_ANY "any"
++#define PASSWD_SQL_ALL "all"
+ #define MYSQL_DEFAULT_SERVER "localhost"
+ #define MYSQL_DEFAULT_PORT 3306
+ #define MYSQL_MAX_REQUEST_LENGTH ((size_t) 8192U)
+--- pure-ftpd-1.0.29/src/log_mysql.c~	2010-03-15 16:20:25.000000000 +0100
++++ pure-ftpd-1.0.29/src/log_mysql.c	2010-06-30 11:58:39.120827157 +0200
+@@ -416,6 +416,11 @@
+         crypto_crypt++;
+         crypto_mysql++;
+         crypto_md5++;
++    } else if (strcasecmp(crypto, PASSWD_SQL_ALL) == 0) {
++        crypto_crypt++;
++        crypto_mysql++;
++        crypto_md5++;
++        crypto_plain++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_CRYPT) == 0) {
+         crypto_crypt++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_MYSQL) == 0) {
+--- pure-ftpd-1.0.29/src/log_pgsql.h~	2010-03-15 16:20:25.000000000 +0100
++++ pure-ftpd-1.0.29/src/log_pgsql.h	2010-06-30 11:57:59.065414391 +0200
+@@ -6,6 +6,7 @@
+ #define PASSWD_SQL_PGSQL "password"
+ #define PASSWD_SQL_MD5 "md5"
+ #define PASSWD_SQL_ANY "any"
++#define PASSWD_SQL_ALL "all"
+ #define PGSQL_DEFAULT_SERVER "localhost"
+ #define PGSQL_DEFAULT_PORT 5432
+ #define PGSQL_MAX_REQUEST_LENGTH ((size_t) 8192U)
+--- pure-ftpd-1.0.29/src/log_pgsql.c~	2010-03-15 16:20:25.000000000 +0100
++++ pure-ftpd-1.0.29/src/log_pgsql.c	2010-06-30 11:59:01.591116941 +0200
+@@ -494,6 +494,10 @@
+     if (strcasecmp(crypto, PASSWD_SQL_ANY) == 0) {
+         crypto_crypt++;
+         crypto_md5++;
++    } else if (strcasecmp(crypto, PASSWD_SQL_ANY) == 0) {
++        crypto_crypt++;
++        crypto_md5++;
++        crypto_plain++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_CRYPT) == 0) {
+         crypto_crypt++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_MD5) == 0) {
