@@ -9,17 +9,17 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 #
-%define	rel	5
+%define	rel	1
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.29
+Version:	1.0.30
 Release:	%{rel}%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	ftp://ftp.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	12a074824b509f9e7684fab333ed6915
+# Source0-md5:	865a9020dbe48d30913c796ac3ec1f32
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -35,6 +35,7 @@ Patch4:		%{name}-allauth.patch
 Patch5:		%{name}-passwd_location.patch
 Patch6:		%{name}-additionalgid.patch
 Patch7:		audit_cap.patch
+Patch8:		%{name}-mysql.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -99,11 +100,15 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
 
 %build
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
 %configure \
 	CFLAGS="%{rpmcflags} %{rpmcppflags} -DALLOW_DELETION_OF_TEMPORARY_FILES=1 -DALWAYS_SHOW_RESOLVED_SYMLINKS=1" \
 	--with-boring \

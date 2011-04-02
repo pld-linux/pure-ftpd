@@ -1,0 +1,43 @@
+commit 63b772af295acf572b25118c0bd62735a3eb09b9
+Author: Frank DENIS <github@pureftpd.org>
+Date:   Sat Apr 2 17:40:53 2011 +0200
+
+    Use my_make_scrambled_password() instead of make_scrambled_password()
+    if available.
+    make_scrambled_password() is not exported anymore in Fedora, but as
+    Arkadiusz Miskiewicz pointed out, my_make_scrambled_password() recently is.
+
+diff --git a/configure.ac b/configure.ac
+index 4b7afe7..937c15f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1216,10 +1216,10 @@ AC_ARG_WITH(mysql,
+       }
+       ]])],[],[
+         AC_MSG_RESULT(no)
+-        AC_MSG_ERROR(Your MySQL client libraries aren't properly installed)      
++        AC_MSG_ERROR(Your MySQL client libraries aren't properly installed)
+     ],[])
+     AC_MSG_RESULT(yes)
+-    AC_CHECK_FUNCS(mysql_real_escape_string)
++    AC_CHECK_FUNCS(mysql_real_escape_string my_make_scrambled_password)
+   fi ])
+ 
+ AC_ARG_WITH(pgsql,
+diff --git a/src/log_mysql.c b/src/log_mysql.c
+index c6202fe..2d9eafd 100644
+--- a/src/log_mysql.c
++++ b/src/log_mysql.c
+@@ -451,7 +451,12 @@ void pw_mysql_check(AuthResult * const result,
+ # if MYSQL_VERSION_ID >= 40100 && MYSQL_VERSION_ID < 40101
+         make_scrambled_password(scrambled_password, password, 1, NULL);
+ # else
++#  ifdef HAVE_MY_MAKE_SCRAMBLED_PASSWORD
++        my_make_scrambled_password(scrambled_password, password,
++                                   strlen(password));
++#  else
+         make_scrambled_password(scrambled_password, password);
++#  endif
+ # endif
+ #endif
+         if (strcmp(scrambled_password, spwd) == 0) {
