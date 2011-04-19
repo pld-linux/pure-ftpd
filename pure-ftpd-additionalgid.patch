@@ -86,11 +86,12 @@ diff -ur pure-ftpd-1.0.21/src/globals.h pure-ftpd-1.0.21.new/src/globals.h
  GLOBAL0(signed char debug);                        /* don't give debug output */
 --- pure/configuration-file/pure-config.pl.in~	2009-02-03 15:47:24.346020364 +0100
 +++ pure/configuration-file/pure-config.pl.in	2009-02-03 15:48:34.678184463 +0100
-@@ -64,6 +64,7 @@
+@@ -65,6 +65,7 @@
  my %numeric_switch_for = (
- 	MaxIdleTime		=> "-I",
- 	MaxDiskUsage		=> "-k",
-+	AdditionalGID		=> "-2",
- 	TrustedGID		=> "-a",
- 	MaxClientsNumber	=> "-c",
- 	MaxClientsPerIP		=> "-C",
+         MaxIdleTime             => "-I",
+         MaxDiskUsage            => "-k",
++        AdditionalGID           => "-2",
+         TrustedGID              => "-a",
+         MaxClientsNumber        => "-c",
+         MaxClientsPerIP         => "-C",
+
