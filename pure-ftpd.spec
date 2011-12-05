@@ -13,13 +13,13 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.34
+Version:	1.0.35
 Release:	%{rel}%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	8985aa1e2b81668b53e0311ca1040907
+# Source0-md5:	500988c4fa8decff294b56f164be955e
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -104,7 +104,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %{?with_extra:%patch2 -p1}
 
 %build
-%{__aclocal}
+%{__aclocal} -Im4
 %{__autoconf}
 %{__autoheader}
 %configure \
