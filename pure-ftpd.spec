@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	1
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -35,6 +35,7 @@ Patch4:		%{name}-allauth.patch
 Patch5:		%{name}-passwd_location.patch
 Patch6:		%{name}-additionalgid.patch
 Patch7:		audit_cap.patch
+Patch8:		pure-ftpd-apparmor.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -43,6 +44,7 @@ URL:		http://www.pureftpd.org/
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_tls:BuildRequires:	openssl-devel}
+BuildRequires:	libapparmor-devel
 BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.304
@@ -102,6 +104,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
@@ -133,7 +136,8 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 	%{?with_tls:--with-tls --with-certfile=%{_sharedstatedir}/openssl/certs/ftpd.pem} \
 	--with-uploadscript \
 	--with-virtualchroot \
-	--with-virtualhosts
+	--with-virtualhosts \
+	--with-apparmor
 
 %if %{with extra}
 cd pure-config
