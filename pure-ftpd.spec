@@ -9,17 +9,17 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	3
+%define	rel	1
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.36
+Version:	1.0.40
 Release:	%{rel}%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	7899c75c1fed7dbad0352eb31080e066
+# Source0-md5:	33a503343a0f960332156387cc2dde55
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -31,7 +31,7 @@ Patch0:		%{name}-config.patch
 Patch1:		%{name}-path_to_ssl_cert_in_config.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
-Patch4:		%{name}-allauth.patch
+
 Patch5:		%{name}-passwd_location.patch
 Patch6:		%{name}-additionalgid.patch
 Patch7:		audit_cap.patch
@@ -100,7 +100,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %setup -q -a 5
 %patch0 -p0
 %patch3 -p1
-%patch4 -p1
+
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
@@ -204,6 +204,10 @@ if [ "$1" = "0" ]; then
 	%service -q ldap restart
 fi
 
+%triggerpostun -- %{name}-server < 1.0.40-1
+%{?with_mysql:sed -i -e 's#MYSQLCrypt[\t ]\+all#MYSQLCrypt    any#gi' $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
+%{?with_pgsql:sed -i -e 's#PgSQLCrypt[\t ]\+all#PgSQLCrypt    any#gi' $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
+exit 0
 
 %files
 %defattr(644,root,root,755)
