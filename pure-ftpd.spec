@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	1
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -36,6 +36,7 @@ Patch5:		%{name}-passwd_location.patch
 Patch6:		%{name}-additionalgid.patch
 Patch7:		audit_cap.patch
 Patch8:		pure-ftpd-apparmor.patch
+Patch9:		pure-ftpd-mysql-utf8.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -105,6 +106,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}

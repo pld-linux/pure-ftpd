@@ -1,0 +1,31 @@
+diff --git a/src/log_mysql.c b/src/log_mysql.c
+index 2ce748a..f812a4d 100644
+--- a/src/log_mysql.c
++++ b/src/log_mysql.c
+@@ -226,6 +226,13 @@ static int pw_mysql_connect(MYSQL ** const id_sql_server)
+     }
+     server_down = 0;
+ 
++    if (mysql_set_character_set(*id_sql_server, "utf8"))
++    {
++                       logfile(LOG_ERR, MSG_SQL_FAILED_CHSET_UTF8,
++                               mysql_error(*id_sql_server),
++                               mysql_character_set_name(*id_sql_server));
++    }
++
+     return 0;
+ }
+ 
+diff --git a/src/messages_en.h b/src/messages_en.h
+index 90999bb..201957a 100644
+--- a/src/messages_en.h
++++ b/src/messages_en.h
+@@ -200,6 +200,8 @@
+ #define MSG_UNKNOWN_ALTLOG "Unknown logging format"
+ #define MSG_ACCOUNT_DISABLED "Can't login as [%s]: account disabled"
+ #define MSG_SQL_WRONG_PARMS "Wrong SQL parameters"
++#define MSG_SQL_FAILED_CHSET_UTF8 "Failed to set character set for database to utf8: %s \n" \
++    "(using old character set: %s)"
+ #define MSG_ILLEGAL_CONFIG_FILE_SQL "Invalid SQL configuration file"
+ #define MSG_SQL_MISSING_SERVER "Missing server in the SQL configuration file"
+ #define MSG_SQL_DOWN "The SQL server seems to be down"
