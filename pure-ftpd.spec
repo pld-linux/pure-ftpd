@@ -27,7 +27,7 @@ Source4:	ftpusers.tar.bz2
 Source5:	http://twittner.host.sk/files/pure-config/pure-config-20041201.tar.gz
 # Source5-md5:	3f2ff6b00b5c38ee11ce588ee5af6cf6
 Patch0:		%{name}-config.patch
-Patch1:		%{name}-path_to_ssl_cert_in_config.patch
+
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 
@@ -108,7 +108,6 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch8 -p1
 %patch9 -p1
 
-%{?with_extra:%patch1 -p1}
 %{?with_extra:%patch2 -p1}
 
 %build
