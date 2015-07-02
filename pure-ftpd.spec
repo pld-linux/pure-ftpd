@@ -15,7 +15,6 @@ Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
 Version:	1.0.41
 Release:	%{rel}%{?with_extra:extra}
-Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
@@ -35,18 +34,18 @@ Patch3:		%{name}-mysql_config.patch
 Patch5:		%{name}-passwd_location.patch
 Patch6:		%{name}-additionalgid.patch
 Patch7:		audit_cap.patch
-Patch8:		pure-ftpd-apparmor.patch
-Patch9:		pure-ftpd-mysql-utf8.patch
+Patch8:		%{name}-apparmor.patch
+Patch9:		%{name}-mysql-utf8.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
+BuildRequires:	libapparmor-devel
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
 BuildRequires:	libsodium-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_tls:BuildRequires:	openssl-devel}
-BuildRequires:	libapparmor-devel
 BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.304
@@ -161,16 +160,16 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
+install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 %{?with_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
-install configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
+cp -p configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
 %{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
-install pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
+cp -p pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/{ftpusers,pureftpd-dir-aliases}
 
@@ -207,7 +206,7 @@ if [ "$1" = "0" ]; then
 	%service -q ldap restart
 fi
 
-%triggerpostun -- pure-ftpd < 1.0.40-1
+%triggerpostun -- %{name} < 1.0.40-1
 %{?with_mysql:sed -i -e 's#MYSQLCrypt[\t ]\+all#MYSQLCrypt    any#gi' $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:sed -i -e 's#PgSQLCrypt[\t ]\+all#PgSQLCrypt    any#gi' $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 exit 0
