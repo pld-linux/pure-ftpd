@@ -36,7 +36,7 @@ diff -ur pure-ftpd-1.0.21/src/ftpd.c pure-ftpd-1.0.21.new/src/ftpd.c
              no_truncate = 1;
              break;
          }
-+        case '2': {
++        case '3': {
 +            const char *nptr;
 +            char *endptr;
 +
@@ -46,7 +46,7 @@ diff -ur pure-ftpd-1.0.21/src/ftpd.c pure-ftpd-1.0.21.new/src/ftpd.c
 +            if (!nptr || !*nptr || !endptr || *endptr) {
 +                die(421, LOG_ERR, MSG_CONF_ERR ": " MSG_ILLEGAL_TRUSTED_GID " (XXX: additional): %s" , optarg);
 +            }
-+	    want_additionalgid = 1;
++            want_additionalgid = 1;
 +            break;
 +        }
          case '4': {
@@ -60,18 +60,18 @@ diff -ur pure-ftpd-1.0.21/src/ftpd_p.h pure-ftpd-1.0.21.new/src/ftpd_p.h
  
  static const char *GETOPT_OPTIONS =
 -    "0146"
-+    "012:46"
++    "013:46"
  #ifdef WITH_RFC2640
      "8:9:"
  #endif
-@@ -112,6 +112,7 @@
- static struct option long_options[] = {
-     { "notruncate", 0, NULL, '0' },    
-     { "logpid", 0, NULL, '1' },
-+    { "additionalgid", 1, NULL, '2' },
+@@ -115,6 +115,7 @@ static struct option long_options[] = {
+ # ifdef WITH_TLS
+     { "certfile", 1, NULL, '2' },
+ # endif
++    { "additionalgid", 1, NULL, '3' },
      { "ipv4only", 0, NULL, '4' },
-     { "ipv6only", 0, NULL, '6' },    
- #ifdef WITH_RFC2640
+     { "ipv6only", 0, NULL, '6' },
+ # ifdef WITH_RFC2640
 diff -ur pure-ftpd-1.0.21/src/globals.h pure-ftpd-1.0.21.new/src/globals.h
 --- pure-ftpd-1.0.21/src/globals.h	2006-02-15 09:55:00.000000000 +0100
 +++ pure-ftpd-1.0.21.new/src/globals.h	2009-02-03 15:13:13.234021509 +0100
@@ -90,7 +90,7 @@ diff -ur pure-ftpd-1.0.21/src/globals.h pure-ftpd-1.0.21.new/src/globals.h
  my %numeric_switch_for = (
          MaxIdleTime             => "-I",
          MaxDiskUsage            => "-k",
-+        AdditionalGID           => "-2",
++        AdditionalGID           => "-3",
          TrustedGID              => "-a",
          MaxClientsNumber        => "-c",
          MaxClientsPerIP         => "-C",

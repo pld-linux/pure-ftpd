@@ -9,17 +9,17 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	2
+%define	rel	1
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.40
+Version:	1.0.41
 Release:	%{rel}%{?with_extra:extra}
 Epoch:		0
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	33a503343a0f960332156387cc2dde55
+# Source0-md5:	76c2364591418f153ed815034621d058
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -42,6 +42,7 @@ URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	automake}
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
+BuildRequires:	libsodium-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.3.0}
 %{?with_tls:BuildRequires:	openssl-devel}
@@ -206,7 +207,7 @@ if [ "$1" = "0" ]; then
 	%service -q ldap restart
 fi
 
-%triggerpostun -- %{name}-server < 1.0.40-1
+%triggerpostun -- pure-ftpd < 1.0.40-1
 %{?with_mysql:sed -i -e 's#MYSQLCrypt[\t ]\+all#MYSQLCrypt    any#gi' $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:sed -i -e 's#PgSQLCrypt[\t ]\+all#PgSQLCrypt    any#gi' $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
 exit 0

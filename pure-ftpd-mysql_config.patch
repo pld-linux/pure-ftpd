@@ -4,7 +4,7 @@
  
  # Optional : define the location of mysql.sock if the server runs on this host.
  
--MYSQLSocket     /tmp/mysql.sock
+-MYSQLSocket     /var/run/mysqld/mysqld.sock
 +MYSQLSocket     /var/lib/mysql/mysql.sock
  
  
