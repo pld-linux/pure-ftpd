@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	2
+%define	rel	3
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -27,7 +27,7 @@ Source4:	ftpusers.tar.bz2
 Source5:	http://twittner.host.sk/files/pure-config/pure-config-20041201.tar.gz
 # Source5-md5:	3f2ff6b00b5c38ee11ce588ee5af6cf6
 Patch0:		%{name}-config.patch
-
+Patch1:		%{name}-allauth.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 
@@ -100,6 +100,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %prep
 %setup -q -a 5
 %patch0 -p0
+%patch1 -p1
 %patch3 -p1
 
 %patch5 -p1

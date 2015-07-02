@@ -1,0 +1,20 @@
+--- a/src/log_mysql.c~	2015-07-02 14:57:00.000000000 +0200
++++ b/src/log_mysql.c	2015-07-02 14:57:43.001711520 +0200
+@@ -438,6 +438,7 @@ void pw_mysql_check(AuthResult * const r
+         crypto_mysql++;
+         crypto_md5++;
+         crypto_sha1++;
++        crypto_plain++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_SCRYPT) == 0) {
+         crypto_scrypt++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_CRYPT) == 0) {
+--- a/src/log_pgsql.c~	2015-07-02 14:57:00.000000000 +0200
++++ b/src/log_pgsql.c	2015-07-02 14:57:55.612037841 +0200
+@@ -506,6 +506,7 @@ void pw_pgsql_check(AuthResult * const r
+         crypto_crypt++;
+         crypto_md5++;
+         crypto_sha1++;
++        crypto_plain++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_SCRYPT) == 0) {
+         crypto_scrypt++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_CRYPT) == 0) {
