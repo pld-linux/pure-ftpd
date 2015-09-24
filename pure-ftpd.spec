@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	1
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -50,6 +50,12 @@ BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.304
 Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
 Requires:	pam >= 0.79.0
 %{!?with_extra:Requires:	perl-base}
 Requires:	rc-scripts
@@ -190,10 +196,20 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/chkconfig --add %{name}
 %service %{name} restart "PureFTPD daemon"
 
+%pre
+%groupadd -g 326 ftpauth
+%useradd -u 326 -d %{_ftpdir} -s /bin/false -c "FTP Auth daemon" -g ftpauth ftpauth
+
 %preun
 if [ "$1" = "0" ]; then
 	%service %{name} stop
 	/sbin/chkconfig --del %{name}
+fi
+
+%postun
+if [ "$1" = "0" ]; then
+	%userremove ftpauth
+	%groupremove ftpauth
 fi
 
 %post -n openldap-schema-pureftpd
