@@ -60,6 +60,8 @@ Requires:	pam >= 0.79.0
 %{!?with_extra:Requires:	perl-base}
 Requires:	rc-scripts
 Provides:	ftpserver
+Provides:	user(ftpauth)
+Provides:	group(ftpauth)
 Conflicts:	man-pages < 1.51
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
