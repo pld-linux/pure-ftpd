@@ -1,5 +1,8 @@
 # Customized settings for pure-ftpd
 
+# Own authorization script, see README.Authentication-Modules
+# PURE_AUTH_SCRIPT=/etc/ftpd/auth.script
+
 # If it is set and 'CallUploadScript' option is used in configuration file
 # this script is called after successfull file upload.
 # UPLOADSCRIPT=/path/to/script.sh
