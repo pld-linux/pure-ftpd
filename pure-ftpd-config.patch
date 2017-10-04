@@ -1,51 +1,65 @@
---- configuration-file/pure-ftpd.conf.in~	2004-02-29 12:18:57.000000000 +0100
-+++ configuration-file/pure-ftpd.conf.in	2004-04-15 13:35:52.321993376 +0200
-@@ -107,23 +107,23 @@
+--- pure-ftpd.conf.in~	2017-04-24 16:32:45.000000000 +0200
++++ pure-ftpd.conf.in	2017-10-04 12:41:06.402833227 +0200
+@@ -9,7 +9,7 @@
+ # instead of command-line options, please run the
+ # following command :
+ #
+-# @prefix@/sbin/pure-ftpd @sysconfdir@/etc/pure-ftpd.conf
++# @prefix@/sbin/pure-ftpd @sysconfdir@/etc/ftpd/pure-ftpd.conf
+ #
+ # Online documentation:
+ # https://www.pureftpd.org/project/pure-ftpd/doc
+@@ -106,23 +106,23 @@ MaxIdleTime                  15
  
  # LDAP configuration file (see README.LDAP)
  
--# LDAPConfigFile                /etc/pureftpd-ldap.conf
-+# LDAPConfigFile                /etc/ftpd/pureftpd-ldap.conf
+-# LDAPConfigFile               /etc/pureftpd-ldap.conf
++# LDAPConfigFile               /etc/ftpd/pureftpd-ldap.conf
  
  
  
  # MySQL configuration file (see README.MySQL)
  
--# MySQLConfigFile               /etc/pureftpd-mysql.conf
-+# MySQLConfigFile               /etc/ftpd/pureftpd-mysql.conf
+-# MySQLConfigFile              /etc/pureftpd-mysql.conf
++# MySQLConfigFile              /etc/ftpd/pureftpd-mysql.conf
  
  
- # Postgres configuration file (see README.PGSQL)
+ # PostgreSQL configuration file (see README.PGSQL)
  
--# PGSQLConfigFile               /etc/pureftpd-pgsql.conf
-+# PGSQLConfigFile               /etc/ftpd/pureftpd-pgsql.conf
+-# PGSQLConfigFile              /etc/pureftpd-pgsql.conf
++# PGSQLConfigFile              /etc/ftpd/pureftpd-pgsql.conf
  
  
  # PureDB user database (see README.Virtual-Users)
  
--# PureDB                        /etc/pureftpd.pdb
-+# PureDB                        /etc/ftpd/pureftpd.pdb
+-# PureDB                       /etc/pureftpd.pdb
++# PureDB                       /etc/ftpd/pureftpd.pdb
  
  
  # Path to pure-authd socket (see README.Authentication-Modules)
---- configuration-file/pure-ftpd.conf.in~	2004-07-29 22:58:53.000000000 +0200
-+++ configuration-file/pure-ftpd.conf.in	2004-07-29 22:57:25.000000000 +0200
-@@ -276,7 +276,7 @@
- 
- # Disallow anonymous users to upload new files (no = upload is allowed)
- 
--AnonymousCantUpload         no
-+AnonymousCantUpload         yes
- 
- 
- 
---- configuration-file/pure-ftpd.conf.in	2004-09-15 17:03:04.000000000 +0200
-+++ configuration-file/pure-ftpd.conf.in	2004-11-06 16:55:31.382772400 +0100
-@@ -157,6 +157,7 @@
+@@ -156,6 +156,7 @@ MaxIdleTime                  15
  
  # 'ls' recursion limits. The first argument is the maximum number of
- # files to be displayed. The second one is the max subdirectories depth
-+# If LimitRecursion is not present default is 2000 5 
+ # files to be displayed. The second one is the max subdirectories depth.
++# If LimitRecursion is not present default is 2000 5
  
- LimitRecursion              2000 8
+ LimitRecursion               10000 8
+ 
+@@ -275,7 +276,7 @@ AutoRename                   no
+ 
+ # Prevent anonymous users from uploading new files (no = upload is allowed)
+ 
+-AnonymousCantUpload          no
++AnonymousCantUpload          yes
+ 
+ 
+ 
+@@ -430,7 +431,7 @@ CustomerProof                yes
+ 
+ # Certificate file, for TLS
+ 
+-# CertFile                     /etc/ssl/private/pure-ftpd.pem
++# CertFile                     /etc/ftpd/ssl/private/pure-ftpd.pem
+ 
+ 
  

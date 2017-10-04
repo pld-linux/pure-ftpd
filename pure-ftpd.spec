@@ -9,16 +9,16 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	3
+%define	rel	1
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.42
+Version:	1.0.46
 Release:	%{rel}%{?with_extra:extra}
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	4022f38939f6a112b18c1a43dee552c1
+# Source0-md5:	efce5529c1f0a39dafdd532c619503f1
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -31,8 +31,6 @@ Patch1:		%{name}-allauth.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 
-Patch5:		%{name}-passwd_location.patch
-Patch6:		%{name}-additionalgid.patch
 Patch7:		audit_cap.patch
 Patch8:		%{name}-apparmor.patch
 Patch9:		%{name}-mysql-utf8.patch
@@ -111,8 +109,6 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch1 -p1
 %patch3 -p1
 
-%patch5 -p1
-%patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
@@ -175,9 +171,9 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 %{?with_ldap:install pureftpd-ldap.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-ldap.conf}
 %{?with_mysql:install pureftpd-mysql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-mysql.conf}
 %{?with_pgsql:install pureftpd-pgsql.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd-pgsql.conf}
-cp -p configuration-file/pure-ftpd.conf $RPM_BUILD_ROOT%{_sysconfdir}/pureftpd.conf
-%{!?with_extra:install configuration-file/pure-config.pl $RPM_BUILD_ROOT%{_sbindir}}
 cp -p pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
+
+mv $RPM_BUILD_ROOT%{_sysconfdir}/{pure-ftpd,pureftpd}.conf
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/{ftpusers,pureftpd-dir-aliases}
 

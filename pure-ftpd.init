@@ -18,18 +18,6 @@ PURE_AUTH_SOCKET=/var/run/pure-authd/socket
 # Get service config
 [ -f /etc/sysconfig/pure-ftpd ] && . /etc/sysconfig/pure-ftpd
 
-# Check for available parsers
-if [ -x /usr/sbin/pure-config ] ; then
-	CFG=/usr/sbin/pure-config
-elif [ -x /usr/sbin/pure-config.pl -a -x /usr/bin/perl ] ; then
-	CFG=/usr/sbin/pure-config.pl
-elif [ -x /usr/sbin/pure-config.py -a -x /usr/bin/python ] ; then
-	CFG=/usr/sbin/pure-config.py
-else
-	echo 'Error: pure-config{,.pl,.py} not found. Giving up.'
-	exit 1
-fi
-
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
@@ -62,19 +50,11 @@ start() {
 		if [ $RETVAL -eq 0 ]; then
 			msg_starting pure-ftpd
 			rm -f /var/run/pure-ftpd/client*
-			if [ x"$CFG" = "x/usr/sbin/pure-config" ] ; then
-				modprobe -s capability > /dev/null 2>&1
-				daemon /usr/sbin/pure-ftpd \
-					$(/usr/sbin/pure-config -f /etc/ftpd/pureftpd.conf) \
-					$([ "$PURE_AUTH" = "yes" ] && echo "-lextauth:$PURE_AUTH_SOCKET") \
-					--daemonize
-				RETVAL=$?
-			else
-				daemon $CFG /etc/ftpd/pureftpd.conf \
-					$([ "$PURE_AUTH" = "yes" ] && echo "-lextauth:$PURE_AUTH_SOCKET") \
-					--daemonize
-				RETVAL=$?
-			fi
+			modprobe -s capability > /dev/null 2>&1
+			daemon /usr/sbin/pure-ftpd /etc/ftpd/pureftpd.conf \
+				$([ "$PURE_AUTH" = "yes" ] && echo "-lextauth:$PURE_AUTH_SOCKET") \
+				--daemonize
+			RETVAL=$?
 			
 			if [ -n "$UPLOADSCRIPT" ]; then
 				msg_starting pure-uploadscript
