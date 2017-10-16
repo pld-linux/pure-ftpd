@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	1
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -30,6 +30,8 @@ Patch0:		%{name}-config.patch
 Patch1:		%{name}-allauth.patch
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
+# from Fedora
+Patch4:		0003-Allow-having-both-options-and-config-file-on-command.patch
 
 Patch7:		audit_cap.patch
 Patch8:		%{name}-apparmor.patch
@@ -108,6 +110,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch0 -p0
 %patch1 -p1
 %patch3 -p1
+%patch4 -p1
 
 %patch7 -p1
 %patch8 -p1
