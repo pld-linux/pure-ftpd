@@ -1,21 +1,20 @@
---- a/src/log_mysql.c~	2017-04-24 16:32:45.000000000 +0200
-+++ b/src/log_mysql.c	2017-10-04 12:42:27.961678871 +0200
+--- pure-ftpd-1.0.47/src/log_mysql.c~	2017-08-20 16:51:05.000000000 +0200
++++ pure-ftpd-1.0.47/src/log_mysql.c	2017-10-28 20:17:43.638635689 +0200
 @@ -429,6 +429,7 @@ void pw_mysql_check(AuthResult * const r
          crypto_mysql++;
          crypto_md5++;
          crypto_sha1++;
 +        crypto_plain++;
-     } else if (strcasecmp(crypto, PASSWD_SQL_ARGON2I) == 0) {
-         crypto_argon2i++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_ARGON2) == 0) {
+         crypto_argon2++;
      } else if (strcasecmp(crypto, PASSWD_SQL_SCRYPT) == 0) {
-
---- a/src/log_pgsql.c~	2017-04-24 16:32:45.000000000 +0200
-+++ b/src/log_pgsql.c	2017-10-04 12:42:57.562469704 +0200
+--- pure-ftpd-1.0.47/src/log_pgsql.c~	2017-08-20 16:51:15.000000000 +0200
++++ pure-ftpd-1.0.47/src/log_pgsql.c	2017-10-28 20:18:08.135958914 +0200
 @@ -504,6 +504,7 @@ void pw_pgsql_check(AuthResult * const r
          crypto_crypt++;
          crypto_md5++;
          crypto_sha1++;
 +        crypto_plain++;
-     } else if (strcasecmp(crypto, PASSWD_SQL_ARGON2I) == 0) {
-         crypto_argon2i++;
+     } else if (strcasecmp(crypto, PASSWD_SQL_ARGON2)) {
+         crypto_argon2++;
      } else if (strcasecmp(crypto, PASSWD_SQL_SCRYPT) == 0) {
