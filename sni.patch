@@ -1,0 +1,78 @@
+commit d2906ca519ecc9fb864eb7005809982322137964
+Author: Frank Denis <github@pureftpd.org>
+Date:   Fri Mar 15 13:12:04 2019 +0100
+
+    Add tlsext servername callback
+
+diff --git a/src/tls.c b/src/tls.c
+index e4bddb2..f34617b 100644
+--- a/src/tls.c
++++ b/src/tls.c
+@@ -219,6 +219,18 @@ static void tls_init_cache(void)
+     SSL_CTX_set_timeout(tls_ctx, 60 * 60L);
+ }
+ 
++static int ssl_servername_cb(SSL *cnx, int *al, void *arg)
++{
++    const char *servername;
++
++    if ((servername = SSL_get_servername(cnx, TLSEXT_NAMETYPE_host_name))
++        == NULL) {
++        logfile(LOG_INFO, "SNI: [%s]", servername);
++        return SSL_TLSEXT_ERR_NOACK;
++    }
++    return SSL_TLSEXT_ERR_OK;
++}
++
+ # ifdef DISABLE_SSL_RENEGOTIATION
+ static void ssl_info_cb(const SSL *cnx, int where, int ret)
+ {
+@@ -348,6 +360,7 @@ int tls_init_library(void)
+     SSL_CTX_set_options(tls_ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);
+ #  endif
+     SSL_CTX_set_info_callback(tls_ctx, ssl_info_cb);
++    SSL_CTX_set_tlsext_servername_callback(tls_ctx, ssl_servername_cb);
+ # endif
+     SSL_CTX_set_verify_depth(tls_ctx, 6);
+     if (ssl_verify_client_cert) {
+commit 1d110dd103d306ce14c17320a03d6c324ef2db9c
+Author: Frank Denis <github@pureftpd.org>
+Date:   Fri Mar 15 13:45:14 2019 +0100
+
+    Don't log a NULL name :)
+
+diff --git a/src/tls.c b/src/tls.c
+index f34617b..6078dd7 100644
+--- a/src/tls.c
++++ b/src/tls.c
+@@ -225,9 +225,10 @@ static int ssl_servername_cb(SSL *cnx, int *al, void *arg)
+ 
+     if ((servername = SSL_get_servername(cnx, TLSEXT_NAMETYPE_host_name))
+         == NULL) {
+-        logfile(LOG_INFO, "SNI: [%s]", servername);
+         return SSL_TLSEXT_ERR_NOACK;
+     }
++    logfile(LOG_INFO, "SNI: [%s]", servername);
++
+     return SSL_TLSEXT_ERR_OK;
+ }
+ 
+commit f0659f8357952c0a95cd62c938bd6c9852cd78f9
+Author: Frank Denis <github@pureftpd.org>
+Date:   Fri Mar 15 14:14:15 2019 +0100
+
+    Reject empty names
+
+diff --git a/src/tls.c b/src/tls.c
+index 6078dd7..a992473 100644
+--- a/src/tls.c
++++ b/src/tls.c
+@@ -224,7 +224,7 @@ static int ssl_servername_cb(SSL *cnx, int *al, void *arg)
+     const char *servername;
+ 
+     if ((servername = SSL_get_servername(cnx, TLSEXT_NAMETYPE_host_name))
+-        == NULL) {
++        == NULL || *servername == 0) {
+         return SSL_TLSEXT_ERR_NOACK;
+     }
+     logfile(LOG_INFO, "SNI: [%s]", servername);
