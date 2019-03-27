@@ -47,7 +47,7 @@ start() {
 			daemon /usr/sbin/pure-authd --uid 326 --gid 326 --pid /var/run/pure-authd.pid \
 				--run "$PURE_AUTH_SCRIPT" --socket "$PURE_AUTH_SOCKET" --daemonize
 			RETVAL=$?
-			[ $RETVAL -eq 0 ] && chown root:root "$PURE_AUTH_SOCKET" && chmod 700 "$PURE_AUTH_SOCKET"
+			[ $RETVAL -eq 0 ] && chown root:root "$PURE_AUTH_SOCKET" && chmod 600 "$PURE_AUTH_SOCKET"
 		fi
 		if [ $RETVAL -eq 0 -a -x "$PURE_CERT_SCRIPT" ]; then
 			PURE_CERT=yes
@@ -62,7 +62,7 @@ start() {
 			daemon /usr/sbin/pure-certd --uid 335 --gid 335 --pid /var/run/pure-certd.pid \
 				--run "$PURE_CERT_SCRIPT" --socket "$PURE_CERT_SOCKET" --daemonize
 			RETVAL=$?
-			[ $RETVAL -eq 0 ] && chown root:root "$PURE_CERT_SOCKET" && chmod 700 "$PURE_CERT_SOCKET"
+			[ $RETVAL -eq 0 ] && chown root:root "$PURE_CERT_SOCKET" && chmod 600 "$PURE_CERT_SOCKET"
 		fi
 		if [ $RETVAL -eq 0 ]; then
 			msg_starting pure-ftpd
