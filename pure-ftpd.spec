@@ -9,16 +9,16 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	7
+%define	rel	1
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.47
+Version:	1.0.48
 Release:	%{rel}%{?with_extra:extra}
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	a41fa531c0d21bd3416dd524d75495ae
+# Source0-md5:	4538d563fb4cbe755767c91b14ed2fd2
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -32,11 +32,9 @@ Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 # from Fedora
 Patch4:		0003-Allow-having-both-options-and-config-file-on-command.patch
-Patch5:		tls.patch
-Patch6:		sni.patch
-Patch7:		audit_cap.patch
-Patch8:		%{name}-apparmor.patch
-Patch9:		%{name}-mysql-utf8.patch
+Patch5:		audit_cap.patch
+Patch6:		%{name}-apparmor.patch
+Patch7:		%{name}-mysql-utf8.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -115,8 +113,6 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-%patch9 -p1
 
 %{?with_extra:%patch2 -p1}
 
@@ -234,7 +230,7 @@ exit 0
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog CONTACT COPYING FAQ HISTORY NEWS README* THANKS pure*.conf pureftpd.schema
+%doc AUTHORS ChangeLog COPYING FAQ HISTORY NEWS README* THANKS pure*.conf pureftpd.schema
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}

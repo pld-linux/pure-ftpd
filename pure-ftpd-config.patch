@@ -4,8 +4,8 @@
  # instead of command-line options, please run the
  # following command :
  #
--# @prefix@/sbin/pure-ftpd @sysconfdir@/etc/pure-ftpd.conf
-+# @prefix@/sbin/pure-ftpd @sysconfdir@/etc/ftpd/pure-ftpd.conf
+-# @sbindir@/sbin/pure-ftpd @sysconfdir@/pure-ftpd.conf
++# @sbindir@/sbin/pure-ftpd @sysconfdir@/ftpd/pure-ftpd.conf
  #
  # Online documentation:
  # https://www.pureftpd.org/project/pure-ftpd/doc
@@ -54,12 +54,14 @@
  
  
  
-@@ -430,7 +431,7 @@ CustomerProof                yes
- 
- # Certificate file, for TLS
+@@ -430,8 +431,8 @@ CustomerProof                yes
+ # CertFile is for a cert+key bundle, CertFileAndKey for separate files.
+ # Use only one of these.
  
 -# CertFile                     /etc/ssl/private/pure-ftpd.pem
+-# CertFileAndKey               "/etc/pure-ftpd.pem" "/etc/pure-ftpd.key"
 +# CertFile                     /etc/ftpd/ssl/private/pure-ftpd.pem
++# CertFileAndKey               "/etc/ftpd/ssl/pure-ftpd.pem" "/etc/ftpd/ssl/pure-ftpd.key"
  
  
  

@@ -15,6 +15,6 @@
          crypto_md5++;
          crypto_sha1++;
 +        crypto_plain++;
-     } else if (strcasecmp(crypto, PASSWD_SQL_ARGON2)) {
+     } else if (strcasecmp(crypto, PASSWD_SQL_ARGON2) == 0) {
          crypto_argon2++;
      } else if (strcasecmp(crypto, PASSWD_SQL_SCRYPT) == 0) {
