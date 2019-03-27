@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	2
+%define	rel	3
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -128,6 +128,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %{__automake}
 %configure \
 	CFLAGS="%{rpmcflags} %{rpmcppflags} -DALLOW_DELETION_OF_TEMPORARY_FILES=1 -DALWAYS_SHOW_RESOLVED_SYMLINKS=1" \
+	--disable-silent-rules \
 	--with-boring \
 	--with-altlog \
 	--with-cookie \
@@ -164,7 +165,7 @@ cd pure-config
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d} \
+install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d,%{name}/{certd,authd,conf}} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir},%{schemadir}}
 
 %{__make} install \
@@ -244,6 +245,11 @@ exit 0
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/*
+%attr(751,root,root) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}
+%attr(750,root,ftpauth) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/authd
+%attr(750,root,ftpcert) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/certd
+# for future /etc/ftpd -> /etc/pure-ftpd/conf migration
+#%attr(750,root,ftpcert) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpusers
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-dir-aliases
 %{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}

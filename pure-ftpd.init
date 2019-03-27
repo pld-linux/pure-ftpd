@@ -12,9 +12,9 @@
 # Get network config
 . /etc/sysconfig/network
 
-PURE_AUTH_SCRIPT=/etc/ftpd/auth.script
+PURE_AUTH_SCRIPT=/etc/pure-ftpd/authd/auth.script
 PURE_AUTH_SOCKET=/var/run/pure-authd/socket
-PURE_CERT_SCRIPT=/etc/ftpd/cert.script
+PURE_CERT_SCRIPT=/etc/pure-ftpd/certd/cert.script
 PURE_CERT_SOCKET=/var/run/pure-certd/socket
 
 # Get service config
@@ -70,7 +70,7 @@ start() {
 			modprobe -s capability > /dev/null 2>&1
 			daemon /usr/sbin/pure-ftpd /etc/ftpd/pureftpd.conf \
 				$([ "$PURE_AUTH" = "yes" ] && echo "-lextauth:$PURE_AUTH_SOCKET") \
-				$([ "$PURE_CERT" = "yes" ] && echo "-lextcert:$PURE_CERT_SOCKET") \
+				$([ "$PURE_CERT" = "yes" ] && echo "--extcert=$PURE_CERT_SOCKET") \
 				--daemonize
 			RETVAL=$?
 
