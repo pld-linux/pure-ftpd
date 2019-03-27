@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	1
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -35,6 +35,8 @@ Patch4:		0003-Allow-having-both-options-and-config-file-on-command.patch
 Patch5:		audit_cap.patch
 Patch6:		%{name}-apparmor.patch
 Patch7:		%{name}-mysql-utf8.patch
+# ressurect minimal RFC2640 support, assumes fs handles utf8
+Patch8:		utf8.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
@@ -61,6 +63,8 @@ Requires:	rc-scripts
 Provides:	ftpserver
 Provides:	user(ftpauth)
 Provides:	group(ftpauth)
+Provides:	user(ftpcert)
+Provides:	group(ftpcert)
 Conflicts:	man-pages < 1.51
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -113,6 +117,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %{?with_extra:%patch2 -p1}
 
@@ -135,7 +140,6 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 	%{?with_mysql:CPPFLAGS="-I%{_includedir}/mysql" --with-mysql} \
 	--with-pam \
 	--with-peruserlimits \
-	--with-rfc2640 \
 	%{?with_pgsql:--with-pgsql} \
 	--with-privsep \
 	%{?with_puredb:--with-puredb} \
@@ -199,6 +203,8 @@ rm -rf $RPM_BUILD_ROOT
 %pre
 %groupadd -g 326 ftpauth
 %useradd -u 326 -d %{_ftpdir} -s /bin/false -c "FTP Auth daemon" -g ftpauth ftpauth
+%groupadd -g 335 ftpcert
+%useradd -u 335 -d %{_ftpdir} -s /bin/false -c "FTP Cert daemon" -g ftpcert ftpcert
 
 %preun
 if [ "$1" = "0" ]; then
@@ -210,6 +216,8 @@ fi
 if [ "$1" = "0" ]; then
 	%userremove ftpauth
 	%groupremove ftpauth
+	%userremove ftpcert
+	%groupremove ftpcert
 fi
 
 %post -n openldap-schema-pureftpd

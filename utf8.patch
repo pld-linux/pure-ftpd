@@ -1,0 +1,45 @@
+diff --git a/src/ftpd.c b/src/ftpd.c
+index 0d5030c..7029d72 100644
+--- a/src/ftpd.c
++++ b/src/ftpd.c
+@@ -3565,14 +3565,16 @@ void dofeat(void)
+ #  define FEAT_ESTP CRLF " ESTP"
+ # endif
+ 
+-    char feat[] = FEAT FEAT_DEBUG FEAT_TLS FEAT_TVFS FEAT_ESTA FEAT_PASV FEAT_ESTP;
++#  define FEAT_UTF8 CRLF " UTF8"
++
++    char feat[] = FEAT FEAT_DEBUG FEAT_TLS FEAT_UTF8 FEAT_TVFS FEAT_ESTA FEAT_PASV FEAT_ESTP;
+ 
+     if (disallow_passive != 0) {
+-        feat[sizeof FEAT FEAT_DEBUG FEAT_TLS FEAT_TVFS FEAT_ESTA] = 0;
++        feat[sizeof FEAT FEAT_DEBUG FEAT_TLS FEAT_UTF8 FEAT_TVFS FEAT_ESTA] = 0;
+     }
+ # ifndef MINIMAL
+     else if (STORAGE_FAMILY(force_passive_ip) != 0) {
+-        feat[sizeof FEAT FEAT_DEBUG FEAT_TLS FEAT_TVFS FEAT_ESTA FEAT_PASV] = 0;
++        feat[sizeof FEAT FEAT_DEBUG FEAT_TLS FEAT_UTF8 FEAT_TVFS FEAT_ESTA FEAT_PASV] = 0;
+     }
+ # endif
+     addreply_noformat(0, feat);
+@@ -4639,7 +4641,20 @@ void doopts(char *args)
+         cmdopts++;
+         (void) cmdopts;
+     }
++    if (strncasecmp("utf8 ", args, 5) == 0 ||
++        strncasecmp("utf-8 ", args, 6) == 0) {
++        if (cmdopts == NULL || *cmdopts == 0) {
++            addreply_noformat(501, "OPTS UTF8: " MSG_MISSING_ARG);
++        } else if (strncasecmp(cmdopts, "on", sizeof "on" - 1U) == 0) {
++            addreply_noformat(200, "OK, UTF-8 enabled");
++        } else if (strncasecmp(cmdopts, "off", sizeof "off" - 1U)) {
++            addreply_noformat(200, "OK, UTF-8 disabled");
++        } else {
++            addreply_noformat(502, MSG_UNKNOWN_COMMAND);
++        }
++        return;
++    }
+     if (strncasecmp("mlst ", args, 5) == 0) {
+         addreply_noformat(200, " MLST OPTS "
+                           "type;size;sizd;modify;UNIX.mode;UNIX.uid;"
+

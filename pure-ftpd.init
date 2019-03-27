@@ -14,6 +14,8 @@
 
 PURE_AUTH_SCRIPT=/etc/ftpd/auth.script
 PURE_AUTH_SOCKET=/var/run/pure-authd/socket
+PURE_CERT_SCRIPT=/etc/ftpd/cert.script
+PURE_CERT_SOCKET=/var/run/pure-certd/socket
 
 # Get service config
 [ -f /etc/sysconfig/pure-ftpd ] && . /etc/sysconfig/pure-ftpd
@@ -35,17 +37,32 @@ start() {
 		if [ -x "$PURE_AUTH_SCRIPT" ]; then
 			PURE_AUTH=yes
 			msg_starting pure-authd
-			
+
 			# 326/326 - authd/authd
-			
+
 			mkdir -p /var/run/pure-authd
 			chown ftpauth:root /var/run/pure-authd
 			chmod 750 /var/run/pure-authd
-			
+
 			daemon /usr/sbin/pure-authd --uid 326 --gid 326 --pid /var/run/pure-authd.pid \
 				--run "$PURE_AUTH_SCRIPT" --socket "$PURE_AUTH_SOCKET" --daemonize
 			RETVAL=$?
 			[ $RETVAL -eq 0 ] && chown root:root "$PURE_AUTH_SOCKET" && chmod 700 "$PURE_AUTH_SOCKET"
+		fi
+		if [ $RETVAL -eq 0 -a -x "$PURE_CERT_SCRIPT" ]; then
+			PURE_CERT=yes
+			msg_starting pure-certd
+
+			# 335/335 - certd/certd
+
+			mkdir -p /var/run/pure-certd
+			chown ftpcert:root /var/run/pure-certd
+			chmod 750 /var/run/pure-certd
+
+			daemon /usr/sbin/pure-certd --uid 335 --gid 335 --pid /var/run/pure-certd.pid \
+				--run "$PURE_CERT_SCRIPT" --socket "$PURE_CERT_SOCKET" --daemonize
+			RETVAL=$?
+			[ $RETVAL -eq 0 ] && chown root:root "$PURE_CERT_SOCKET" && chmod 700 "$PURE_CERT_SOCKET"
 		fi
 		if [ $RETVAL -eq 0 ]; then
 			msg_starting pure-ftpd
@@ -53,9 +70,10 @@ start() {
 			modprobe -s capability > /dev/null 2>&1
 			daemon /usr/sbin/pure-ftpd /etc/ftpd/pureftpd.conf \
 				$([ "$PURE_AUTH" = "yes" ] && echo "-lextauth:$PURE_AUTH_SOCKET") \
+				$([ "$PURE_CERT" = "yes" ] && echo "-lextcert:$PURE_CERT_SOCKET") \
 				--daemonize
 			RETVAL=$?
-			
+
 			if [ -n "$UPLOADSCRIPT" ]; then
 				msg_starting pure-uploadscript
 				UPLOADSCRIPTOPTS="-B -r $UPLOADSCRIPT"
@@ -64,6 +82,10 @@ start() {
 				daemon /usr/sbin/pure-uploadscript $UPLOADSCRIPTOPTS
 				RETVAL=$(($RETVAL+$?))
 			fi
+		else
+			msg_starting pure-ftpd
+			deltext
+			fail
 		fi
 
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pure-ftpd
@@ -83,6 +105,11 @@ stop() {
 		if [ -x "$PURE_AUTH_SCRIPT" -o -r /var/run/pure-authd.pid ]; then
 			msg_stopping pure-authd
 			killproc pure-authd
+		fi
+
+		if [ -x "$PURE_CERT_SCRIPT" -o -r /var/run/pure-certd.pid ]; then
+			msg_stopping pure-certd
+			killproc pure-certd
 		fi
 
 		msg_stopping pure-ftpd
