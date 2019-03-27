@@ -32,7 +32,7 @@ Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 # from Fedora
 Patch4:		0003-Allow-having-both-options-and-config-file-on-command.patch
-Patch5:		audit_cap.patch
+
 Patch6:		%{name}-apparmor.patch
 Patch7:		%{name}-mysql-utf8.patch
 # ressurect minimal RFC2640 support, assumes fs handles utf8
@@ -114,7 +114,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch1 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
+
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
