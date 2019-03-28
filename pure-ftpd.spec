@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	4
+%define	rel	5
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -35,8 +35,7 @@ Patch4:		0003-Allow-having-both-options-and-config-file-on-command.patch
 
 Patch6:		%{name}-apparmor.patch
 Patch7:		%{name}-mysql-utf8.patch
-# ressurect minimal RFC2640 support, assumes fs handles utf8
-Patch8:		utf8.patch
+Patch8:		caps.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
 %{?with_extra:BuildRequires:	automake}
