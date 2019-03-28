@@ -1,0 +1,25 @@
+From 7918d2177bb1d306ad68cf42549be84024db7b05 Mon Sep 17 00:00:00 2001
+From: Frank Denis <github@pureftpd.org>
+Date: Wed, 27 Mar 2019 22:19:28 +0100
+Subject: [PATCH] Add CAP_DAC_OVERRIDE to the Linux capabilities
+
+maybe
+fixes #3
+---
+ src/caps_p.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/caps_p.h b/src/caps_p.h
+index bce67ba..c5f2269 100644
+--- a/src/caps_p.h
++++ b/src/caps_p.h
+@@ -16,7 +16,8 @@ cap_value_t cap_keep_startup[] = {
+     CAP_NET_BIND_SERVICE,
+     CAP_SYS_CHROOT,
+     CAP_SYS_NICE,
+-    CAP_DAC_READ_SEARCH
++    CAP_DAC_READ_SEARCH,
++    CAP_DAC_OVERRIDE
+ };
+ 
+ cap_value_t cap_keep_login[] = {
