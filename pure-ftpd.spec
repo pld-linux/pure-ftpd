@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	5
+%define	rel	6
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -32,7 +32,7 @@ Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 # from Fedora
 Patch4:		0003-Allow-having-both-options-and-config-file-on-command.patch
-
+Patch5:		paths.patch
 Patch6:		%{name}-apparmor.patch
 Patch7:		%{name}-mysql-utf8.patch
 Patch8:		caps.patch
@@ -49,6 +49,7 @@ BuildRequires:	libsodium-devel
 BuildRequires:	pam-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.304
+Requires(post):		/usr/bin/openssl
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -113,7 +114,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch1 -p1
 %patch3 -p1
 %patch4 -p1
-
+%patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
@@ -146,7 +147,7 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 	--with-quotas \
 	--with-ratios \
 	--with-throttling \
-	%{?with_tls:--with-tls --with-certfile=%{_sharedstatedir}/openssl/certs/ftpd.pem} \
+	%{?with_tls:--with-tls --with-certfile=/etc/pure-ftpd/ssl/pure-ftpd.pem} \
 	--with-uploadscript \
 	--with-virtualchroot \
 	--with-virtualhosts \
@@ -164,7 +165,7 @@ cd pure-config
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d,%{name}/{certd,authd,conf}} \
+install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d,%{name}/{certd,authd,conf,ssl}} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/vhosts,%{_ftpdir},%{schemadir}}
 
 %{__make} install \
@@ -182,6 +183,7 @@ cp -p pureftpd.schema $RPM_BUILD_ROOT%{schemadir}/pureftpd.schema
 mv $RPM_BUILD_ROOT%{_sysconfdir}/{pure-ftpd,pureftpd}.conf
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/{ftpusers,pureftpd-dir-aliases}
+:> $RPM_BUILD_ROOT/etc/pure-ftpd/ssl/dhparams.pem
 
 ln -s vhosts $RPM_BUILD_ROOT%{_sysconfdir}/pure-ftpd
 
@@ -197,6 +199,11 @@ rm -f $RPM_BUILD_ROOT%{_mandir}/ftpusers-path.diff
 rm -rf $RPM_BUILD_ROOT
 
 %post
+if [ ! -s /etc/pure-ftpd/ssl/dhparams.pem ]; then
+	umask 027
+	%{_bindir}/openssl dhparam -out /etc/pure-ftpd/ssl/dhparams.pem 2048 || :
+fi
+
 /sbin/chkconfig --add %{name}
 %service %{name} restart "PureFTPD daemon"
 
@@ -248,7 +255,9 @@ exit 0
 %attr(750,root,ftpauth) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/authd
 %attr(750,root,ftpcert) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/certd
 # for future /etc/ftpd -> /etc/pure-ftpd/conf migration
-#%attr(750,root,ftpcert) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/conf
+# %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/conf
+%attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %dir /etc/%{name}/ssl
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %ghost /etc/%{name}/ssl/dhparams.pem
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ftpusers
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-dir-aliases
 %{?with_ldap:%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd-ldap.conf}
