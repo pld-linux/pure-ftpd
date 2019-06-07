@@ -45,7 +45,7 @@ start() {
 
 			mkdir -p /var/run/pure-authd
 			chown ftpauth:root /var/run/pure-authd
-			chmod 750 /var/run/pure-authd
+			chmod 770 /var/run/pure-authd
 
 			daemon /usr/sbin/pure-authd --uid 326 --gid 326 --pid /var/run/pure-authd.pid \
 				--run "$PURE_AUTH_SCRIPT" --socket "$PURE_AUTH_SOCKET" --daemonize
