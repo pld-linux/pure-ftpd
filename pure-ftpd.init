@@ -59,7 +59,7 @@ start() {
 
 			mkdir -p /var/run/pure-certd
 			chown ftpcert:root /var/run/pure-certd
-			chmod 750 /var/run/pure-certd
+			chmod 770 /var/run/pure-certd
 
 			daemon /usr/sbin/pure-certd --uid 335 --gid 335 --pid /var/run/pure-certd.pid \
 				--run "$PURE_CERT_SCRIPT" --socket "$PURE_CERT_SOCKET" --daemonize
