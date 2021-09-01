@@ -133,9 +133,14 @@ case "$1" in
 	;;
   status)
 	status pure-ftpd
-	status pure-uploadscript
 	RETVAL=$?
-	if [ $RETVAL -eq 0 ]; then
+	PUREFTPDRETVAL=$RETVAL
+
+	status pure-uploadscript
+	if [ -n "$UPLOADSCRIPT" ]; then
+	  RETVAL=$?
+	fi
+	if [ $PUREFTPDRETVAL -eq 0 ]; then
 		pure-ftpwho
 	fi
 	;;
