@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	5
+%define	rel	6
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -268,7 +268,7 @@ exit 0
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pureftpd.conf
 %attr(710,root,ftp) %dir %{_sysconfdir}
 %dir %{_sysconfdir}/vhosts
-%dir %{_sysconfdir}/pure-ftpd
+%{_sysconfdir}/pure-ftpd
 %dir %{_ftpdir}
 %{_mandir}/man?/*
 %lang(ja) %{_mandir}/ja/man5/ftpusers*
