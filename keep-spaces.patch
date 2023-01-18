@@ -1,0 +1,11 @@
+--- pure-ftpd-1.0.49/src/ftp_parser.c~	2023-01-18 12:31:46.000000000 +0100
++++ pure-ftpd-1.0.49/src/ftp_parser.c	2023-01-18 12:32:17.556586368 +0100
+@@ -167,7 +167,7 @@ int sfgets(void)
+ 
+ /* Replace extra spaces before and after a string with '_' */
+ 
+-#ifdef MINIMAL
++#if 1
+ # define revealextraspc(X) (X)
+ #else
+ static char *revealextraspc(char * const s_)
