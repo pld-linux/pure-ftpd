@@ -1,6 +1,6 @@
 diff -ur pure-ftpd-1.0.49.org/config.h.in pure-ftpd-1.0.49/config.h.in
 --- pure-ftpd-1.0.49.org/config.h.in	2019-03-25 18:00:47.000000000 +0100
-+++ pure-ftpd-1.0.49/config.h.in	2019-06-10 11:13:52.181133752 +0200
++++ pure-ftpd-1.0.49/config.h.in	2023-06-27 13:52:05.846355280 +0200
 @@ -3,6 +3,9 @@
  /* Define if building universal (internal helper macro) */
  #undef AC_APPLE_UNIVERSAL_BUILD
@@ -13,7 +13,7 @@ diff -ur pure-ftpd-1.0.49.org/config.h.in pure-ftpd-1.0.49/config.h.in
  
 diff -ur pure-ftpd-1.0.49.org/configure.ac pure-ftpd-1.0.49/configure.ac
 --- pure-ftpd-1.0.49.org/configure.ac	2019-04-03 12:41:30.000000000 +0200
-+++ pure-ftpd-1.0.49/configure.ac	2019-06-10 11:13:52.181133752 +0200
++++ pure-ftpd-1.0.49/configure.ac	2023-06-27 13:52:05.849688614 +0200
 @@ -790,6 +790,13 @@
      AC_DEFINE(QUOTAS,,[with quotas])
    fi ])
@@ -28,10 +28,9 @@ diff -ur pure-ftpd-1.0.49.org/configure.ac pure-ftpd-1.0.49/configure.ac
  AC_ARG_WITH(ftpwho,
  [AS_HELP_STRING(--with-ftpwho,Support for pure-ftpwho)],
  [ if test "x$withval" = "xyes" ; then
-Only in pure-ftpd-1.0.49: configure.ac.orig
 diff -ur pure-ftpd-1.0.49.org/pureftpd-mysql.conf pure-ftpd-1.0.49/pureftpd-mysql.conf
---- pure-ftpd-1.0.49.org/pureftpd-mysql.conf	2019-06-10 11:13:16.120061167 +0200
-+++ pure-ftpd-1.0.49/pureftpd-mysql.conf	2019-06-10 11:13:52.181133752 +0200
+--- pure-ftpd-1.0.49.org/pureftpd-mysql.conf	2018-01-04 13:13:36.000000000 +0100
++++ pure-ftpd-1.0.49/pureftpd-mysql.conf	2023-06-27 13:52:05.849688614 +0200
 @@ -112,6 +112,9 @@
  # MySQLGetBandwidthDL SELECT DLBandwidth FROM users WHERE User='\L'
  
@@ -44,7 +43,7 @@ diff -ur pure-ftpd-1.0.49.org/pureftpd-mysql.conf pure-ftpd-1.0.49/pureftpd-mysq
  # 2) Real and virtual users match.
 diff -ur pure-ftpd-1.0.49.org/README.Authentication-Modules pure-ftpd-1.0.49/README.Authentication-Modules
 --- pure-ftpd-1.0.49.org/README.Authentication-Modules	2019-03-25 18:10:06.000000000 +0100
-+++ pure-ftpd-1.0.49/README.Authentication-Modules	2019-06-10 11:17:27.140847844 +0200
++++ pure-ftpd-1.0.49/README.Authentication-Modules	2023-06-27 13:52:05.849688614 +0200
 @@ -118,6 +118,9 @@
  
  The maximal authorized number of concurrent sessions.
@@ -56,8 +55,8 @@ diff -ur pure-ftpd-1.0.49.org/README.Authentication-Modules pure-ftpd-1.0.49/REA
            ------------------------ EXAMPLE ------------------------
            
 diff -ur pure-ftpd-1.0.49.org/src/ftpd.c pure-ftpd-1.0.49/src/ftpd.c
---- pure-ftpd-1.0.49.org/src/ftpd.c	2019-06-10 11:13:16.123394599 +0200
-+++ pure-ftpd-1.0.49/src/ftpd.c	2019-06-10 11:13:52.184467185 +0200
+--- pure-ftpd-1.0.49.org/src/ftpd.c	2019-04-02 16:00:40.000000000 +0200
++++ pure-ftpd-1.0.49/src/ftpd.c	2023-06-27 13:52:26.496355278 +0200
 @@ -18,6 +18,9 @@
  #ifdef QUOTAS
  # include "quotas.h"
@@ -86,7 +85,7 @@ diff -ur pure-ftpd-1.0.49.org/src/ftpd.c pure-ftpd-1.0.49/src/ftpd.c
 +#ifdef APPARMOR
 +    if (authresult.apparmor_hat != NULL) {
 +        if (change_hat(authresult.apparmor_hat, zrand()) < 0)
-+            die(421, LOG_ERR, MSG_CHROOT_FAILED);
++            die(421, LOG_ERR, MSG_APPARMOR_FAILED);
 +        logfile(LOG_INFO, MSG_APPARMOR_HAT, account, authresult.apparmor_hat);
 +        free(authresult.apparmor_hat);
 +    }
@@ -96,8 +95,8 @@ diff -ur pure-ftpd-1.0.49.org/src/ftpd.c pure-ftpd-1.0.49/src/ftpd.c
  #ifdef FTPWHO
      if (shm_data_cur != NULL) {
 diff -ur pure-ftpd-1.0.49.org/src/ftpd.h pure-ftpd-1.0.49/src/ftpd.h
---- pure-ftpd-1.0.49.org/src/ftpd.h	2019-06-10 11:13:16.123394599 +0200
-+++ pure-ftpd-1.0.49/src/ftpd.h	2019-06-10 11:13:52.184467185 +0200
+--- pure-ftpd-1.0.49.org/src/ftpd.h	2019-03-25 16:48:42.000000000 +0100
++++ pure-ftpd-1.0.49/src/ftpd.h	2023-06-27 13:52:05.849688614 +0200
 @@ -291,6 +291,9 @@
  #ifdef PER_USER_LIMITS
      unsigned int per_user_max;
@@ -110,7 +109,7 @@ diff -ur pure-ftpd-1.0.49.org/src/ftpd.h pure-ftpd-1.0.49/src/ftpd.h
  typedef struct PureFileInfo_ {
 diff -ur pure-ftpd-1.0.49.org/src/log_extauth.c pure-ftpd-1.0.49/src/log_extauth.c
 --- pure-ftpd-1.0.49.org/src/log_extauth.c	2019-04-03 12:38:36.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_extauth.c	2019-06-10 11:15:54.581435088 +0200
++++ pure-ftpd-1.0.49/src/log_extauth.c	2023-06-27 13:52:05.849688614 +0200
 @@ -145,6 +145,19 @@
  #endif
  }
@@ -143,7 +142,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_extauth.c pure-ftpd-1.0.49/src/log_extauth
      if ((readnb = safe_read(kindy, line, sizeof line - 1U)) <= (ssize_t) 0) {
 diff -ur pure-ftpd-1.0.49.org/src/log_extauth.h pure-ftpd-1.0.49/src/log_extauth.h
 --- pure-ftpd-1.0.49.org/src/log_extauth.h	2019-03-25 18:11:33.000000000 +0100
-+++ pure-ftpd-1.0.49/src/log_extauth.h	2019-06-10 11:14:18.448581707 +0200
++++ pure-ftpd-1.0.49/src/log_extauth.h	2023-06-27 13:52:05.849688614 +0200
 @@ -35,6 +35,7 @@
  #define EXTAUTH_REPLY_RATIO_UPLOAD "ratio_upload" EXTAUTH_KEYWORD_SEP
  #define EXTAUTH_REPLY_RATIO_DOWNLOAD "ratio_download" EXTAUTH_KEYWORD_SEP
@@ -154,7 +153,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_extauth.h pure-ftpd-1.0.49/src/log_extauth
  #endif
 diff -ur pure-ftpd-1.0.49.org/src/log_extauth_p.h pure-ftpd-1.0.49/src/log_extauth_p.h
 --- pure-ftpd-1.0.49.org/src/log_extauth_p.h	2018-09-19 23:53:06.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_extauth_p.h	2019-06-10 11:15:04.449947766 +0200
++++ pure-ftpd-1.0.49/src/log_extauth_p.h	2023-06-27 13:52:05.849688614 +0200
 @@ -34,6 +34,7 @@
  static void callback_reply_ratio_upload(const char *str, AuthResult * const result);
  static void callback_reply_ratio_download(const char *str, AuthResult * const result);
@@ -173,7 +172,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_extauth_p.h pure-ftpd-1.0.49/src/log_extau
  };
 diff -ur pure-ftpd-1.0.49.org/src/log_ldap.c pure-ftpd-1.0.49/src/log_ldap.c
 --- pure-ftpd-1.0.49.org/src/log_ldap.c	2019-04-02 16:00:40.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_ldap.c	2019-06-10 11:13:52.184467185 +0200
++++ pure-ftpd-1.0.49/src/log_ldap.c	2023-06-27 13:52:05.849688614 +0200
 @@ -635,6 +635,9 @@
      if ((result->dir = strdup(pw->pw_dir)) == NULL) {
          return;
@@ -185,9 +184,9 @@ diff -ur pure-ftpd-1.0.49.org/src/log_ldap.c pure-ftpd-1.0.49/src/log_ldap.c
      result->auth_ok = 1;            /* User found, authentication ok */
  }
 diff -ur pure-ftpd-1.0.49.org/src/log_mysql.c pure-ftpd-1.0.49/src/log_mysql.c
---- pure-ftpd-1.0.49.org/src/log_mysql.c	2019-06-10 11:13:16.126728032 +0200
-+++ pure-ftpd-1.0.49/src/log_mysql.c	2019-06-10 11:13:52.184467185 +0200
-@@ -332,6 +332,9 @@
+--- pure-ftpd-1.0.49.org/src/log_mysql.c	2019-04-02 16:00:40.000000000 +0200
++++ pure-ftpd-1.0.49/src/log_mysql.c	2023-06-27 13:52:05.853021947 +0200
+@@ -325,6 +325,9 @@
      const char *bandwidth_ul = NULL;   /* stored bandwidth UL */
      const char *bandwidth_dl = NULL;   /* stored bandwidth DL */
  #endif
@@ -197,7 +196,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_mysql.c pure-ftpd-1.0.49/src/log_mysql.c
      char *escaped_account = NULL;
      char *escaped_ip = NULL;
      char *escaped_port = NULL;
-@@ -620,6 +623,15 @@
+@@ -612,6 +615,15 @@
          }
      }
  #endif
@@ -213,7 +212,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_mysql.c pure-ftpd-1.0.49/src/log_mysql.c
      result->slow_tilde_expansion = !tildexp;
      result->auth_ok = -result->auth_ok;
      bye:
-@@ -649,6 +661,9 @@
+@@ -641,6 +653,9 @@
      free((void *) bandwidth_ul);
      free((void *) bandwidth_dl);
  #endif
@@ -223,7 +222,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_mysql.c pure-ftpd-1.0.49/src/log_mysql.c
      free((void *) escaped_account);
      free((void *) escaped_ip);
      free((void *) escaped_port);
-@@ -717,6 +732,9 @@
+@@ -709,6 +724,9 @@
      ZFREE(sqlreq_getbandwidth_ul);
      ZFREE(sqlreq_getbandwidth_dl);
  #endif
@@ -235,7 +234,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_mysql.c pure-ftpd-1.0.49/src/log_mysql.c
  extern signed char v6ready;
 diff -ur pure-ftpd-1.0.49.org/src/log_mysql_p.h pure-ftpd-1.0.49/src/log_mysql_p.h
 --- pure-ftpd-1.0.49.org/src/log_mysql_p.h	2018-09-19 23:53:06.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_mysql_p.h	2019-06-10 11:13:52.184467185 +0200
++++ pure-ftpd-1.0.49/src/log_mysql_p.h	2023-06-27 13:52:05.853021947 +0200
 @@ -38,6 +38,9 @@
  static char *sqlreq_getbandwidth_ul;
  static char *sqlreq_getbandwidth_dl;
@@ -258,7 +257,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_mysql_p.h pure-ftpd-1.0.49/src/log_mysql_p
  
 diff -ur pure-ftpd-1.0.49.org/src/log_pam.c pure-ftpd-1.0.49/src/log_pam.c
 --- pure-ftpd-1.0.49.org/src/log_pam.c	2019-04-02 16:00:40.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_pam.c	2019-06-10 11:13:52.184467185 +0200
++++ pure-ftpd-1.0.49/src/log_pam.c	2023-06-27 13:52:05.853021947 +0200
 @@ -202,6 +202,9 @@
      (void) pam_close_session(pamh, PAM_SILENT);   /* It doesn't matter if it fails */
  #endif
@@ -270,8 +269,8 @@ diff -ur pure-ftpd-1.0.49.org/src/log_pam.c pure-ftpd-1.0.49/src/log_pam.c
      result->uid = pw.pw_uid;
      result->gid = pw.pw_gid;
 diff -ur pure-ftpd-1.0.49.org/src/log_pgsql.c pure-ftpd-1.0.49/src/log_pgsql.c
---- pure-ftpd-1.0.49.org/src/log_pgsql.c	2019-06-10 11:13:16.120061167 +0200
-+++ pure-ftpd-1.0.49/src/log_pgsql.c	2019-06-10 11:13:52.184467185 +0200
+--- pure-ftpd-1.0.49.org/src/log_pgsql.c	2019-04-02 16:00:40.000000000 +0200
++++ pure-ftpd-1.0.49/src/log_pgsql.c	2023-06-27 13:52:05.853021947 +0200
 @@ -402,6 +402,9 @@
      const char *bandwidth_ul = NULL;   /* stored bandwidth UL */
      const char *bandwidth_dl = NULL;   /* stored bandwidth DL */
@@ -282,7 +281,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_pgsql.c pure-ftpd-1.0.49/src/log_pgsql.c
      char *escaped_account = NULL;
      char *escaped_ip = NULL;
      char *escaped_port = NULL;
-@@ -662,6 +665,15 @@
+@@ -661,6 +664,15 @@
          }
      }
  #endif
@@ -298,7 +297,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_pgsql.c pure-ftpd-1.0.49/src/log_pgsql.c
      result->slow_tilde_expansion = 1;
      result->auth_ok = -result->auth_ok;
      bye:
-@@ -692,6 +704,9 @@
+@@ -691,6 +703,9 @@
      free((void *) bandwidth_ul);
      free((void *) bandwidth_dl);
  #endif
@@ -308,7 +307,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_pgsql.c pure-ftpd-1.0.49/src/log_pgsql.c
      free((void *) escaped_account);
      free((void *) escaped_ip);
      free((void *) escaped_port);
-@@ -746,6 +761,9 @@
+@@ -745,6 +760,9 @@
      ZFREE(sqlreq_getbandwidth_ul);
      ZFREE(sqlreq_getbandwidth_dl);
  #endif
@@ -320,7 +319,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_pgsql.c pure-ftpd-1.0.49/src/log_pgsql.c
  extern signed char v6ready;
 diff -ur pure-ftpd-1.0.49.org/src/log_pgsql_p.h pure-ftpd-1.0.49/src/log_pgsql_p.h
 --- pure-ftpd-1.0.49.org/src/log_pgsql_p.h	2018-09-19 23:53:06.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_pgsql_p.h	2019-06-10 11:13:52.184467185 +0200
++++ pure-ftpd-1.0.49/src/log_pgsql_p.h	2023-06-27 13:52:05.853021947 +0200
 @@ -28,6 +28,9 @@
  static char *sqlreq_getbandwidth_ul;
  static char *sqlreq_getbandwidth_dl;
@@ -343,7 +342,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_pgsql_p.h pure-ftpd-1.0.49/src/log_pgsql_p
  
 diff -ur pure-ftpd-1.0.49.org/src/log_puredb.c pure-ftpd-1.0.49/src/log_puredb.c
 --- pure-ftpd-1.0.49.org/src/log_puredb.c	2019-04-02 16:00:40.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_puredb.c	2019-06-10 11:13:52.187800617 +0200
++++ pure-ftpd-1.0.49/src/log_puredb.c	2023-06-27 13:52:05.853021947 +0200
 @@ -335,6 +335,9 @@
          result->user_quota_size = strtoull(line, NULL, 10);
      }
@@ -356,7 +355,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_puredb.c pure-ftpd-1.0.49/src/log_puredb.c
      }
 diff -ur pure-ftpd-1.0.49.org/src/log_unix.c pure-ftpd-1.0.49/src/log_unix.c
 --- pure-ftpd-1.0.49.org/src/log_unix.c	2019-04-02 16:00:40.000000000 +0200
-+++ pure-ftpd-1.0.49/src/log_unix.c	2019-06-10 11:13:52.187800617 +0200
++++ pure-ftpd-1.0.49/src/log_unix.c	2023-06-27 13:52:05.853021947 +0200
 @@ -87,6 +87,9 @@
      result->uid = pw.pw_uid;
      result->gid = pw.pw_gid;
@@ -369,7 +368,7 @@ diff -ur pure-ftpd-1.0.49.org/src/log_unix.c pure-ftpd-1.0.49/src/log_unix.c
      return;
 diff -ur pure-ftpd-1.0.49.org/src/Makefile.am pure-ftpd-1.0.49/src/Makefile.am
 --- pure-ftpd-1.0.49.org/src/Makefile.am	2019-03-25 16:48:42.000000000 +0100
-+++ pure-ftpd-1.0.49/src/Makefile.am	2019-06-10 11:13:52.187800617 +0200
++++ pure-ftpd-1.0.49/src/Makefile.am	2023-06-27 13:52:05.853021947 +0200
 @@ -143,6 +143,7 @@
  pure_ftpd_LDADD = \
  	libpureftpd.a \
@@ -379,9 +378,13 @@ diff -ur pure-ftpd-1.0.49.org/src/Makefile.am pure-ftpd-1.0.49/src/Makefile.am
  
  pure_ftpd_SOURCES = \
 diff -ur pure-ftpd-1.0.49.org/src/messages_en.h pure-ftpd-1.0.49/src/messages_en.h
---- pure-ftpd-1.0.49.org/src/messages_en.h	2019-06-10 11:13:16.126728032 +0200
-+++ pure-ftpd-1.0.49/src/messages_en.h	2019-06-10 11:13:52.187800617 +0200
-@@ -57,6 +57,7 @@
+--- pure-ftpd-1.0.49.org/src/messages_en.h	2019-03-25 16:48:42.000000000 +0100
++++ pure-ftpd-1.0.49/src/messages_en.h	2023-06-27 13:52:50.413021941 +0200
+@@ -54,9 +54,11 @@
+ #define MSG_FXP_SUPPORT "This server supports FXP transfers"
+ #define MSG_RATIO "You must respect a %u:%u (UL/DL) ratio"
+ #define MSG_CHROOT_FAILED "Unable to set up a secure chroot() jail"
++#define MSG_APPARMOR_FAILED "Unable to set up security policies"
  #define MSG_CURRENT_DIR_IS "OK. Current directory is %s"
  #define MSG_CURRENT_RESTRICTED_DIR_IS "OK. Current restricted directory is %s"
  #define MSG_IS_NOW_LOGGED_IN "%s is now logged in"
