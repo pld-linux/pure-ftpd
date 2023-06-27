@@ -84,9 +84,9 @@ diff -ur pure-ftpd-1.0.49.org/src/ftpd.c pure-ftpd-1.0.49/src/ftpd.c
 +
 +#ifdef APPARMOR
 +    if (authresult.apparmor_hat != NULL) {
++        logfile(LOG_INFO, MSG_APPARMOR_HAT, account, authresult.apparmor_hat);
 +        if (change_hat(authresult.apparmor_hat, zrand()) < 0)
 +            die(421, LOG_ERR, MSG_APPARMOR_FAILED);
-+        logfile(LOG_INFO, MSG_APPARMOR_HAT, account, authresult.apparmor_hat);
 +        free(authresult.apparmor_hat);
 +    }
 +#endif
