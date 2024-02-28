@@ -1,6 +1,6 @@
---- pure-ftpd-1.0.48/src/ftpd.h~	2019-03-29 12:34:03.000000000 +0100
-+++ pure-ftpd-1.0.48/src/ftpd.h	2019-03-29 12:36:05.048180168 +0100
-@@ -412,18 +412,9 @@
+--- a/src/ftpd.h~	2021-12-16 13:12:17.000000000 +0100
++++ b/src/ftpd.h	2024-02-28 12:08:03.216568955 +0100
+@@ -397,15 +397,9 @@ extern int opt_a, opt_C, opt_d, opt_F, o
  #endif
  
  #ifdef WITH_TLS
@@ -13,9 +13,6 @@
 -# ifndef TLS_KEY_FILE
 +#  define TLS_CERTIFICATE_FILE "/etc/pure-ftpd/ssl/pure-ftpd.pem"
  #  define TLS_KEY_FILE TLS_CERTIFICATE_FILE
--# endif
--# ifndef TLS_DHPARAMS_FILE
--#  define TLS_DHPARAMS_FILE TLS_CONFDIR "/pure-ftpd-dhparams.pem"
 -# endif
 +#  define TLS_DHPARAMS_FILE "/etc/pure-ftpd/ssl/dhparams.pem"
  #endif

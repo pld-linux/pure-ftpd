@@ -12,15 +12,15 @@ diff --git a/src/ftpd.c b/src/ftpd.c
 index c5edac5..b13afc0 100644
 --- a/src/ftpd.c
 +++ b/src/ftpd.c
-@@ -5589,7 +5589,7 @@ int pureftpd_start(int argc, char *argv[], const char *home_directory_)
- #endif
+@@ -5528,7 +5528,7 @@ int pureftpd_start(int argc, char *argv[
+     {
+         static SimpleConfConfig config = { NULL, sc_special_handler };
  
- #ifndef MINIMAL
--    if (argc == 2 && *argv[1] != '-' &&
-+    if (argc >= 2 && *argv[1] != '-' &&
-         sc_build_command_line_from_file(argv[1], NULL, simpleconf_options,
-                                         (sizeof simpleconf_options) /
-                                         (sizeof simpleconf_options[0]),
+-        if (argc == 2 && *argv[1] != '-' &&
++        if (argc >= 2 && *argv[1] != '-' &&
+             sc_build_command_line_from_file(argv[1], &config,
+                                             simpleconf_options,
+                                             (sizeof simpleconf_options) /
 diff --git a/src/simpleconf.c b/src/simpleconf.c
 index f296f54..505aee1 100644
 --- a/src/simpleconf.c

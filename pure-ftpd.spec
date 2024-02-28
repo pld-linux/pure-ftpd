@@ -13,12 +13,12 @@
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.49
+Version:	1.0.51
 Release:	%{rel}%{?with_extra:extra}
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
 Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	b7025f469711d88bd84a3518f67c1470
+# Source0-md5:	0e2f519fbc3a48143fb3a0409a09d863
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -27,7 +27,7 @@ Source4:	ftpusers.tar.bz2
 Source5:	http://twittner.host.sk/files/pure-config/pure-config-20041201.tar.gz
 # Source5-md5:	3f2ff6b00b5c38ee11ce588ee5af6cf6
 Patch0:		%{name}-config.patch
-Patch1:		%{name}-allauth.patch
+
 Patch2:		%{name}-pure-pw_passwd.patch
 Patch3:		%{name}-mysql_config.patch
 # from Fedora
@@ -36,8 +36,7 @@ Patch5:		paths.patch
 Patch6:		%{name}-apparmor.patch
 Patch7:		%{name}-mysql-utf8.patch
 Patch8:		caps.patch
-Patch9:		pure-ftpd-1.0.49-diraliases_uninitialized_pointer.patch
-Patch10:	pure-ftpd-1.0.49-pure_strcmp_OOB_read.patch
+
 Patch11:        keep-spaces.patch
 URL:		http://www.pureftpd.org/
 %{?with_extra:BuildRequires:	autoconf}
@@ -112,15 +111,14 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %prep
 %setup -q -a 5
 %patch0 -p0
-%patch1 -p1
+
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
+
 %patch11 -p1
 
 %{?with_extra:%patch2 -p1}
