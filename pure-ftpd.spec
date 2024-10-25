@@ -9,16 +9,16 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	11
+%define	rel	1
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
-Version:	1.0.51
+Version:	1.0.52
 Release:	%{rel}%{?with_extra:extra}
 License:	BSD-like%{?with_extra:, GLPv2 for pure-config due to libcfg+ license}
 Group:		Daemons
-Source0:	http://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
-# Source0-md5:	0e2f519fbc3a48143fb3a0409a09d863
+Source0:	https://download.pureftpd.org/pub/pure-ftpd/releases/%{name}-%{version}.tar.bz2
+# Source0-md5:	6fdd75053b7aaa0f45089a7bf7fcd0b4
 Source1:	%{name}.pamd
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -39,8 +39,8 @@ Patch8:		caps.patch
 
 Patch11:        keep-spaces.patch
 URL:		http://www.pureftpd.org/
-%{?with_extra:BuildRequires:	autoconf}
-%{?with_extra:BuildRequires:	automake}
+%{?with_extra:BuildRequires:	autoconf >= 2.65}
+%{?with_extra:BuildRequires:	automake >= 1:1.11.2}
 BuildRequires:	libapparmor-devel
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
