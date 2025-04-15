@@ -111,19 +111,19 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 
 %prep
 %setup -q -a 5
-%patch0 -p0
+%patch -P0 -p0
 
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
+%patch -P8 -p1
+%patch -P9 -p1
 
-%patch11 -p1
+%patch -P11 -p1
 
-%{?with_extra:%patch2 -p1}
+%{?with_extra:%patch -P2 -p1}
 
 %build
 %{__aclocal} -Im4
