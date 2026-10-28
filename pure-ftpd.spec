@@ -9,7 +9,7 @@
 %bcond_without	tls		# disable SSL/TLS support
 %bcond_without	cap		# disable capabilities
 
-%define	rel	1
+%define	rel	2
 Summary:	Small, fast and secure FTP server
 Summary(pl.UTF-8):	Mały, szybki i bezpieczny serwer FTP
 Name:		pure-ftpd
@@ -38,9 +38,12 @@ Patch7:		%{name}-mysql-utf8.patch
 Patch8:		caps.patch
 
 Patch11:        keep-spaces.patch
-URL:		http://www.pureftpd.org/
-%{?with_extra:BuildRequires:	autoconf >= 2.65}
-%{?with_extra:BuildRequires:	automake >= 1:1.11.2}
+Patch12:	%{name}-iptrack-full-table.patch
+Patch13:	%{name}-pam-conv-indexing.patch
+Patch14:	%{name}-ftpwho-xml-quotes.patch
+URL:		https://www.pureftpd.org/
+BuildRequires:	autoconf >= 2.65
+BuildRequires:	automake >= 1:1.11.2
 BuildRequires:	libapparmor-devel
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_extra:BuildRequires:	libcfg+-devel >= 0.6.2}
@@ -120,6 +123,9 @@ Ten pakiet zawiera schemat Pure-FTPd pureftpd.schema dla openldapa.
 %patch -P8 -p1
 
 %patch -P11 -p1
+%patch -P12 -p1
+%patch -P13 -p1
+%patch -P14 -p1
 
 %{?with_extra:%patch -P2 -p1}
 
@@ -172,6 +178,8 @@ install -d $RPM_BUILD_ROOT/etc/{pam.d,sysconfig,security,rc.d/init.d,%{name}/{ce
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/%{name}
 install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}

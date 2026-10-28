@@ -1,0 +1,28 @@
+From 5008fcaac7432c34803335c67356d9e6d15bbbe9 Mon Sep 17 00:00:00 2001
+From: Frank Denis <github@pureftpd.org>
+Date: Tue, 28 Apr 2026 11:02:13 +0200
+Subject: [PATCH] Prperly handle per-IP connection limits when the table is
+ full
+
+Once the internal IP tracking table filled up, every new connection
+from an already-tracked address evicted the oldest entry instead of
+reusing the existing one.
+
+Reported by COCOP1l0t, thanks!
+---
+ src/dynamic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/dynamic.c b/src/dynamic.c
+index 744de906..b555ad85 100644
+--- a/src/dynamic.c
++++ b/src/dynamic.c
+@@ -42,7 +42,7 @@ static unsigned int iptrack_find_ip_or_shift
+ 
+     do {
+         if (iptrack_list[c].pid != (pid_t) 0 &&
+-            STORAGE_FAMILY(iptrack_list[c].ip) != STORAGE_FAMILY(*ip)) {
++            STORAGE_FAMILY(iptrack_list[c].ip) == STORAGE_FAMILY(*ip)) {
+             if (STORAGE_FAMILY(iptrack_list[c].ip) == AF_INET &&
+                 STORAGE_SIN_ADDR_CONST(iptrack_list[c].ip) == STORAGE_SIN_ADDR_CONST(*ip)) {
+                 return c;

@@ -1,0 +1,96 @@
+From 4213de72ce45a6095d658c61e446c6fac07b1579 Mon Sep 17 00:00:00 2001
+From: Fabian Wahle <fabian@nash.io>
+Date: Thu, 18 Jun 2026 22:58:09 +0200
+Subject: [PATCH] fix: escape single and double quotes in pure-ftpwho XML
+ output
+
+Account and filename values are emitted inside double-quoted XML
+attributes. Unescaped quotes break the XML feed and can poison downstream
+parsers. Escape both ' and " to produce well-formed XML.
+
+CWE-116: Improper Encoding or Escaping of Output
+---
+ src/pure-ftpwho.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/src/pure-ftpwho.c b/src/pure-ftpwho.c
+index 4ef93c76..628d23f9 100644
+--- a/src/pure-ftpwho.c
++++ b/src/pure-ftpwho.c
+@@ -248,6 +248,24 @@ static char *xml_escaped(const char *const s_) {
+             *bufpnt++ = ';';
+             left -= sizeof "&amp;" - (size_t) 1U;
+             break;
++        case '\'':
++            if (left < sizeof "&apos;" - (size_t) 1U) {
++                *bufpnt = 0;
++                return buf;
++            }
++            *bufpnt++ = '&'; *bufpnt++ = 'a'; *bufpnt++ = 'p'; *bufpnt++ = 'o';
++            *bufpnt++ = 's'; *bufpnt++ = ';';
++            left -= sizeof "&apos;" - (size_t) 1U;
++            break;
++        case '"':
++            if (left < sizeof "&quot;" - (size_t) 1U) {
++                *bufpnt = 0;
++                return buf;
++            }
++            *bufpnt++ = '&'; *bufpnt++ = 'q'; *bufpnt++ = 'u'; *bufpnt++ = 'o';
++            *bufpnt++ = 't'; *bufpnt++ = ';';
++            left -= sizeof "&quot;" - (size_t) 1U;
++            break;
+         default:
+             *bufpnt++ = (char) *s;
+             left--;
+From 50c76627f250bf533cdf483b98a9ddcd1f6d5816 Mon Sep 17 00:00:00 2001
+From: Frank Denis <github@pureftpd.org>
+Date: Fri, 19 Jun 2026 15:23:13 +0200
+Subject: [PATCH] No need to escape ' in duble-quoted strings
+
+---
+ src/pure-ftpwho.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/src/pure-ftpwho.c b/src/pure-ftpwho.c
+index 628d23f9..d664d6dd 100644
+--- a/src/pure-ftpwho.c
++++ b/src/pure-ftpwho.c
+@@ -248,15 +248,6 @@ static char *xml_escaped(const char *const s_) {
+             *bufpnt++ = ';';
+             left -= sizeof "&amp;" - (size_t) 1U;
+             break;
+-        case '\'':
+-            if (left < sizeof "&apos;" - (size_t) 1U) {
+-                *bufpnt = 0;
+-                return buf;
+-            }
+-            *bufpnt++ = '&'; *bufpnt++ = 'a'; *bufpnt++ = 'p'; *bufpnt++ = 'o';
+-            *bufpnt++ = 's'; *bufpnt++ = ';';
+-            left -= sizeof "&apos;" - (size_t) 1U;
+-            break;
+         case '"':
+             if (left < sizeof "&quot;" - (size_t) 1U) {
+                 *bufpnt = 0;
+From 3097dd7841dd65952bf37c474f182e342760e2d2 Mon Sep 17 00:00:00 2001
+From: Frank Denis <github@pureftpd.org>
+Date: Wed, 28 Oct 2026 02:48:15 +0100
+Subject: [PATCH] Adjust buffer size for XML escaped values to avoid truncation
+
+---
+ src/pure-ftpwho.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/pure-ftpwho.c b/src/pure-ftpwho.c
+index 568e4abc..0c5df35d 100644
+--- a/src/pure-ftpwho.c
++++ b/src/pure-ftpwho.c
+@@ -207,7 +207,8 @@ static void text_output_footer(void)
+ }
+ 
+ static char *xml_escaped(const char *const s_) {
+-    static char buf[PATH_MAX + 32U];
++    static char buf[(sizeof(FTPWhoEntry) + NI_MAXHOST + NI_MAXSERV) *
++                    (sizeof "&quot;" - 1U)];
+     const unsigned char *s = (const unsigned char *) s_;
+     char *bufpnt = buf;
+     size_t left = sizeof buf - (size_t) 1U;
